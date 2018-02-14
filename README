@@ -1,0 +1,34 @@
+### Overview ###
+
+Guide for using the BSG board series.
+
+### Organization ###
+
+A sample directory structure or skeleton for bsg_designs is:
+
+|-- double_trouble                        # ASIC emulation platform
+|   `-- ...                               
+|-- real_trouble                          # prototyping platform for BSX
+|   `-- ...  
+`-- super_trouble                         # prototyping platform for Celerity
+    |
+    |-- pcb_development                   # all pcb related file
+    |   |
+    |   |-- pcb_design                    # include schematic, layout and library
+    |   |-- pcb_fabrication               # include stackup information, CAM files and docs related to fab
+    |   `-- pcb_assembly                  # include BOM, component_map and scripts
+    |   
+    |-- firmware                          # all FPGA programs
+    |   |
+    |   |-- TODO_1: do we copy-n-paste the release version code here from bsg_fpga repo, or we put a Makefile here that automatically clone the bsg_fpga repo and checkout the correct version of code (I will create a new branch for release version code)?
+    |   `-- TODO_2: in the future, do we allow other users to have access to our bsg_ip_cores, bsg_designs and other repos? If no, I will copy-n-paste all required files (of correct version) into this motherboard repo. 
+    |       
+    |-- software                          # all host programs
+    |   |
+    |   `-- trouble_master                # host python program to communicate with board via UART
+    |   
+    `-- document                          # useful documents for development
+        |
+        |-- datasheet                     # datasheet for components on board
+        `-- fpga_doc                      # all FPGA related docs from Xilinx    
+    
