@@ -1,37 +1,115 @@
+
 ### Overview ###
 
 Guide for using the BSG board series.
+
+
+### Dependencies ###
+
+Firmware codes may require following repos:
+
+bsg_ip_cores
+bsg_designs
+bsg_packaging
+bsg_manycore
+bsg_rocket
+
 
 ### Organization ###
 
 A sample directory structure for bsg_motherboards is:
 
-|-- double_trouble                        # ASIC emulation platform
-|   `-- ...                               
-|-- real_trouble                          # prototyping platform for BSX
-|   `-- ...  
-`-- super_trouble                         # prototyping platform for Celerity
+bsg_motherboards
+|
+|-- cloud_series
+|
+`-- trouble_series
     |
-    |-- pcb_development                   # all pcb related file
-    |   |
-    |   |-- pcb_design                    # include schematic, layout and library
-    |   |-- pcb_fabrication               # include stackup information, CAM files and docs related to fab
-    |   `-- pcb_assembly                  # include BOM, component_map and scripts
-    |   
-    |-- firmware                          # all FPGA programs
-    |   |
-    |   |-- TODO_1: do we copy-n-paste the release version code here from bsg_fpga repo, 
-    |   |           or we put a Makefile here that automatically clone the bsg_fpga repo 
-    |   |           and checkout the correct version of code (I will create a new branch for release version code)?
-    |   `-- TODO_2: in the future, do we allow other users to have access to our bsg_ip_cores, bsg_designs and other repos? 
-    |               If no, I will copy-n-paste all required files (of correct version) into this motherboard repo. 
-    |       
-    |-- software                          # all host programs
-    |   |
-    |   `-- trouble_master                # host python program to communicate with board via UART
-    |   
-    `-- document                          # useful documents for development
+    |-- common                                # Shared by double, real and super trouble
+    |    |
+    |    |-- document                         # all docs needed
+    |    |    |-- datasheet
+    |    |    `-- fpga_ref
+    |    |
+    |    `-- ip                               # shared ip blocks (similar to current ip dir in bsg_fpga repo)
+    |         |                               
+    |         |-- bsg_gateway                 # The gateway library
+    |         |   |-- bsg_gateway_fmc
+    |         |   |-- bsg_gateway_chipscope
+    |         |   |-- bsg_gateway_serdes
+    |         |   |-- bsg_gateway_tag
+    |         |   |-- bsg_gateway_pll
+    |         |   |-- bsg_gateway_microblaze
+    |         |   `-- ...
+    |         |
+    |         |-- bsg_ml605                   # The ml605 library
+    |         |   |-- bsg_ml605_fmc
+    |         |   |-- bsg_ml605_chipscope
+    |         |   `-- ...    
+    |         |   
+    |         `-- bsg_zedboard                # The zedboard library
+    |             |-- bsg_zedboard_fmc
+    |             |-- bsg_zedboard_rocket
+    |             `-- ...            
+    |
+    |-- double_trouble                        # ASIC emulation platform
+    |   |-- common
+    |   |-- bsg_one_loopback
+    |   |-- bsg_two_loopback_new
+    |   |-- bsg_rocket_baseline
+    |   |-- bsg_two_coyote_accum
+    |   `-- ...
+    |
+    |-- real_trouble                          # prototyping platform for BSX
+    |   |-- common
+    |   |-- bsg_two_loopback_new
+    |   `-- ...
+    |
+    `-- super_trouble                         # prototyping platform for Celerity
         |
-        |-- datasheet                     # datasheet for components on board
-        `-- fpga_doc                      # all FPGA related docs from Xilinx    
+        |-- pcb_development                   # all pcb related file
+        |   |-- pcb_design                    # include schematic, layout and library
+        |   |-- pcb_fabrication               # include stackup information, CAM files and docs related to fab
+        |   `-- pcb_assembly                  # include BOM, component_map and scripts
+        |   
+        |-- firmware                          # all projects available for this board
+        |   |
+        |   |-- common                        # codes same among all projects
+        |   |   |
+        |   |   |-- bsg_gateway               # project-specific files for gateway
+        |   |   |   |-- Makefile
+        |   |   |   |-- fdc
+        |   |   |   |-- tcl
+        |   |   |   |-- trace
+        |   |   |   |-- ucf
+        |   |   |   `-- v
+        |   |   |
+        |   |   `-- bsg_gateway_no_serdes     # slow but scalable gateway design
+        |   |       `-- ...
+        |   |
+        |   |-- bsg_celerity_rocket_loopback  # ml605 project for Celerity testing
+        |   |   |
+        |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
+        |   |   |   
+        |   |   `-- bsg_ml605                 # project-specific files for ml605
+        |   |       |-- Makefile
+        |   |       |-- fdc
+        |   |       |-- tcl
+        |   |       |-- trace
+        |   |       `-- v
+        |   |    
+        |   |-- bsg_celerity_zedboard         # Normal general project for Celerity testing
+        |   |   |
+        |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
+        |   |   |
+        |   |   `-- bsg_zedboard              # project-specific files for zedboard
+        |   |       |-- Makefile
+        |   |       |-- xdc
+        |   |       |-- tcl
+        |   |       `-- v  
+        |   `-- ...
+        |
+        `-- software                          # all host programs
+            `-- trouble_master                # host python program to communicate with board via UART
+            
     
