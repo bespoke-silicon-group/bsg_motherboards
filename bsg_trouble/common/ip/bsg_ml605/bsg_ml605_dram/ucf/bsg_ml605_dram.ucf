@@ -1,0 +1,100 @@
+#------------------------------------------------------------
+# University of California, San Diego - Bespoke Systems Group
+#------------------------------------------------------------
+# File: bsg_ml605_dram.ucf
+#
+# Authors: Luis Vega - lvgutierrez@eng.ucsd.edu
+#------------------------------------------------------------
+
+# Constrain BUFR clocks used to synchronize data from IOB to fabric logic
+# Note that ISE cannot infer this from other PERIOD constraints because
+# of the use of OSERDES blocks in the BUFR clock generation path
+NET "dram_inst/u_memc_ui_top/u_mem_intfc/phy_top0/clk_rsync[?]" TNM_NET = TNM_clk_rsync;
+TIMESPEC "TS_clk_rsync" = PERIOD "TNM_clk_rsync" 5 ns;
+
+# Paths between DQ/DQS ISERDES.Q outputs and CLB flops clocked by falling
+# edge of BUFR will by design only be used if DYNCLKDIVSEL is asserted for
+# that particular flop. Mark this path as being a full-cycle, rather than
+# a half cycle path for timing purposes. NOTE: This constraint forces full-
+# cycle timing to be applied globally for all rising->falling edge paths
+# in all resynchronizaton clock domains. If the user had modified the logic
+# in the resync clock domain such that other rising->falling edge paths
+# exist, then constraint below should be modified to utilize pattern
+# matching to specific affect only the DQ/DQS ISERDES.Q outputs
+TIMEGRP "TG_clk_rsync_rise" = RISING  "TNM_clk_rsync";
+TIMEGRP "TG_clk_rsync_fall" = FALLING "TNM_clk_rsync";
+TIMESPEC "TS_clk_rsync_rise_to_fall" =
+  FROM "TG_clk_rsync_rise" TO "TG_clk_rsync_fall" 5 ns;
+
+# Signal to select between controller and physical layer signals. Four divided by two clock
+# cycles (4 memory clock cycles) are provided by design for the signal to settle down.
+# Used only by the phy modules.
+INST "dram_inst/u_memc_ui_top/u_mem_intfc/phy_top0/u_phy_init/u_ff_phy_init_data_sel" TNM = "TNM_PHY_INIT_SEL";
+TIMESPEC "TS_MC_PHY_INIT_SEL" = FROM "TNM_PHY_INIT_SEL" TO FFS = 10 ns;
+
+NET "DDR3_DQ[*]"    IOSTANDARD = "SSTL15_T_DCI";
+NET "DDR3_ADDR[*]"  IOSTANDARD = "SSTL15";
+NET "DDR3_BA[*]"    IOSTANDARD = "SSTL15";
+NET "DDR3_RAS_N"    IOSTANDARD = "SSTL15";
+NET "DDR3_CAS_N"    IOSTANDARD = "SSTL15";
+NET "DDR3_WE_N"     IOSTANDARD = "SSTL15";
+NET "DDR3_RESET_N"  IOSTANDARD = "SSTL15";
+NET "DDR3_CKE[*]"   IOSTANDARD = "SSTL15";
+NET "DDR3_ODT[*]"   IOSTANDARD = "SSTL15";
+NET "DDR3_CS_N[*]"  IOSTANDARD = "SSTL15";
+NET "DDR3_DM[*]"    IOSTANDARD = "SSTL15";
+NET "DDR3_DQS_P[*]" IOSTANDARD = "DIFF_SSTL15_T_DCI";
+NET "DDR3_DQS_N[*]" IOSTANDARD = "DIFF_SSTL15_T_DCI";
+NET "DDR3_CK_P[*]"  IOSTANDARD = "DIFF_SSTL15";
+NET "DDR3_CK_N[*]"  IOSTANDARD = "DIFF_SSTL15";
+
+CONFIG DCI_CASCADE = "26 25";
+CONFIG DCI_CASCADE = "36 35";
+
+CONFIG PROHIBIT = C29,M12;
+CONFIG PROHIBIT = B20,C13,C28,D24,F21,F25,K14,L13;
+
+##Site: C29 -- Bank 25
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col1.u_oserdes_rsync" LOC = "OLOGIC_X1Y139";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col1.u_odelay_rsync" LOC = "IODELAY_X1Y139";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col1.u_bufr_rsync" LOC = "BUFR_X1Y6";
+
+##Site: M12 -- Bank 35
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col0.u_oserdes_rsync" LOC = "OLOGIC_X2Y139";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col0.u_odelay_rsync" LOC = "IODELAY_X2Y139";
+
+INST "dram_inst/*/u_phy_rdclk_gen/gen_loop_col0.u_bufr_rsync" LOC = "BUFR_X2Y6";
+
+##Site: C13 -- Bank 35
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[0].u_oserdes_cpt" LOC = "OLOGIC_X2Y137";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[0].u_odelay_cpt" LOC = "IODELAY_X2Y137";
+
+##Site: L13 -- Bank 35
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[1].u_oserdes_cpt" LOC = "OLOGIC_X2Y141";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[1].u_odelay_cpt" LOC = "IODELAY_X2Y141";
+
+##Site: K14 -- Bank 35
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[2].u_oserdes_cpt" LOC = "OLOGIC_X2Y143";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[2].u_odelay_cpt" LOC = "IODELAY_X2Y143";
+
+##Site: F21 -- Bank 26
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[3].u_oserdes_cpt" LOC = "OLOGIC_X1Y179";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[3].u_odelay_cpt" LOC = "IODELAY_X1Y179";
+
+##Site: B20 -- Bank 26
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[4].u_oserdes_cpt" LOC = "OLOGIC_X1Y181";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[4].u_odelay_cpt" LOC = "IODELAY_X1Y181";
+
+##Site: F25 -- Bank 25
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[5].u_oserdes_cpt" LOC = "OLOGIC_X1Y137";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[5].u_odelay_cpt" LOC = "IODELAY_X1Y137";
+
+##Site: C28 -- Bank 25
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[6].u_oserdes_cpt" LOC = "OLOGIC_X1Y141";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[6].u_odelay_cpt" LOC = "IODELAY_X1Y141";
+
+##Site: D24 -- Bank 25
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[7].u_oserdes_cpt" LOC = "OLOGIC_X1Y143";
+INST "dram_inst/*/u_phy_rdclk_gen/gen_ck_cpt[7].u_odelay_cpt" LOC = "IODELAY_X1Y143";
+
+INST "dram_inst/u_infrastructure/u_mmcm_adv" LOC = "MMCM_ADV_X0Y8"; #Banks 16, 26, 36

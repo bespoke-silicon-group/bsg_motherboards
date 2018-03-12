@@ -1,0 +1,75 @@
+# fmc (placed at bottom left of bank 2)
+
+# fmc bufg constraint (avoid bufg insertion between bufio2 and serdes/iodelay)
+define_attribute {n:fmc.fmc_rx.clk_p_lo} syn_noclockbuf {1}
+define_attribute {n:fmc.fmc_rx.clk_n_lo} syn_noclockbuf {1}
+define_attribute {n:fmc.fmc_tx.data_clk_p_lo} syn_noclockbuf {1}
+define_attribute {n:fmc.fmc_tx.data_clk_n_lo} syn_noclockbuf {1}
+
+# fmc reset in
+define_attribute {F20_P} syn_loc {Y14}
+define_attribute {F20_N} syn_loc {AA14}
+
+# fmc core calib
+define_attribute {F23_P} syn_loc {Y15}
+define_attribute {F23_N} syn_loc {AA15}
+
+# fmc tx clk in
+define_attribute {FCLK0_M2C_P} syn_loc {AD12}
+define_attribute {FCLK0_M2C_N} syn_loc {AF12}
+
+# fmc tx clk out
+define_attribute {F0_P} syn_loc {AC13}
+define_attribute {F0_N} syn_loc {AD13}
+
+# fmc tx data out
+define_attribute {F1_P}  syn_loc {AD6}
+define_attribute {F1_N}  syn_loc {AF6}
+define_attribute {F16_P} syn_loc {W13}
+define_attribute {F16_N} syn_loc {Y13}
+define_attribute {F15_P} syn_loc {AA13}
+define_attribute {F15_N} syn_loc {AB13}
+define_attribute {F13_P} syn_loc {AA12}
+define_attribute {F13_N} syn_loc {AC12}
+define_attribute {F11_P} syn_loc {AA11}
+define_attribute {F11_N} syn_loc {AB11}
+define_attribute {F10_P} syn_loc {AC11}
+define_attribute {F10_N} syn_loc {AD11}
+define_attribute {F14_P} syn_loc {V12}
+define_attribute {F14_N} syn_loc {W12}
+define_attribute {F9_P}  syn_loc {AE11}
+define_attribute {F9_N}  syn_loc {AF11}
+define_attribute {F4_P}  syn_loc {AE9}
+define_attribute {F4_N}  syn_loc {AF9}
+define_attribute {F7_P}  syn_loc {AD10}
+define_attribute {F7_N}  syn_loc {AF10}
+define_attribute {F8_P}  syn_loc {Y10}
+define_attribute {F8_N}  syn_loc {AB10}
+
+# fmc rx clk in
+define_attribute {F17_P} syn_loc {AE13}
+define_attribute {F17_N} syn_loc {AF13}
+
+# fmc rx data in
+define_attribute {F31_P} syn_loc {AE19}
+define_attribute {F31_N} syn_loc {AF19}
+define_attribute {F33_P} syn_loc {AC20}
+define_attribute {F33_N} syn_loc {AD21}
+define_attribute {F30_P} syn_loc {Y18}
+define_attribute {F30_N} syn_loc {AA19}
+define_attribute {F32_P} syn_loc {AC19}
+define_attribute {F32_N} syn_loc {AD19}
+define_attribute {F28_P} syn_loc {AD18}
+define_attribute {F28_N} syn_loc {AF18}
+define_attribute {F25_P} syn_loc {Y16}
+define_attribute {F25_N} syn_loc {AA17}
+define_attribute {F29_P} syn_loc {AA18}
+define_attribute {F29_N} syn_loc {AB18}
+define_attribute {F26_P} syn_loc {AE17}
+define_attribute {F26_N} syn_loc {AF17}
+define_attribute {F21_P} syn_loc {AE15}
+define_attribute {F21_N} syn_loc {AF15}
+define_attribute {F27_P} syn_loc {AB17}
+define_attribute {F27_N} syn_loc {AC17}
+define_attribute {F22_P} syn_loc {AC15}
+define_attribute {F22_N} syn_loc {AD15}

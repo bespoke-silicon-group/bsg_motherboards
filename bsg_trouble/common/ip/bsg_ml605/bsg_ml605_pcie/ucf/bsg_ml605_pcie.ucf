@@ -1,0 +1,18 @@
+#------------------------------------------------------------
+# University of California, San Diego - Bespoke Systems Group
+#------------------------------------------------------------
+# File: bsg_ml605/ucf
+#
+# Authors: Luis Vega - lvgutierrez@eng/ucsd/edu
+#------------------------------------------------------------
+
+INST "pcie_inst/core/pcie_2_0_i/pcie_block_i" LOC = "PCIE_X0Y1";
+
+INST "pcie_inst/ibufds_gtxe1_pcie_clk_inst" LOC = "IBUFDS_GTXE1_X0Y4";
+
+INST "pcie_inst/core/pcie_2_0_i/pcie_gt_i/gtx_v6_i/GTXD[0].GTX" LOC = "GTXE1_X0Y15";
+INST "pcie_inst/core/pcie_2_0_i/pcie_gt_i/gtx_v6_i/GTXD[1].GTX" LOC = "GTXE1_X0Y14";
+INST "pcie_inst/core/pcie_2_0_i/pcie_gt_i/gtx_v6_i/GTXD[2].GTX" LOC = "GTXE1_X0Y13";
+INST "pcie_inst/core/pcie_2_0_i/pcie_gt_i/gtx_v6_i/GTXD[3].GTX" LOC = "GTXE1_X0Y12";
+
+INST "pcie_inst/core/pcie_clocking_i/mmcm_adv_i" LOC = "MMCM_ADV_X0Y7";

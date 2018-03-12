@@ -1,0 +1,48 @@
+#------------------------------------------------------------
+# University of California, San Diego - Bespoke Systems Group
+#------------------------------------------------------------
+# File: bsg_ml605.fdc
+#
+# Authors: Luis Vega - lvgutierrez@eng.ucsd.edu
+#------------------------------------------------------------
+
+# pcie
+
+define_attribute {PCIE_250M_MGT1_P} syn_loc {V6}
+define_attribute {PCIE_250M_MGT1_N} syn_loc {V5}
+
+define_attribute {PCIE_RX0_P} syn_loc {J3}
+define_attribute {PCIE_RX0_N} syn_loc {J4}
+define_attribute {PCIE_RX1_P} syn_loc {K5}
+define_attribute {PCIE_RX1_N} syn_loc {K6}
+define_attribute {PCIE_RX2_P} syn_loc {L3}
+define_attribute {PCIE_RX2_N} syn_loc {L4}
+define_attribute {PCIE_RX3_P} syn_loc {N3}
+define_attribute {PCIE_RX3_N} syn_loc {N4}
+
+define_attribute {PCIE_TX0_P} syn_loc {F1}
+define_attribute {PCIE_TX0_N} syn_loc {F2}
+define_attribute {PCIE_TX1_P} syn_loc {H1}
+define_attribute {PCIE_TX1_N} syn_loc {H2}
+define_attribute {PCIE_TX2_P} syn_loc {K1}
+define_attribute {PCIE_TX2_N} syn_loc {K2}
+define_attribute {PCIE_TX3_P} syn_loc {M1}
+define_attribute {PCIE_TX3_N} syn_loc {M2}
+
+define_attribute {PCIE_PERST_B_LS} syn_loc {AE13}
+define_attribute {PCIE_PERST_B_LS} xc_nodelay {1}
+
+define_io_standard {PCIE_PERST_B_LS} syn_pad_type {LVCMOS_25}
+define_io_standard {PCIE_PERST_B_LS} syn_io_termination {PULLUP}
+
+set_false_path -through {PCIE_PERST_B_LS}
+set_false_path -through {n:pcie_inst.core.pcie_clocking_i.sel_lnk_rate_d}
+set_false_path -through {t:pcie_inst.core.trn_reset_n_int_i.CLR}
+set_false_path -through {t:pcie_inst.core.trn_reset_n_i.CLR}
+set_false_path -through {t:pcie_inst.core.pcie_clocking_i.mmcm_adv_i.RST}
+
+# timing
+
+create_clock {n:pcie_inst.ibufds_gtxe1_pcie_clk_lo} \
+             -name {pcie_ibufds_250_mhz_lo} \
+             -period 4

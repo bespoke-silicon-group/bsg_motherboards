@@ -1,0 +1,505 @@
+# bsg gateway
+
+# timing
+
+# Clk
+set sys_clk_period 6.667
+set io_clk_period 9.524
+set clk_2x_period 4.762
+set core_clk_period 4.762
+set fast_core_clk_period 4.762
+set io_clk_chip_period 2.000
+
+# Clk DDR Rate
+set io_ddr_clk_period [expr $io_clk_period*2]
+set io_ddr_clk_chip_period [expr $io_clk_chip_period*2]
+
+# Constant for offset constraint (Reference only)
+set OUTPUT_DATA_DELAY 25.000
+set INPUT_SETUP [expr $io_clk_chip_period-5]
+set INPUT_HOLD [expr $io_clk_chip_period+5]
+
+create_clock -period $sys_clk_period -name {sys_clk} {n:clk.ibufgds_clk_150_mhz_lo}
+create_clock -period $io_clk_period -name {io_master_clk} {n:io_master_clk_lo}
+create_clock -period $clk_2x_period -name {clk_2x_clk} {n:clk_2x_lo}
+create_clock -period $core_clk_period -name {core_clk} {n:core_clk_lo}
+create_clock -period $fast_core_clk_period -name {fast_core_clk} {n:fast_core_clk_lo}
+create_clock -period 20.0 -name {mb_clk} {n:mb_clk_lo}
+
+# create input clock from ASIC
+create_clock -period $io_ddr_clk_chip_period -name {clk_a_fdc} {n:io_clk_li_serdes[0]}
+create_clock -period $io_ddr_clk_chip_period -name {clk_b_fdc} {n:io_clk_li_serdes[1]}
+create_clock -period $io_ddr_clk_chip_period -name {clk_c_fdc} {n:io_clk_li_serdes[2]}
+create_clock -period $io_ddr_clk_chip_period -name {clk_d_fdc} {n:io_clk_li_serdes[3]}
+
+create_clock -period $io_ddr_clk_chip_period -name {clk0_a_raw} -add {p:AOC0}
+create_clock -period $io_ddr_clk_chip_period -name {clk0_b_raw} -add {p:BOC0}
+create_clock -period $io_ddr_clk_chip_period -name {clk0_c_raw} -add {p:COC0}
+create_clock -period $io_ddr_clk_chip_period -name {clk0_d_raw} -add {p:DOC0}
+
+create_clock -period $io_ddr_clk_period -name {token_a_fdc} {p:AIT0}
+create_clock -period $io_ddr_clk_period -name {token_b_fdc} {p:BIT0}
+create_clock -period $io_ddr_clk_period -name {token_c_fdc} {p:CIT0}
+create_clock -period $io_ddr_clk_period -name {token_d_fdc} {p:DIT0}
+
+set_clock_groups -asynchronous \
+  -derive \
+  -group {mb_clk} \
+  -group {io_master_clk} \
+  -group {core_clk} \
+  -group {fast_core_clk} \
+  -group {clk_2x_clk} \
+  -group {sys_clk} \
+  -group {clk0_a_raw} \
+  -group {clk0_b_raw} \
+  -group {clk0_c_raw} \
+  -group {clk0_d_raw} \
+  -group {clk_a_fdc} \
+  -group {clk_b_fdc} \
+  -group {clk_c_fdc} \
+  -group {clk_d_fdc} \
+  -group {token_a_fdc} \
+  -group {token_b_fdc} \
+  -group {token_c_fdc} \
+  -group {token_d_fdc}
+
+set_false_path -from {c:mb_clk} -to {c:io_master_clk}
+
+# clk osc
+define_attribute {CLK_OSC_P} syn_loc {C13}
+define_attribute {CLK_OSC_N} syn_loc {A13}
+
+define_io_standard {CLK_OSC_P} syn_pad_type {LVDS_25}
+define_io_standard {CLK_OSC_N} syn_pad_type {LVDS_25}
+
+# reset
+define_attribute {PWR_RSTN} syn_loc {V13}
+define_io_standard {PWR_RSTN} syn_pad_type {LVCMOS_25}
+
+# power control
+
+define_attribute {ASIC_CORE_EN} syn_loc {B25}
+define_attribute {ASIC_IO_EN} syn_loc {B26}
+define_attribute {ASIC_PLL_EN} syn_loc {C24}
+define_attribute {ASIC_LDO_EN} syn_loc {K21}
+
+define_io_standard {ASIC_CORE_EN} syn_pad_type {LVCMOS_33}
+define_io_standard {ASIC_IO_EN} syn_pad_type {LVCMOS_33}
+define_io_standard {ASIC_PLL_EN} syn_pad_type {LVCMOS_33}
+define_io_standard {ASIC_LDO_EN} syn_pad_type {LVCMOS_33}
+
+define_attribute {CUR_MON_ADDR0} syn_loc {B24}
+define_attribute {CUR_MON_ADDR1} syn_loc {A25}
+define_attribute {CUR_MON_SCL} syn_loc {A23}
+define_attribute {CUR_MON_SDA} syn_loc {B23}
+
+define_io_standard {CUR_MON_ADDR0} syn_pad_type {LVCMOS_33}
+define_io_standard {CUR_MON_ADDR1} syn_pad_type {LVCMOS_33}
+
+define_io_standard {CUR_MON_SCL} syn_pad_type {I2C} syn_io_termination {PULLUP}
+define_io_standard {CUR_MON_SDA} syn_pad_type {I2C} syn_io_termination {PULLUP}
+
+define_attribute {DIG_POT_ADDR0} syn_loc {F26}
+define_attribute {DIG_POT_ADDR1} syn_loc {F24}
+define_attribute {DIG_POT_INDEP} syn_loc {E26}
+define_attribute {DIG_POT_NRST} syn_loc {E25}
+define_attribute {DIG_POT_SCL} syn_loc {D24}
+define_attribute {DIG_POT_SDA} syn_loc {D26}
+
+define_io_standard {DIG_POT_ADDR0} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_ADDR1} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_INDEP} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_NRST} syn_pad_type {LVCMOS_33}
+
+define_io_standard {DIG_POT_SCL} syn_pad_type {I2C} syn_io_termination {PULLUP}
+define_io_standard {DIG_POT_SDA} syn_pad_type {I2C} syn_io_termination {PULLUP}
+
+define_attribute {DIG_POT_PLL_ADDR0} syn_loc {G22}
+define_attribute {DIG_POT_PLL_ADDR1} syn_loc {H22}
+define_attribute {DIG_POT_PLL_INDEP} syn_loc {D22}
+define_attribute {DIG_POT_PLL_NRST} syn_loc {F22}
+define_attribute {DIG_POT_PLL_SCL} syn_loc {H20}
+define_attribute {DIG_POT_PLL_SDA} syn_loc {H21}
+
+define_io_standard {DIG_POT_PLL_ADDR0} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_PLL_ADDR1} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_PLL_INDEP} syn_pad_type {LVCMOS_33}
+define_io_standard {DIG_POT_PLL_NRST} syn_pad_type {LVCMOS_33}
+
+define_io_standard {DIG_POT_PLL_SCL} syn_pad_type {I2C} syn_io_termination {PULLUP}
+define_io_standard {DIG_POT_PLL_SDA} syn_pad_type {I2C} syn_io_termination {PULLUP}
+
+define_attribute {UART_RX} syn_loc {C25}
+define_attribute {UART_TX} syn_loc {C26}
+
+define_io_standard {UART_RX} syn_pad_type {LVCMOS_33}
+define_io_standard {UART_TX} syn_pad_type {LVCMOS_33}
+
+define_attribute {FPGA_LED0} syn_loc {H24}
+define_attribute {FPGA_LED1} syn_loc {H26}
+define_attribute {FPGA_LED2} syn_loc {J25}
+define_attribute {FPGA_LED3} syn_loc {J26}
+
+define_io_standard {FPGA_LED0} syn_pad_type {LVCMOS_33}
+define_io_standard {FPGA_LED1} syn_pad_type {LVCMOS_33}
+define_io_standard {FPGA_LED2} syn_pad_type {LVCMOS_33}
+define_io_standard {FPGA_LED3} syn_pad_type {LVCMOS_33}
+
+# mode select jumper
+define_attribute {FG_SW0} syn_loc {K24}
+define_attribute {FG_SW1} syn_loc {K26}
+define_attribute {FG_SW2} syn_loc {L25}
+define_attribute {FG_SW3} syn_loc {L26}
+define_attribute {FG_SW4} syn_loc {M24}
+define_attribute {FG_SW5} syn_loc {M26}
+define_attribute {FG_SW6} syn_loc {N25}
+define_attribute {FG_SW7} syn_loc {N26}
+
+define_io_standard {FG_SW0} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW1} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW2} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW3} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW4} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW5} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW6} syn_pad_type {LVCMOS_33}
+define_io_standard {FG_SW7} syn_pad_type {LVCMOS_33}
+
+
+# asic
+
+# PLL clock
+define_attribute {PLL_SCLK} syn_loc {J3}
+define_io_standard {PLL_SCLK} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+# PLL 1 control
+define_attribute {PLL_1_BKP} syn_loc {J2}
+define_io_standard {PLL_1_BKP} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {PLL_1_SEL} syn_loc {N2}
+define_io_standard {PLL_1_SEL} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_1_CS} syn_loc {L2}
+define_io_standard {PLL_1_CS} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_1_MOSI} syn_loc {N1}
+define_io_standard {PLL_1_MOSI} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {PLL_1_RST} syn_loc {H7}
+define_io_standard {PLL_1_RST} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_1_MISO} syn_loc {M1}
+define_io_standard {PLL_1_MISO} syn_pad_type {LVCMOS_18}
+
+# PLL 2 control
+define_attribute {PLL_2_BKP} syn_loc {H6}
+define_io_standard {PLL_2_BKP} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {PLL_2_SEL} syn_loc {M3}
+define_io_standard {PLL_2_SEL} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_2_CS} syn_loc {K5}
+define_io_standard {PLL_2_CS} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_2_MOSI} syn_loc {K6}
+define_io_standard {PLL_2_MOSI} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_2_RST} syn_loc {G3}
+define_io_standard {PLL_2_RST} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_2_MISO} syn_loc {L1}
+define_io_standard {PLL_2_MISO} syn_pad_type {LVCMOS_18}
+
+# PLL 3 control
+define_attribute {PLL_3_BKP} syn_loc {H3}
+define_io_standard {PLL_3_BKP} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {PLL_3_SEL} syn_loc {K10}
+define_io_standard {PLL_3_SEL} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_3_CS} syn_loc {J4}
+define_io_standard {PLL_3_CS} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_3_MOSI} syn_loc {K1}
+define_io_standard {PLL_3_MOSI} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_3_RST} syn_loc {G4}
+define_io_standard {PLL_3_RST} syn_pad_type {LVCMOS_18}
+define_attribute {PLL_3_MISO} syn_loc {K3}
+define_io_standard {PLL_3_MISO} syn_pad_type {LVCMOS_18}
+
+# LDO control
+define_attribute {LDO_CLK_REF} syn_loc {G2}
+define_io_standard {LDO_CLK_REF} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {LDO_CLK_LOAD} syn_loc {F3}
+define_io_standard {LDO_CLK_LOAD} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {LDO_EXT_SAM} syn_loc {E2}
+define_io_standard {LDO_EXT_SAM} syn_pad_type {LVCMOS_18}
+define_attribute {LDO_RSTIN} syn_loc {D3}
+define_io_standard {LDO_RSTIN} syn_pad_type {LVCMOS_18}
+define_attribute {LDO_SPI_CLK} syn_loc {E1}
+define_io_standard {LDO_SPI_CLK} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_attribute {LDO_SPI_IN} syn_loc {F1}
+define_io_standard {LDO_SPI_IN} syn_pad_type {LVCMOS_18}
+define_attribute {LDO_SPI_RST} syn_loc {D1}
+define_io_standard {LDO_SPI_RST} syn_pad_type {LVCMOS_18}
+
+
+# channel clock in
+define_attribute {AOC0} syn_loc {N8}
+define_attribute {BOC0} syn_loc {P21}
+define_attribute {COC0} syn_loc {T3}
+define_attribute {DOC0} syn_loc {U25}
+
+define_io_standard {AOC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOC0} syn_pad_type {SSTL_18_Class_I}
+
+# channel valid in
+define_attribute {AOD8} syn_loc {P10}
+define_attribute {BOD8} syn_loc {L17}
+define_attribute {COD8} syn_loc {U4}
+define_attribute {DOD8} syn_loc {T18}
+
+define_io_standard {AOD8} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD8} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD8} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD8} syn_pad_type {SSTL_18_Class_I}
+
+# channel data in
+define_attribute {AOD0} syn_loc {M9}
+define_attribute {AOD1} syn_loc {M10}
+define_attribute {AOD2} syn_loc {P7}
+define_attribute {AOD3} syn_loc {N7}
+define_attribute {AOD4} syn_loc {L7}
+define_attribute {AOD5} syn_loc {P5}
+define_attribute {AOD6} syn_loc {N4}
+define_attribute {AOD7} syn_loc {M6}
+
+define_attribute {BOD0} syn_loc {L19}
+define_attribute {BOD1} syn_loc {M19}
+define_attribute {BOD2} syn_loc {P20}
+define_attribute {BOD3} syn_loc {N22}
+define_attribute {BOD4} syn_loc {M23}
+define_attribute {BOD5} syn_loc {R23}
+define_attribute {BOD6} syn_loc {P24}
+define_attribute {BOD7} syn_loc {R25}
+
+define_attribute {COD0} syn_loc {AB4}
+define_attribute {COD1} syn_loc {AB3}
+define_attribute {COD2} syn_loc {AA4}
+define_attribute {COD3} syn_loc {AA2}
+define_attribute {COD4} syn_loc {Y3}
+define_attribute {COD5} syn_loc {W2}
+define_attribute {COD6} syn_loc {V3}
+define_attribute {COD7} syn_loc {U2}
+
+define_attribute {DOD0} syn_loc {Y20}
+define_attribute {DOD1} syn_loc {AB21}
+define_attribute {DOD2} syn_loc {W18}
+define_attribute {DOD3} syn_loc {V18}
+define_attribute {DOD4} syn_loc {U21}
+define_attribute {DOD5} syn_loc {U19}
+define_attribute {DOD6} syn_loc {U17}
+define_attribute {DOD7} syn_loc {T20}
+
+define_io_standard {AOD0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD1} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD2} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD3} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD4} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD5} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD6} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {AOD7} syn_pad_type {SSTL_18_Class_I}
+
+define_io_standard {BOD0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD1} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD2} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD3} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD4} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD5} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD6} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOD7} syn_pad_type {SSTL_18_Class_I}
+
+define_io_standard {COD0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD1} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD2} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD3} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD4} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD5} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD6} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COD7} syn_pad_type {SSTL_18_Class_I}
+
+define_io_standard {DOD0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD1} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD2} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD3} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD4} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD5} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD6} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOD7} syn_pad_type {SSTL_18_Class_I}
+
+# channel token out
+define_attribute {AOT0} syn_loc {L4}
+define_attribute {BOT0} syn_loc {M18}
+define_attribute {COT0} syn_loc {AA7}
+define_attribute {DOT0} syn_loc {V22}
+
+define_io_standard {AOT0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BOT0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {COT0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DOT0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+# channel clock out
+define_attribute {AIC0} syn_loc {V7}
+define_attribute {BIC0} syn_loc {E8}
+define_attribute {CIC0} syn_loc {T22}
+define_attribute {DIC0} syn_loc {H16}
+
+define_io_standard {AIC0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BIC0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CIC0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DIC0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+# channel valid out
+define_attribute {AID8} syn_loc {AB7}
+define_attribute {BID8} syn_loc {E6}
+define_attribute {CID8} syn_loc {AE24}
+define_attribute {DID8} syn_loc {B22}
+
+define_io_standard {AID8} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID8} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID8} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID8} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+# channel data out
+define_attribute {AID0} syn_loc {AA8}
+define_attribute {AID1} syn_loc {Y9}
+define_attribute {AID2} syn_loc {W10}
+define_attribute {AID3} syn_loc {W9}
+define_attribute {AID4} syn_loc {T8}
+define_attribute {AID5} syn_loc {R5}
+define_attribute {AID6} syn_loc {R7}
+define_attribute {AID7} syn_loc {T10}
+
+define_attribute {BID0} syn_loc {B12}
+define_attribute {BID1} syn_loc {C11}
+define_attribute {BID2} syn_loc {D12}
+define_attribute {BID3} syn_loc {D11}
+define_attribute {BID4} syn_loc {D8}
+define_attribute {BID5} syn_loc {C9}
+define_attribute {BID6} syn_loc {C7}
+define_attribute {BID7} syn_loc {D6}
+
+define_attribute {CID0} syn_loc {AE23}
+define_attribute {CID1} syn_loc {AC23}
+define_attribute {CID2} syn_loc {AA23}
+define_attribute {CID3} syn_loc {AA25}
+define_attribute {CID4} syn_loc {Y24}
+define_attribute {CID5} syn_loc {W25}
+define_attribute {CID6} syn_loc {V24}
+define_attribute {CID7} syn_loc {R22}
+
+define_attribute {DID0} syn_loc {B16}
+define_attribute {DID1} syn_loc {D16}
+define_attribute {DID2} syn_loc {C17}
+define_attribute {DID3} syn_loc {B18}
+define_attribute {DID4} syn_loc {C19}
+define_attribute {DID5} syn_loc {E19}
+define_attribute {DID6} syn_loc {E20}
+define_attribute {DID7} syn_loc {C21}
+
+define_io_standard {AID0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID1} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID2} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID3} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID4} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID5} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID6} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {AID7} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+define_io_standard {BID0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID1} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID2} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID3} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID4} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID5} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID6} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {BID7} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+define_io_standard {CID0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID1} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID2} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID3} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID4} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID5} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID6} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {CID7} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+define_io_standard {DID0} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID1} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID2} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID3} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID4} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID5} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID6} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+define_io_standard {DID7} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+# channel token in
+define_attribute {AIT0} syn_loc {W8}
+define_attribute {BIT0} syn_loc {F13}
+define_attribute {CIT0} syn_loc {Y22}
+define_attribute {DIT0} syn_loc {J14}
+
+define_attribute {AIT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {BIT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {CIT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {DIT0} {CLOCK_DEDICATED_ROUTE} {0}
+
+define_io_standard {AIT0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BIT0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {CIT0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DIT0} syn_pad_type {SSTL_18_Class_I}
+
+# reset to asic
+define_attribute {ASIC_RESET} syn_loc {R10}
+define_io_standard {ASIC_RESET} syn_pad_type {LVCMOS_18} syn_io_slew {fast} syn_io_drive {16}
+
+
+# output delay constraint
+# Usage: These output constraints will be translated into OFFSET constraint in ucf file
+
+# Example1: set_output_delay -clock io_master_clk -add_delay value1 {PORT1}
+# Then it will be translated as:
+# "PORT1" OFFSET = OUT io_clk_PERIOD-value1 AFTER "io_clk" RISING
+
+# Example2: set_output_delay -clock io_master_clk -clock_fall -add_delay value2 {PORT2}
+# Then it will be translated as:
+# "PORT2" OFFSET = OUT io_clk_PERIOD-value2 AFTER "io_clk" FALLING
+
+set_max_delay -to {p:AIC0 p:AID0 p:AID1 p:AID2 p:AID3 p:AID4 p:AID5 p:AID6 p:AID7 p:AID8} $OUTPUT_DATA_DELAY
+set_max_delay -to {p:BIC0 p:BID0 p:BID1 p:BID2 p:BID3 p:BID4 p:BID5 p:BID6 p:BID7 p:BID8} $OUTPUT_DATA_DELAY
+set_max_delay -to {p:CIC0 p:CID0 p:CID1 p:CID2 p:CID3 p:CID4 p:CID5 p:CID6 p:CID7 p:CID8} $OUTPUT_DATA_DELAY
+set_max_delay -to {p:DIC0 p:DID0 p:DID1 p:DID2 p:DID3 p:DID4 p:DID5 p:DID6 p:DID7 p:DID8} $OUTPUT_DATA_DELAY
+
+# input delay constraint
+# Usage: These input constraints will be translated into OFFSET constraint in ucf file
+
+# Example1:
+# set_input_delay -clock clk1 -max -add_delay value1 {PORT1}
+# set_input_delay -clock clk1 -min -add_delay value2 {PORT1}
+# Then it will be translated as:
+# "PORT1" OFFSET = IN clk1_PERIOD-value1 VALID value2-value1 BEFORE "clk1" RISING
+
+# Example2:
+# set_input_delay -clock clk2 -clock_fall -max -add_delay value3 {PORT2}
+# set_input_delay -clock clk2 -clock_fall -min -add_delay value4 {PORT2}
+# Then it will be translated as:
+# "PORT2" OFFSET = IN clk2_PERIOD-value3 VALID value4-value3 BEFORE "clk2" FALLING
+
+set_input_delay -clock clk0_a_raw -max -add_delay $INPUT_SETUP {AOD0 AOD1 AOD2 AOD3 AOD4 AOD5 AOD6 AOD7 AOD8}
+set_input_delay -clock clk0_a_raw -min -add_delay $INPUT_HOLD {AOD0 AOD1 AOD2 AOD3 AOD4 AOD5 AOD6 AOD7 AOD8}
+set_input_delay -clock clk0_a_raw -clock_fall -max -add_delay $INPUT_SETUP {AOD0 AOD1 AOD2 AOD3 AOD4 AOD5 AOD6 AOD7 AOD8}
+set_input_delay -clock clk0_a_raw -clock_fall -min -add_delay $INPUT_HOLD {AOD0 AOD1 AOD2 AOD3 AOD4 AOD5 AOD6 AOD7 AOD8}
+
+set_input_delay -clock clk0_b_raw -max -add_delay $INPUT_SETUP {BOD0 BOD1 BOD2 BOD3 BOD4 BOD5 BOD6 BOD7 BOD8}
+set_input_delay -clock clk0_b_raw -min -add_delay $INPUT_HOLD {BOD0 BOD1 BOD2 BOD3 BOD4 BOD5 BOD6 BOD7 BOD8}
+set_input_delay -clock clk0_b_raw -clock_fall -max -add_delay $INPUT_SETUP {BOD0 BOD1 BOD2 BOD3 BOD4 BOD5 BOD6 BOD7 BOD8}
+set_input_delay -clock clk0_b_raw -clock_fall -min -add_delay $INPUT_HOLD {BOD0 BOD1 BOD2 BOD3 BOD4 BOD5 BOD6 BOD7 BOD8}
+
+set_input_delay -clock clk0_c_raw -max -add_delay $INPUT_SETUP {COD0 COD1 COD2 COD3 COD4 COD5 COD6 COD7 COD8}
+set_input_delay -clock clk0_c_raw -min -add_delay $INPUT_HOLD {COD0 COD1 COD2 COD3 COD4 COD5 COD6 COD7 COD8}
+set_input_delay -clock clk0_c_raw -clock_fall -max -add_delay $INPUT_SETUP {COD0 COD1 COD2 COD3 COD4 COD5 COD6 COD7 COD8}
+set_input_delay -clock clk0_c_raw -clock_fall -min -add_delay $INPUT_HOLD {COD0 COD1 COD2 COD3 COD4 COD5 COD6 COD7 COD8}
+
+set_input_delay -clock clk0_d_raw -max -add_delay $INPUT_SETUP {DOD0 DOD1 DOD2 DOD3 DOD4 DOD5 DOD6 DOD7 DOD8}
+set_input_delay -clock clk0_d_raw -min -add_delay $INPUT_HOLD {DOD0 DOD1 DOD2 DOD3 DOD4 DOD5 DOD6 DOD7 DOD8}
+set_input_delay -clock clk0_d_raw -clock_fall -max -add_delay $INPUT_SETUP {DOD0 DOD1 DOD2 DOD3 DOD4 DOD5 DOD6 DOD7 DOD8}
+set_input_delay -clock clk0_d_raw -clock_fall -min -add_delay $INPUT_HOLD {DOD0 DOD1 DOD2 DOD3 DOD4 DOD5 DOD6 DOD7 DOD8}
+

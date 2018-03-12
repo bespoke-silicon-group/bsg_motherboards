@@ -1,0 +1,75 @@
+#------------------------------------------------------------
+# University of California, San Diego - Bespoke Systems Group
+#------------------------------------------------------------
+# File: bsg_ml605_fmc.fdc
+#
+# Authors: Luis Vega - lvgutierrez@eng.ucsd.edu
+#------------------------------------------------------------
+
+# fmc reset out
+define_attribute {FMC_LPC_LA20_P} syn_loc {P29}
+define_attribute {FMC_LPC_LA20_N} syn_loc {R29}
+
+# fmc core calib reset in
+define_attribute {FMC_LPC_LA23_P} syn_loc {R28}
+define_attribute {FMC_LPC_LA23_N} syn_loc {R27}
+
+# fmc tx clk out (bank 15)
+define_attribute {FMC_LPC_LA17_CC_P} syn_loc {N28}
+define_attribute {FMC_LPC_LA17_CC_N} syn_loc {N29}
+
+# fmc tx data out (bank 15)
+define_attribute {FMC_LPC_LA31_P} syn_loc {M31}
+define_attribute {FMC_LPC_LA31_N} syn_loc {L31}
+define_attribute {FMC_LPC_LA33_P} syn_loc {K32}
+define_attribute {FMC_LPC_LA33_N} syn_loc {K31}
+define_attribute {FMC_LPC_LA30_P} syn_loc {M26}
+define_attribute {FMC_LPC_LA30_N} syn_loc {M27}
+define_attribute {FMC_LPC_LA32_P} syn_loc {N25}
+define_attribute {FMC_LPC_LA32_N} syn_loc {M25}
+define_attribute {FMC_LPC_LA28_P} syn_loc {N33}
+define_attribute {FMC_LPC_LA28_N} syn_loc {M33}
+define_attribute {FMC_LPC_LA25_P} syn_loc {P31}
+define_attribute {FMC_LPC_LA25_N} syn_loc {P30}
+define_attribute {FMC_LPC_LA29_P} syn_loc {N34}
+define_attribute {FMC_LPC_LA29_N} syn_loc {P34}
+define_attribute {FMC_LPC_LA26_P} syn_loc {L33}
+define_attribute {FMC_LPC_LA26_N} syn_loc {M32}
+define_attribute {FMC_LPC_LA21_P} syn_loc {R26}
+define_attribute {FMC_LPC_LA21_N} syn_loc {T26}
+define_attribute {FMC_LPC_LA27_P} syn_loc {R31}
+define_attribute {FMC_LPC_LA27_N} syn_loc {R32}
+define_attribute {FMC_LPC_LA22_P} syn_loc {N27}
+define_attribute {FMC_LPC_LA22_N} syn_loc {P27}
+
+# fmc rx clk out (bank 15)
+define_attribute {FMC_LPC_CLK0_M2C_P} syn_loc {A10}
+define_attribute {FMC_LPC_CLK0_M2C_N} syn_loc {B10}
+
+# fmc rx clk in (bank 15)
+define_attribute {FMC_LPC_CLK1_M2C_P} syn_loc {F33}
+define_attribute {FMC_LPC_CLK1_M2C_N} syn_loc {G33}
+
+# fmc rx data in (bank 15)
+define_attribute {FMC_LPC_LA00_CC_P} syn_loc {K26}
+define_attribute {FMC_LPC_LA00_CC_N} syn_loc {K27}
+define_attribute {FMC_LPC_LA16_P}    syn_loc {A33}
+define_attribute {FMC_LPC_LA16_N}    syn_loc {B33}
+define_attribute {FMC_LPC_LA15_P}    syn_loc {C32}
+define_attribute {FMC_LPC_LA15_N}    syn_loc {B32}
+define_attribute {FMC_LPC_LA13_P}    syn_loc {D34}
+define_attribute {FMC_LPC_LA13_N}    syn_loc {C34}
+define_attribute {FMC_LPC_LA11_P}    syn_loc {D31}
+define_attribute {FMC_LPC_LA11_N}    syn_loc {D32}
+define_attribute {FMC_LPC_LA10_P}    syn_loc {F30}
+define_attribute {FMC_LPC_LA10_N}    syn_loc {G30}
+define_attribute {FMC_LPC_LA14_P}    syn_loc {C33}
+define_attribute {FMC_LPC_LA14_N}    syn_loc {B34}
+define_attribute {FMC_LPC_LA09_P}    syn_loc {L25}
+define_attribute {FMC_LPC_LA09_N}    syn_loc {L26}
+define_attribute {FMC_LPC_LA04_P}    syn_loc {K28}
+define_attribute {FMC_LPC_LA04_N}    syn_loc {J29}
+define_attribute {FMC_LPC_LA07_P}    syn_loc {G32}
+define_attribute {FMC_LPC_LA07_N}    syn_loc {H32}
+define_attribute {FMC_LPC_LA08_P}    syn_loc {J30}
+define_attribute {FMC_LPC_LA08_N}    syn_loc {K29}

@@ -1,0 +1,51 @@
+
+TIMESPEC "TS_IO_0" = FROM "io_master_clk_lo" TO "AIT0" 9.524 DATAPATHONLY;
+TIMESPEC "TS_IO_1" = FROM "io_master_clk_lo" TO "BIT0" 9.524 DATAPATHONLY;
+TIMESPEC "TS_IO_2" = FROM "io_master_clk_lo" TO "CIT0" 9.524 DATAPATHONLY;
+TIMESPEC "TS_IO_3" = FROM "io_master_clk_lo" TO "DIT0" 9.524 DATAPATHONLY;
+TIMESPEC "TS_IO_4" = FROM "io_master_clk_lo" TO "core_clk_lo" 9.524 DATAPATHONLY;
+TIMESPEC "TS_IO_5" = FROM "io_master_clk_lo" TO "fast_core_clk_lo" 9.524 DATAPATHONLY;
+
+TIMESPEC "TS_AOC0_0" = FROM "io_clk_li_serdes_0_" TO "fast_core_clk_lo" 4.000 DATAPATHONLY;
+TIMESPEC "TS_BOC0_0" = FROM "io_clk_li_serdes_1_" TO "fast_core_clk_lo" 4.000 DATAPATHONLY;
+TIMESPEC "TS_COC0_0" = FROM "io_clk_li_serdes_2_" TO "fast_core_clk_lo" 4.000 DATAPATHONLY;
+TIMESPEC "TS_DOC0_0" = FROM "io_clk_li_serdes_3_" TO "fast_core_clk_lo" 4.000 DATAPATHONLY;
+
+TIMESPEC "TS_AIT0_0" = FROM "AIT0" TO "io_master_clk_lo" 9.524 DATAPATHONLY;
+TIMESPEC "TS_BIT0_0" = FROM "BIT0" TO "io_master_clk_lo" 9.524 DATAPATHONLY;
+TIMESPEC "TS_CIT0_0" = FROM "CIT0" TO "io_master_clk_lo" 9.524 DATAPATHONLY;
+TIMESPEC "TS_DIT0_0" = FROM "DIT0" TO "io_master_clk_lo" 9.524 DATAPATHONLY;
+
+TIMESPEC "TS_CORE_0" = FROM "core_clk_lo" TO "io_master_clk_lo" 4.762 DATAPATHONLY;
+TIMESPEC "TS_CORE_1" = FROM "core_clk_lo" TO "fast_core_clk_lo" 4.762 DATAPATHONLY;
+TIMESPEC "TS_CORE_2" = FROM "fast_core_clk_lo" TO "io_clk_li_serdes_0_" 4.762 DATAPATHONLY;
+TIMESPEC "TS_CORE_3" = FROM "fast_core_clk_lo" TO "io_clk_li_serdes_1_" 4.762 DATAPATHONLY;
+TIMESPEC "TS_CORE_4" = FROM "fast_core_clk_lo" TO "io_clk_li_serdes_2_" 4.762 DATAPATHONLY;
+TIMESPEC "TS_CORE_5" = FROM "fast_core_clk_lo" TO "io_clk_li_serdes_3_" 4.762 DATAPATHONLY;
+
+NET "gw_serdes/all_ch[0].ch_input/clk0_lo" TNM_NET = "gw_serdes_all_ch_0__ch_input_clk0_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_0__ch_input_clk0_lo" 4.000 ns HIGH 50.00%;
+NET "gw_serdes/all_ch[0].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_0__ch_input_clk1_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_0__ch_input_clk1_lo" 4.000 ns HIGH 50.00%;
+
+NET "gw_serdes/all_ch[1].ch_input/clk0_lo" TNM_NET = "gw_serdes_all_ch_1__ch_input_clk0_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_1__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_1__ch_input_clk0_lo" 4.000 ns HIGH 50.00%;
+NET "gw_serdes/all_ch[1].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_1__ch_input_clk1_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_1__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_1__ch_input_clk1_lo" 4.000 ns HIGH 50.00%;
+
+NET "gw_serdes/all_ch[2].ch_input/clk0_lo" TNM_NET = "gw_serdes_all_ch_2__ch_input_clk0_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_2__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_2__ch_input_clk0_lo" 4.000 ns HIGH 50.00%;
+NET "gw_serdes/all_ch[2].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_2__ch_input_clk1_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_2__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_2__ch_input_clk1_lo" 4.000 ns HIGH 50.00%;
+
+NET "gw_serdes/all_ch[3].ch_input/clk0_lo" TNM_NET = "gw_serdes_all_ch_3__ch_input_clk0_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_3__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_3__ch_input_clk0_lo" 4.000 ns HIGH 50.00%;
+NET "gw_serdes/all_ch[3].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_3__ch_input_clk1_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_3__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_3__ch_input_clk1_lo" 4.000 ns HIGH 50.00%;
+
+TIMESPEC "TS_AOC0_9" = FROM "gw_serdes_all_ch_0__ch_input_clk0_lo" TO "io_clk_li_serdes_0_" 4.000;
+TIMESPEC "TS_BOC0_9" = FROM "gw_serdes_all_ch_1__ch_input_clk0_lo" TO "io_clk_li_serdes_1_" 4.000;
+TIMESPEC "TS_COC0_9" = FROM "gw_serdes_all_ch_2__ch_input_clk0_lo" TO "io_clk_li_serdes_2_" 4.000;
+TIMESPEC "TS_DOC0_9" = FROM "gw_serdes_all_ch_3__ch_input_clk0_lo" TO "io_clk_li_serdes_3_" 4.000;
+
+TIMESPEC "TS_CLK_2X" = FROM "io_master_clk_lo" TO "clk_2x_lo" 4.762;
