@@ -7,8 +7,15 @@ export BSG_PINOUT_FOUNDRY:=tsmc_16
 export BSG_PADMAPPING:=one
 
 export BSG_FPGA:=1
+
+# Selection of gw mode
 #export BSG_ZEDBOARD_FMC:=1
 export BSG_ML605_FMC:=1
+
+# Selection of testbench
+export bsg_mitm:=1
+#export bsg_dcdc:=1
+
 export BSG_GATEWAY_TARGET:=bsg_gateway_serdes
 #export BSG_ASIC_TOP_NAME:=bsg_two_loopback_new
 

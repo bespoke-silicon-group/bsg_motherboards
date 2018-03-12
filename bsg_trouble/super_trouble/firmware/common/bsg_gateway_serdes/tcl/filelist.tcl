@@ -57,16 +57,16 @@ set GW_RTL_FILES [join "
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_channel.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_channel_rx.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_output.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_comm_link_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_comm_link_kernel_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_comm_link_fuser_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_source_sync_output_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_source_sync_input_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_async_credit_counter_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_assembler_out_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_assembler_in_serdes.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_async_widen.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes_comm_link/bsg_async_ptr_gray_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_comm_link_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_comm_link_kernel_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_comm_link_fuser_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_source_sync_output_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_source_sync_input_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_async_credit_counter_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_assembler_out_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_assembler_in_serdes.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_async_widen.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_async_ptr_gray_serdes.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/bsg_gateway_tag.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/bsg_tag_output.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/wait_cycle_32.v
