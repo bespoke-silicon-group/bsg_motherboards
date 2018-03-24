@@ -7,7 +7,9 @@ module bsg_zedboard
 # (parameter channel_width_p=8
   ,parameter ring_bytes_p=10
   ,parameter ring_width_p=ring_bytes_p*channel_width_p
-  ,parameter nodes_p=2)
+  ,parameter nodes_p=6
+  ,parameter boot_id_p=5
+  ,parameter rocket_id_p=0)
   (input        GCLK
   // reset
   ,input        BTNC
@@ -421,21 +423,31 @@ module bsg_zedboard
 
   // rocket node master
 
+  genvar i;
+  
+  for (i=0; i<5; i++) begin
+	if (i != rocket_id_p) begin
+		assign core_node_ready_A[i] = 1;
+		assign core_node_v_B[i] = 0;
+		assign core_node_data_B[i] = 0;
+	end
+  end
+  
   bsg_rocket_node_master #
-    (.dest_id_p(0))
+    (.dest_id_p(rocket_id_p))
   mstr
     (.clk_i(clk_50_mhz)
     // ctrl
-    ,.reset_i(core_node_reset_r[0] | host_reset | ~boot_done)
-    ,.en_i(core_node_en_r[0])
+    ,.reset_i(core_node_reset_r[rocket_id_p] | host_reset | ~boot_done)
+    ,.en_i(core_node_en_r[rocket_id_p])
     // in
-    ,.v_i(core_node_v_A[0])
-    ,.data_i(core_node_data_A[0])
-    ,.ready_o(core_node_ready_A[0])
+    ,.v_i(core_node_v_A[rocket_id_p])
+    ,.data_i(core_node_data_A[rocket_id_p])
+    ,.ready_o(core_node_ready_A[rocket_id_p])
     // out
-    ,.v_o(core_node_v_B[0])
-    ,.data_o(core_node_data_B[0])
-    ,.yumi_i(core_node_yumi_B[0])
+    ,.v_o(core_node_v_B[rocket_id_p])
+    ,.data_o(core_node_data_B[rocket_id_p])
+    ,.yumi_i(core_node_yumi_B[rocket_id_p])
     // host in
     ,.host_valid_i(host_in_valid)
     ,.host_data_i(host_in_data)
@@ -471,14 +483,14 @@ module bsg_zedboard
     (.ring_width_p(ring_width_p))
   boot
     (.clk_i(clk_50_mhz)
-    ,.reset_i(core_node_reset_r[1])
+    ,.reset_i(core_node_reset_r[boot_id_p])
     // control
-    ,.en_i(core_node_en_r[1])
+    ,.en_i(core_node_en_r[boot_id_p])
     ,.done_o(boot_done)
     // out
-    ,.v_o(core_node_v_B[1])
-    ,.data_o(core_node_data_B[1])
-    ,.yumi_i(core_node_yumi_B[1])
+    ,.v_o(core_node_v_B[boot_id_p])
+    ,.data_o(core_node_data_B[boot_id_p])
+    ,.yumi_i(core_node_yumi_B[boot_id_p])
     // not used
     ,.v_i('0)
     ,.data_i('0)
@@ -495,7 +507,78 @@ module bsg_zedboard
   wire                    asm_out_valid;
   wire [ring_width_p-1:0] asm_out_data;
   wire                    asm_out_ready;
-
+  
+  
+  // For rocket 4 debug
+  logic [3:0] state_r, state_n;
+  logic [ring_width_p-1:0] debug_data_r, debug_data_n;
+  
+  logic                    debug_asm_out_valid;
+  logic [ring_width_p-1:0] debug_asm_out_data;
+  logic                    debug_asm_out_ready;
+  
+  always @(posedge clk_50_mhz) begin
+    if (core_node_reset_r[boot_id_p]) begin
+        state_r <= 0;
+        debug_data_r <= 0;
+    end else begin
+        state_r <= state_n;
+        debug_data_r <= debug_data_n;
+    end
+  end
+  
+  always_comb begin
+  
+    state_n = state_r;
+    debug_data_n = debug_data_r;
+    
+    debug_asm_out_valid = asm_out_valid;
+    debug_asm_out_data = asm_out_data;
+    debug_asm_out_ready = asm_out_ready;
+  
+    if (~core_node_reset_r[boot_id_p]) begin
+        
+        if (state_r == 0) begin
+            if (asm_out_ready==1 && asm_out_valid==1 && asm_out_data[75]==0) begin
+                //debug_data_n = asm_out_data;
+                //state_n = 1;
+                //debug_asm_out_data = asm_out_data | (1<<79);
+            end
+        end 
+/*        
+        if (state_r == 1) begin
+            debug_asm_out_ready = 0;
+            debug_asm_out_data = debug_data_r | (1<<79);
+            debug_asm_out_valid = 0;
+            if (asm_out_ready) begin
+                debug_asm_out_valid = 1;
+                state_n = 2;
+            end
+        end
+        
+        if (state_r == 2) begin
+            debug_asm_out_ready = 0;
+            debug_asm_out_data = debug_data_r;
+            debug_asm_out_valid = 0;
+            if (asm_out_ready) begin
+                debug_asm_out_valid = 1;
+                state_n = 3;
+            end
+        end
+        
+        if (state_r == 3) begin
+            debug_asm_out_ready = 0;
+            debug_asm_out_data = debug_data_r | (1<<79);
+            debug_asm_out_valid = 0;
+            if (asm_out_ready) begin
+                debug_asm_out_valid = 1;
+                state_n = 0;
+            end
+        end
+*/        
+    end
+  end
+  
   bsg_fsb #
     (.width_p(ring_width_p)
     ,.nodes_p(nodes_p)
@@ -518,12 +601,12 @@ module bsg_zedboard
     ,.node_ready_i(core_node_ready_A)
     // asm in
     ,.asm_v_i(asm_in_valid)
-    ,.asm_data_i(asm_in_data)
+    ,.asm_data_i((asm_in_data&80'h0FFFFFFFFFFFFFFFFFFF)|(rocket_id_p<<76))
     ,.asm_yumi_o(asm_in_yumi)
     // asm out
     ,.asm_v_o(asm_out_valid)
     ,.asm_data_o(asm_out_data)
-    ,.asm_ready_i(asm_out_ready));
+    ,.asm_ready_i(debug_asm_out_ready));
 
   // fmc
 
@@ -552,8 +635,8 @@ module bsg_zedboard
   bsg_zedboard_fmc fmc
     (.clk_i(clk_50_mhz)
     // data in
-    ,.valid_i(asm_out_valid)
-    ,.data_i(asm_out_data)
+    ,.valid_i(debug_asm_out_valid)
+    ,.data_i(debug_asm_out_data)
     ,.ready_o(asm_out_ready)
     // data out
     ,.valid_o(btf_valid)

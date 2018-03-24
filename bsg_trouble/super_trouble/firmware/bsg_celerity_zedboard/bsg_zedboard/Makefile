@@ -1,5 +1,5 @@
 # environment
-include ../../../Makefile.include
+include ../../common/Makefile.include
 
 # bsg_two_coyote_accum
 include ../Makefile.include

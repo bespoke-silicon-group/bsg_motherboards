@@ -3,15 +3,15 @@
 # once changes are in good shape, update the repo_sha accordingly
 
 # environment
-include ../../Makefile.include
+include ../common/Makefile.include
 
 # bsg_two_loopback_new variables
 include Makefile.include
 
-bsg_ip_cores_sha = 1dbbaf947be66974f6dd8a9ac9d7b5d8bb28a515
-bsg_designs_sha = 718815067a4d129048b54fae72b8ffa7ab2db8db
-bsg_rocket_sha = c8238b944840a0cf3740866761659027bc4de6aa
-bsg_packaging_sha = 3834d0256d857193f53a7729db55c710fadedc1d
+bsg_ip_cores_sha = af00884ee0840f950fdcbd1f287605dee7141ba4
+bsg_designs_sha = 9e132d669b1b5ccae3c8d5ad7c1446893abca2a3
+bsg_rocket_sha = 9335ac3c51e40694c0d7423e22fe2c679959097c
+bsg_packaging_sha = 135c1e3e172a3a5890086a69487b1cded0bb157f
 
 default: setup
 
