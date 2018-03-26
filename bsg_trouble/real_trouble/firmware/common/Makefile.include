@@ -1,0 +1,34 @@
+# xilinx license variables
+export XILINXD_LICENSE_FILE=2100@bbfs-01.ucsd.edu:2100@cselm2.ucsd.edu
+
+# synopsys license variables
+export SYNPLCTYD_LICENSE_FILE=27020@132.239.15.56
+export SNPSLMD_LICENSE_FILE=27020@132.239.15.56
+
+# xilinx tools
+export XILINX_VIVADO=/gro/Xilinx/Vivado/2015.4
+export XILINX_ISE_DS_DIR=/gro/Xilinx/14.7/ISE_DS
+export XTCLSH_BIN=$(XILINX_ISE_DS_DIR)/ISE/bin/lin64/xtclsh
+export XILINX_BOOTGEN_BIN=$(XILINX_ISE_DS_DIR)/ISE/bin/lin64/bootgen
+export FPGA_EDLINE_BIN=$(XILINX_ISE_DS_DIR)/ISE/bin/lin64/fpga_edline
+export TRCE_BIN=$(XILINX_ISE_DS_DIR)/ISE/bin/lin64/trce
+
+# synopsys tools
+export SYNPLIFY_BIN=/gro/cad/synopsys/fpga/K-2015.09-SP1/bin/synplify_premier_dp
+export SYNPLIFY_2014_BIN=/gro/cad/synopsys/fpga/J-2014.09-SP1/bin/synplify_premier_dp
+export VCS_HOME=/gro/cad/synopsys/vcs/K-2015.09-SP2-2
+export VCS=$(VCS_HOME)/bin/vcs
+export DVE_BIN=$(VCS_HOME)/bin
+export DC_HOME=/gro/cad/synopsys/syn/K-2015.06-SP5-3
+export BSG_DESIGNWARE_DIR=$(DC_HOME)/dw/sim_ver
+
+# dirs
+export BSG_FPGA_FIRMWARE_DIR:=$(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/..
+export BSG_FPGA_IP_DIR:=$(BSG_FPGA_FIRMWARE_DIR)/../../common/ip
+export BSG_TOP_DIR:=$(BSG_FPGA_FIRMWARE_DIR)/../../../..
+export BSG_IP_CORES_DIR:=$(BSG_TOP_DIR)/bsg_ip_cores
+export BSG_ROCKET_DIR:=$(BSG_TOP_DIR)/bsg_rocket
+export BSG_RISCV_DIR:=$(BSG_TOP_DIR)/bsg_riscv
+export BSG_DESIGNS_DIR:=$(BSG_TOP_DIR)/bsg_designs
+export BSG_PACKAGING_DIR:=$(BSG_TOP_DIR)/bsg_packaging
+export BSG_MANYCORE_DIR:=$(BSG_TOP_DIR)/bsg_manycore
