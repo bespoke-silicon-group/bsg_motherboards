@@ -5,7 +5,7 @@ source $::env(BSG_FPGA_FIRMWARE_DIR)/common/$target/tcl/common.tcl
 project -new $bsg_syn_dir
 
 # verilog files
-source $bsg_fpga_ip_dir/bsg_gateway/$target/tcl/filelist.tcl
+source $bsg_fpga_firmware_dir/common/$target/tcl/filelist.tcl
 foreach f $GW_RTL_FILES {add_file -verilog $f}
 
 # verilog files
