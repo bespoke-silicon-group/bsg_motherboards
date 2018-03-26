@@ -1,0 +1,67 @@
+
+
+
+TIMESPEC "TS_IO_0" = FROM "io_master_clk_lo" TO "core_clk_lo" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_1" = FROM "io_master_clk_lo" TO "AOC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_2" = FROM "io_master_clk_lo" TO "BOC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_3" = FROM "io_master_clk_lo" TO "COC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_4" = FROM "io_master_clk_lo" TO "DOC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_5" = FROM "io_master_clk_lo" TO "AIT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_6" = FROM "io_master_clk_lo" TO "BIT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_7" = FROM "io_master_clk_lo" TO "CIT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_8" = FROM "io_master_clk_lo" TO "DIT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_9" = FROM "io_master_clk_lo" TO "clk_ibufgds_clk_150_mhz_lo" 5.000 DATAPATHONLY;
+
+TIMESPEC "TS_CORE_0" = FROM "core_clk_lo" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_1" = FROM "core_clk_lo" TO "AOC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_2" = FROM "core_clk_lo" TO "BOC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_3" = FROM "core_clk_lo" TO "COC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_4" = FROM "core_clk_lo" TO "DOC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_5" = FROM "core_clk_lo" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_AOC0_0" = FROM "AOC0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_AOC0_1" = FROM "AOC0" TO "core_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_AOC0_2" = FROM "AOC0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_BOC0_0" = FROM "BOC0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BOC0_1" = FROM "BOC0" TO "core_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BOC0_2" = FROM "BOC0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_COC0_0" = FROM "COC0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_COC0_1" = FROM "COC0" TO "core_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_COC0_2" = FROM "COC0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_DOC0_0" = FROM "DOC0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DOC0_1" = FROM "DOC0" TO "core_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DOC0_2" = FROM "DOC0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_AIT0_0" = FROM "AIT0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BIT0_0" = FROM "BIT0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CIT0_0" = FROM "CIT0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DIT0_0" = FROM "DIT0" TO "io_master_clk_lo" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_AIT0_1" = FROM "AIT0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BIT0_1" = FROM "BIT0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CIT0_1" = FROM "CIT0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DIT0_1" = FROM "DIT0" TO "clk_ibufgds_clk_150_mhz_lo" 10.000 DATAPATHONLY;
+
+
+INST "bcl/kernel/ch[0].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[1].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[2].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[3].ssi/io_data_negedge_r[*]" IOB=FALSE;
+
+INST "bcl/kernel/ch[0].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[1].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[2].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "bcl/kernel/ch[3].ssi/io_data_1_r[*]" IOB=FALSE;
+
+INST "bcl/kernel/ch[0].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "bcl/kernel/ch[1].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "bcl/kernel/ch[2].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "bcl/kernel/ch[3].ssi/io_valid_negedge_r" IOB=FALSE;
+
+INST "bcl/kernel/ch[0].ssi/io_valid_1_r" IOB=FALSE;
+INST "bcl/kernel/ch[1].ssi/io_valid_1_r" IOB=FALSE;
+INST "bcl/kernel/ch[2].ssi/io_valid_1_r" IOB=FALSE;
+INST "bcl/kernel/ch[3].ssi/io_valid_1_r" IOB=FALSE;

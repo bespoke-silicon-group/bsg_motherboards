@@ -1,0 +1,57 @@
+
+
+TIMESPEC "TS_IO_0" = FROM "io_clk_lo_c" TO "core_clk_lo_c" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_1" = FROM "io_clk_lo_c" TO "AIC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_2" = FROM "io_clk_lo_c" TO "BIC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_3" = FROM "io_clk_lo_c" TO "CIC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_4" = FROM "io_clk_lo_c" TO "DIC0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_5" = FROM "io_clk_lo_c" TO "AOT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_6" = FROM "io_clk_lo_c" TO "BOT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_7" = FROM "io_clk_lo_c" TO "COT0" 5.000 DATAPATHONLY;
+TIMESPEC "TS_IO_8" = FROM "io_clk_lo_c" TO "DOT0" 5.000 DATAPATHONLY;
+
+TIMESPEC "TS_CORE_0" = FROM "core_clk_lo_c" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_1" = FROM "core_clk_lo_c" TO "AIC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_2" = FROM "core_clk_lo_c" TO "BIC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_3" = FROM "core_clk_lo_c" TO "CIC0" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CORE_4" = FROM "core_clk_lo_c" TO "DIC0" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_AIC0_0" = FROM "AIC0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_AIC0_1" = FROM "AIC0" TO "core_clk_lo_c" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_BIC0_0" = FROM "BIC0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BIC0_1" = FROM "BIC0" TO "core_clk_lo_c" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_CIC0_0" = FROM "CIC0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_CIC0_1" = FROM "CIC0" TO "core_clk_lo_c" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_DIC0_0" = FROM "DIC0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DIC0_1" = FROM "DIC0" TO "core_clk_lo_c" 10.000 DATAPATHONLY;
+
+TIMESPEC "TS_AOT0_0" = FROM "AOT0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_BOT0_0" = FROM "BOT0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_COT0_0" = FROM "COT0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+TIMESPEC "TS_DOT0_0" = FROM "DOT0" TO "io_clk_lo_c" 10.000 DATAPATHONLY;
+
+
+INST "ASIC/g/comm_link/kernel/ch[0].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[1].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[2].ssi/io_data_negedge_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[3].ssi/io_data_negedge_r[*]" IOB=FALSE;
+
+INST "ASIC/g/comm_link/kernel/ch[0].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[1].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[2].ssi/io_data_1_r[*]" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[3].ssi/io_data_1_r[*]" IOB=FALSE;
+
+INST "ASIC/g/comm_link/kernel/ch[0].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[1].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[2].ssi/io_valid_negedge_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[3].ssi/io_valid_negedge_r" IOB=FALSE;
+
+INST "ASIC/g/comm_link/kernel/ch[0].ssi/io_valid_1_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[1].ssi/io_valid_1_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[2].ssi/io_valid_1_r" IOB=FALSE;
+INST "ASIC/g/comm_link/kernel/ch[3].ssi/io_valid_1_r" IOB=FALSE;
+
+INST "ASIC/g/comm_link/kernel/slv.ch[0].io_reset_ss/z.bss/bsg_SYNC_1_r[0]" IOB=FALSE;
