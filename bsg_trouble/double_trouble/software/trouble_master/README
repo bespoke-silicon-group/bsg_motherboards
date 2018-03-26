@@ -1,0 +1,23 @@
+************************************************************
+*       Trouble Master -- Double Trouble Control UI        *
+************************************************************
+
+1) Purpose of the Tool
+    This tool is the PC-end tool and user interface to control the DoubleTrouble board.
+    It communicates with the board through a private protocol through UART.
+    Refer to docs/trouble_master for the protocol.
+
+2) Usage
+    a. This tool requires pyserial. Install pyserial before running.
+    b. In console_util.py, modify COM port definition to actual port
+    c. Invoke trouble_master.py and run
+        Read board version to test communication
+        If the program crashes, use reset communication to reset FIFO
+    d. Use magic number 45 as allow token to enable feature like voltage adjustment and power enable/disable
+
+3) Basic Design
+    This tool implements TroubleMaster protocol over UART.
+
+4) Limitations
+    This tool need to be modified to allow direct command line interaction.
+

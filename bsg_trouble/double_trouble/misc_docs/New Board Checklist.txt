@@ -1,0 +1,62 @@
+
+Part 1: Initial Check
+
+1. Make sure all jumpers, connectors are removed from board, and the board is clean.
+
+2. Check whether 12V (at connector), 3.5V (J8, J11), 3.3V (J7), 2.5V (J9), 1.2V (J13), IO (Jumpers), CO (Jumpers) is short circuit with gnd, using dmm.
+
+3. Adjust power supply to 12V, turn off the power supply, make sure positive and negative is correctly connected to board connector, turn on the power supply. Turn off the power supply immediately if something abnormal happens!!!
+
+4. Measure 3.5V (J8, J11) output the correct voltage, using dmm.
+
+5. Turn off power supply. Remove connector. 
+
+6. Solder J8, J11 together using soldering iron. Make sure 3.5V and gnd are not short circuit, using dmm.
+
+7. Connect dig-pot jumpers to R, using 2mm jumper headers.
+
+8. connect board to power supply. Turn on power supply. Measure 3.3V (J7), 2.5V (J9), 1.2V (J13), IO(3.3V) and CO(1.2V) using dmm and make sure they output the correct voltage. 
+
+9. Turn off power supply. Remove connector.
+
+10. Solder J7, J9 and J13 together using soldering iron. Make sure 3.3V, 2.5V, 1.2V and gnd are not short circuit, using dmm.
+
+11. connect board to power supply. Turn on power supply. If everything is good, turn off power supply. Remove connector.
+
+
+Part 2: Load program to gateway fpga
+
+Prepare: J-link emulator, gateway-fpga program
+
+1. Connect dig-pot jumpers to "POT" side. 
+
+2. Make sure IO, CO and gnd are not short circuit, using dmm.
+
+3. Connect JTAG jumpers (fpga_tdo and jtag_tdo) together using 2.54mm jumper header. 
+
+4. Connect J-link emulator to board. Make sure that that one is also using 2.5v.
+
+5. connect board to power supply. Turn on power supply. Download program to gateway-fpga.
+
+6. Turn off and turn on power supply to reboot the board. Measure IO, CO voltage (should be?) using dmm.
+
+7. Turn off power supply. Remove power connector, j-link connector.
+
+8. Install all six 2mm jumper headers to IO, CO. Make sure IO, CO and gnd are not short circuit, using dmm.
+
+9. connect board to power supply. Turn on power supply. If everything is good, turn off power supply. Remove connector.
+
+
+Part 3: Load program to ASIC fpga
+
+Prepare: J-link emulator, ASIC-fpga program (Should be synthesized again! In Double trouble v1.0 DiT1 is at N19, But in Double trouble v1.2 DiT1 is at P20. )
+
+1. Connect JTAG jumpers (fpga_tdo to asic_tdi) (asix_tdo to jtag_tdo), using 2.54mm jumper
+
+2. Connect J-link emulator to board.
+
+3. connect board to power supply. Turn on power supply. Download program to asic-fpga.
+
+4. Turn off and turn on power supply to reboot the board. If everything is good, turn off power supply. Remove all connectors.
+
+Part 4: Communicate with Zed-board using FMC
