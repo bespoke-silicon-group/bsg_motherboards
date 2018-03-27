@@ -141,8 +141,8 @@ module bsg_gateway_clk
   ODDR2 oddr_ext_io_master_clk
     (.D0(1'b1)
     ,.D1(1'b0)
-    ,.C0(bufg_io_master_clk_1x_lo)
-    ,.C1(~bufg_io_master_clk_1x_lo)
+    ,.C0(bufg_io_master_clk_2x_lo)
+    ,.C1(~bufg_io_master_clk_2x_lo)
     ,.CE(1'b1)
     ,.S(1'b0)
     ,.R(1'b0)
@@ -153,6 +153,16 @@ module bsg_gateway_clk
   BUFG bufg_io_master_clk_2x
     (.I(pll_io_master_clk_2x_lo)
     ,.O(bufg_io_master_clk_2x_lo));
+
+  ODDR2 oddr_ext_core_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_io_master_clk_1x_lo)
+    ,.C1(~bufg_io_master_clk_1x_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_core_clk_o));
 
   // int io master clock
   assign int_io_master_clk_o = bufg_io_master_clk_1x_lo;
@@ -165,16 +175,6 @@ module bsg_gateway_clk
   BUFG bufg_ext_core_clk_0_deg
     (.I(pll_ext_core_clk_0_deg_lo)
     ,.O(bufg_ext_core_clk_0_deg_lo));
-
-  ODDR2 oddr_ext_core_clk
-    (.D0(1'b1)
-    ,.D1(1'b0)
-    ,.C0(bufg_ext_core_clk_0_deg_lo)
-    ,.C1(~bufg_ext_core_clk_0_deg_lo)
-    ,.CE(1'b1)
-    ,.S(1'b0)
-    ,.R(1'b0)
-    ,.Q(ext_core_clk_o));
 	
   wire bufg_fast_core_clk_lo;
 
