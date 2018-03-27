@@ -334,7 +334,7 @@ module bsg_gateway
   logic [7:0] bcl_im_data_lo_serdes [3:0];
   logic [3:0] token_clk_li_serdes;
 
-  `define BSG_SWIZZLE_3120(a) { a[3],a[1],a[2],a[0] }
+  //`define BSG_SWIZZLE_3120(a) { a[3],a[1],a[2],a[0] }
   
   
   // Channel select mask
@@ -352,9 +352,9 @@ module bsg_gateway
 	,.io_strobe_i(io_strobe_lo)
 	,.core_calib_done_i(bcl_core_calib_done_lo)
 
-	,.data_output_i(`BSG_SWIZZLE_3120(bcl_im_data_lo))
-	,.valid_output_i(`BSG_SWIZZLE_3120(bcl_im_valid_lo))
-	,.token_input_o(`BSG_SWIZZLE_3120(token_clk_li))
+	,.data_output_i(bcl_im_data_lo)
+	,.valid_output_i(bcl_im_valid_lo)
+	,.token_input_o(token_clk_li)
 
 	,.clk_output_o(bcl_im_clk_lo_serdes)
 	,.data_output_o(bcl_im_data_lo_serdes)
