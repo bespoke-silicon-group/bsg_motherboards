@@ -47,7 +47,6 @@ $(IMP_DIR)/board_ctrl_axi4lite_0_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_axi_gpio_0_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_axi_iic_cur_mon_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_axi_iic_dig_pot_wrapper.ngc \
-$(IMP_DIR)/board_ctrl_axi_iic_dig_pot_pll_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_axi_uartlite_0_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_debug_module_wrapper.ngc \
 $(IMP_DIR)/board_ctrl_microblaze_0_bram_block_wrapper.ngc \
@@ -64,7 +63,6 @@ $(IMP_DIR)/board_ctrl_axi4lite_0_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_axi_gpio_0_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_axi_iic_cur_mon_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_axi_iic_dig_pot_wrapper.ndf \
-$(IMP_DIR)/board_ctrl_axi_iic_dig_pot_pll_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_axi_uartlite_0_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_debug_module_wrapper.ndf \
 $(IMP_DIR)/board_ctrl_microblaze_0_bram_block_wrapper.ndf \
