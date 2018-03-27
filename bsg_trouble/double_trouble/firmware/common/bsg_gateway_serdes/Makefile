@@ -130,14 +130,8 @@ $(BSG_OUT_DIR)/bsg_ip_cores: | $(BSG_TREE_DIR)/bsg_ip_cores $(BSG_OUT_DIR)
 
 $(BSG_OUT_DIR)/bsg_designs: | $(BSG_TREE_DIR)/bsg_designs $(BSG_OUT_DIR)
 	ln -s $(BSG_TREE_DIR)/bsg_designs $@
-	
-bsg_tag_trace_in = $(BSG_FPGA_FIRMWARE_DIR)/common/$(BSG_GATEWAY_TARGET)/trace/bsg_gateway_trace.txt
-bsg_gateway_tag_rom_v = $(BSG_OUT_DIR)/bsg_gateway_tag_rom.v
 
-$(bsg_gateway_tag_rom_v): | $(BSG_OUT_DIR)/bsg_ip_cores
-	$(BSG_OUT_DIR)/bsg_ip_cores/bsg_mem/bsg_ascii_to_rom.py $(bsg_tag_trace_in) bsg_gateway_tag_rom > $@
-
-setup_dep = $(addprefix $(BSG_OUT_DIR)/,$(repos)) $(bsg_gateway_tag_rom_v)
+setup_dep = $(addprefix $(BSG_OUT_DIR)/,$(repos))
 
 setup: $(setup_dep)
 

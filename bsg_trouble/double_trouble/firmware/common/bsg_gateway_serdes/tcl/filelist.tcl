@@ -51,10 +51,6 @@ set GW_RTL_FILES [join "
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_fmc/v/bsg_gateway_fmc_tx.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_fmc/v/bsg_gateway_fmc_buffer.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_fmc/v/bsg_gateway_fmc.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/bsg_gateway_tag.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/bsg_tag_output.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/bsg_tag_control.v
-  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag/wait_cycle_32.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_channel.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_channel_rx.v
@@ -71,5 +67,4 @@ set GW_RTL_FILES [join "
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/comm_link/bsg_async_ptr_gray_serdes.v
   $bsg_fpga_firmware_dir/common/bsg_gateway_serdes/v/bsg_gateway.v
   $bsg_fpga_firmware_dir/common/bsg_gateway_serdes/v/bsg_gateway_clk.v
-  $bsg_gateway_dir/out/bsg_gateway_tag_rom.v
 "]

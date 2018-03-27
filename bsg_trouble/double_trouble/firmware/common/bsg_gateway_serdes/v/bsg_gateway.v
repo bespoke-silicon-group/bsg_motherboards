@@ -14,7 +14,7 @@ module bsg_gateway
   // reset
   ,input PWR_RSTN
   // voltage-rail enable
-  ,output logic ASIC_CORE_EN, ASIC_IO_EN, ASIC_PLL_EN
+  ,output logic ASIC_CORE_EN, ASIC_IO_EN
   // current monitor
   ,output logic CUR_MON_ADDR0, CUR_MON_ADDR1
   ,inout CUR_MON_SCL, CUR_MON_SDA
@@ -22,9 +22,6 @@ module bsg_gateway
   ,output logic DIG_POT_ADDR0, DIG_POT_ADDR1
   ,output logic DIG_POT_INDEP, DIG_POT_NRST
   ,inout DIG_POT_SCL, DIG_POT_SDA
-  ,output logic DIG_POT_PLL_ADDR0, DIG_POT_PLL_ADDR1
-  ,output logic DIG_POT_PLL_INDEP, DIG_POT_PLL_NRST
-  ,inout DIG_POT_PLL_SCL, DIG_POT_PLL_SDA
   // uart
   ,input UART_RX
   ,output UART_TX
@@ -39,25 +36,9 @@ module bsg_gateway
 
   // -------- ASIC --------
 
-  // asic clk control
-  ,output ASIC_CLK_OUT
-  ,output ASIC_CLK_SET_1
-  ,output ASIC_CLK_SET_0
-  ,input ASIC_CLK
-  
-  ,output ASIC_IO_SET_1
-  ,output ASIC_IO_SET_0
-  ,output ASIC_IO_RESET
-  ,output PLL_CLK_I
-  
-  ,output ASIC_CORE_SET_1
-  ,output ASIC_CORE_SET_0
-  ,output ASIC_CORE_RESET
+  // clk
   ,output MSTR_SDO_CLK
-  
-  ,output ASIC_TAG_TCK
-  ,output ASIC_TAG_TDI
-  ,output ASIC_TAG_TMS
+  ,output PLL_CLK_I
 
   // asic reset
   ,output Q7
@@ -167,42 +148,22 @@ module bsg_gateway
     (.clk_150_mhz_p_i(CLK_OSC_P) ,.clk_150_mhz_n_i(CLK_OSC_N)
     // microblaze clock
     ,.mb_clk_o(mb_clk_lo)
-	,.tag_tck_o(ASIC_TAG_TCK)
     // internal clocks
     ,.int_core_clk_o(core_clk_lo)
 	,.int_fast_core_clk_o(fast_core_clk_lo)
     ,.int_io_master_clk_o(io_master_clk_lo)
 	,.int_io_2x_clk_o(clk_2x_lo)
+    // external clocks
+    ,.ext_core_clk_o(MSTR_SDO_CLK)
+    ,.ext_io_master_clk_o(PLL_CLK_I)
 	// serdes clk
 	,.io_serdes_clk_o(io_serdes_clk_lo)
 	,.io_strobe_o(io_strobe_lo)
     // locked
     ,.locked_o(locked_lo));
 	
-	assign PLL_CLK_I = 1'b0;
-	assign MSTR_SDO_CLK = 1'b0;
-	
-	
-	logic mb_control_lo;
-	logic [4:0] mb_io_osc_lo;
-	logic [7:0] mb_io_div_lo;
-	logic mb_io_isDiv_lo;
-	logic [4:0] mb_core_osc_lo;
-	logic [7:0] mb_core_div_lo;
-	logic mb_core_isDiv_lo;
 
 `ifndef SIMULATION
-
-	// bsg_tag_gpio
-	logic [31:0] tag_gpio;
-	
-	assign mb_control_lo = tag_gpio[0];
-	assign mb_io_osc_lo = tag_gpio[1+:5];
-	assign mb_io_div_lo = tag_gpio[6+:8];
-	assign mb_io_isDiv_lo = tag_gpio[14];
-	assign mb_core_osc_lo = tag_gpio[15+:5];
-	assign mb_core_div_lo = tag_gpio[20+:8];
-	assign mb_core_isDiv_lo = tag_gpio[28];
 
   // power control
 
@@ -220,15 +181,10 @@ module bsg_gateway
     DIG_POT_NRST = 1'b1;
     DIG_POT_ADDR0 = 1'b1;
     DIG_POT_ADDR1 = 1'b1;
-    DIG_POT_PLL_INDEP = 1'b1;
-    DIG_POT_PLL_NRST = 1'b1;
-    DIG_POT_PLL_ADDR0 = 1'b1;
-    DIG_POT_PLL_ADDR1 = 1'b1;
     CUR_MON_ADDR0 = 1'b1;
     CUR_MON_ADDR1 = 1'b1;
     ASIC_IO_EN = 1'b1;
     ASIC_CORE_EN = 1'b1;
-	ASIC_PLL_EN = 1'b1;
     if (cpu_override_output_p == 1'b1 && cpu_override_output_n == 1'b0 && PWR_RSTN == 1'b1) begin
       FPGA_LED0 = gpio[0];
       FPGA_LED1 = gpio[1];
@@ -240,11 +196,6 @@ module bsg_gateway
       CUR_MON_ADDR1 = gpio[7];
       ASIC_IO_EN = gpio[8];
       ASIC_CORE_EN = gpio[9];
-	  DIG_POT_PLL_INDEP = gpio[12];
-      DIG_POT_PLL_NRST = gpio[13];
-      DIG_POT_PLL_ADDR0 = gpio[14];
-      DIG_POT_PLL_ADDR1 = gpio[15];
-	  ASIC_PLL_EN = gpio[16];
     end
   end
 
@@ -256,14 +207,11 @@ module bsg_gateway
     ,.axi_iic_dig_pot_Gpo_pin()
     ,.axi_iic_dig_pot_Sda_pin(DIG_POT_SDA)
     ,.axi_iic_dig_pot_Scl_pin(DIG_POT_SCL)
-    ,.axi_iic_dig_pot_pll_Gpo_pin()
-    ,.axi_iic_dig_pot_pll_Sda_pin(DIG_POT_PLL_SDA)
-    ,.axi_iic_dig_pot_pll_Scl_pin(DIG_POT_PLL_SCL)
     ,.axi_iic_cur_mon_Gpo_pin()
     ,.axi_iic_cur_mon_Sda_pin(CUR_MON_SDA)
     ,.axi_iic_cur_mon_Scl_pin(CUR_MON_SCL)
-    ,.axi_gpio_0_GPIO_IO_O_pin(tag_gpio)
-    ,.axi_gpio_0_GPIO2_IO_O_pin(gpio)
+    ,.axi_gpio_0_GPIO_IO_O_pin(gpio)
+    ,.axi_gpio_0_GPIO2_IO_I_pin()
     ,.axi_uartlite_0_RX_pin(UART_RX)
     ,.axi_uartlite_0_TX_pin(UART_TX));
 
@@ -499,56 +447,6 @@ module bsg_gateway
 
   // led
   assign FPGA_LED2 = gateway_reset_lo;
-  
-  
-  // Set bsg tag clock test pin output mode
-  assign ASIC_CLK_SET_1 = FG_SW7;
-  assign ASIC_CLK_SET_0 = FG_SW6;
-  
-  // For testing bsg tag
-	logic io_reset_lo;
-	logic [1:0] io_set_lo;
-	assign ASIC_IO_RESET = io_reset_lo;
-	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = io_set_lo;
-	
-	logic core_reset_lo;
-	logic [1:0] core_set_lo;
-	assign ASIC_CORE_RESET = core_reset_lo;
-	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = core_set_lo;
-	
-	logic tag_tdi_lo, tag_tms_lo;
-	assign ASIC_TAG_TDI = tag_tdi_lo;
-	assign ASIC_TAG_TMS = tag_tms_lo;
-	
-	logic test_output_lo;
-	assign FPGA_LED3 = test_output_lo;
-	
-	logic fmc_tag_reset_lo = (FG_SW5)? gateway_reset_lo : 0;
-  
-	bsg_gateway_tag
-	#(.ring_width_p(36))
-	(.clk_i(mb_clk_lo)
-	,.reset_i(fmc_tag_reset_lo)
-	,.done_o(done_li)
-	
-	,.mb_control_i(mb_control_lo)
-	,.mb_io_osc_i(mb_io_osc_lo)
-	,.mb_io_div_i(mb_io_div_lo)
-	,.mb_io_isDiv_i(mb_io_isDiv_lo)
-	,.mb_core_osc_i(mb_core_osc_lo)
-	,.mb_core_div_i(mb_core_div_lo)
-	,.mb_core_isDiv_i(mb_core_isDiv_lo)
-  
-	,.io_set_o(io_set_lo)
-	,.io_reset_o(io_reset_lo)
-
-	,.core_set_o(core_set_lo)
-	,.core_reset_o(core_reset_lo)
-
-	,.tag_tdi_o(tag_tdi_lo)
-	,.tag_tms_o(tag_tms_lo)
-	
-	,.test_output(test_output_lo)
-	);
+  assign FPGA_LED3 = bcl_core_calib_done_lo;  
 
 endmodule

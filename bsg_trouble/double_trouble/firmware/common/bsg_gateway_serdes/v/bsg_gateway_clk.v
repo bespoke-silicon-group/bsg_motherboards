@@ -21,12 +21,14 @@ module bsg_gateway_clk
   (input clk_150_mhz_p_i, clk_150_mhz_n_i
   // microblaze clock
   ,output mb_clk_o
-  ,output tag_tck_o
   // internal clocks
   ,output int_core_clk_o
   ,output int_fast_core_clk_o
   ,output int_io_master_clk_o
   ,output int_io_2x_clk_o
+  // external clocks
+  ,output ext_core_clk_o
+  ,output ext_io_master_clk_o
   // serdes clk
   ,output [3:0] io_serdes_clk_o
   ,output [3:0] io_strobe_o
@@ -135,6 +137,16 @@ module bsg_gateway_clk
   BUFG bufg_io_master_clk_1x
     (.I(pll_io_master_clk_1x_lo)
     ,.O(bufg_io_master_clk_1x_lo));
+
+  ODDR2 oddr_ext_io_master_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_io_master_clk_1x_lo)
+    ,.C1(~bufg_io_master_clk_1x_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_io_master_clk_o));
 	
   wire bufg_io_master_clk_2x_lo;
 
@@ -153,6 +165,16 @@ module bsg_gateway_clk
   BUFG bufg_ext_core_clk_0_deg
     (.I(pll_ext_core_clk_0_deg_lo)
     ,.O(bufg_ext_core_clk_0_deg_lo));
+
+  ODDR2 oddr_ext_core_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_ext_core_clk_0_deg_lo)
+    ,.C1(~bufg_ext_core_clk_0_deg_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_core_clk_o));
 	
   wire bufg_fast_core_clk_lo;
 
@@ -217,22 +239,11 @@ module bsg_gateway_clk
     ,.PROGEN()
     ,.PROGCLK());
 
-  // external tag clock
   wire bufg_mb_clk_0_deg_lo;
 
   BUFG bufg_mb_clk_0_deg
     (.I(dcm_mb_clk_0_deg_lo)
     ,.O(bufg_mb_clk_0_deg_lo));
-
-  ODDR2 oddr_mb_clk
-    (.D0(1'b0)
-    ,.D1(1'b1)
-    ,.C0(bufg_mb_clk_0_deg_lo)
-    ,.C1(~bufg_mb_clk_0_deg_lo)
-    ,.CE(1'b1)
-    ,.S(1'b0)
-    ,.R(1'b0)
-    ,.Q(tag_tck_o));
 
   // int mb clock
   assign mb_clk_o = bufg_mb_clk_0_deg_lo;  
