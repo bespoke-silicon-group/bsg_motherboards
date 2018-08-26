@@ -1,0 +1,24 @@
+# bsg_asic variables
+
+export BSG_PACKAGING_FOUNDRY:=tsmc_16
+export BSG_PACKAGE:=ucsd_bga_332
+export BSG_PINOUT:=bsg_two
+export BSG_PINOUT_FOUNDRY:=tsmc_16
+export BSG_PADMAPPING:=one
+
+export BSG_FPGA:=1
+
+# Selection of gw mode
+export BSG_ZEDBOARD_FMC:=1
+#export BSG_ML605_FMC:=1
+
+#export BSG_GATEWAY_TARGET:=bsg_gateway_no_serdes
+export BSG_GATEWAY_TARGET:=bsg_gateway_serdes
+export BSG_ASIC_TOP_NAME:=bsg_two_loopback_new
+
+export BSG_BASE_DIR:=$(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+export BSG_TREE_DIR = $(BSG_BASE_DIR)/bsg_tree
+export BSG_ML605_DIR:=$(BSG_BASE_DIR)/bsg_ml605
+export BSG_GATEWAY_DIR:=$(BSG_BASE_DIR)/bsg_gateway
+export BSG_ASIC_DIR:=$(BSG_BASE_DIR)/bsg_asic
+
