@@ -44,7 +44,7 @@ module bsg_gateway_clk
 
   // 150Mhz * pll_mult_lp
   // if pll_mult_lp=7 then pll-internal-clock is 1050MHz
-  localparam pll_mult_lp = 4;
+  localparam pll_mult_lp = 5;
 
   // 150MHz * (pll_mult_lp/pll_core_clk_divide_lp)
   // if pll_mult_lp=7 and pll_core_clk_divide_lp=42,
@@ -54,7 +54,7 @@ module bsg_gateway_clk
   // 150Mhz*(pll_mult_lp/pll_mb_clk_divide_lp)
   // if pll_mult_lp=7 and pll_mb_clk_divide_lp=42,
   // then mb_clk_o is 25MHz
-  localparam pll_mb_clk_divide_lp = 12;
+  localparam pll_mb_clk_divide_lp = 15;
 
   wire pll_ext_core_clk_0_deg_lo;
   wire pll_ext_core_clk_180_deg_lo;
@@ -71,7 +71,7 @@ module bsg_gateway_clk
   // if dcm_io_master_clk_divide_lp = 6 (int/ext) io_master_clk are 100 mhz
   // if dcm_io_master_clk_divide_lp = 8 (int/ext) io_master_clk are 75 mhz
   localparam pll_io_master_clk_5x_divide_lp = 1;
-  localparam pll_io_master_clk_1x_divide_lp = 3;
+  localparam pll_io_master_clk_1x_divide_lp = 6;
 
   wire pll_io_master_clk_5x_lo;
   wire pll_io_master_clk_1x_lo;

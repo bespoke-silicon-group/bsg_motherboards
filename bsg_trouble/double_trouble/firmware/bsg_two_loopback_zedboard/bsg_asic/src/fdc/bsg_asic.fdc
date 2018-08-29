@@ -3,13 +3,13 @@
 # timing constraints
 
 # 100 MHz
-set io_period 5
+set io_period 8
 
 # Pad DDR Rate
 set io_ddr_clk_period [expr $io_period*2]
 
 # 100 MHz
-set core_period 10
+set core_period 8
 
 # Constant for offset constraint
 set OUTPUT_DATA_DELAY [expr $io_period-22.0]

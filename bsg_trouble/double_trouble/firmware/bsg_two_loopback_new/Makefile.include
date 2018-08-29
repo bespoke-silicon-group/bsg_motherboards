@@ -12,8 +12,8 @@ export BSG_FPGA:=1
 #export BSG_ZEDBOARD_FMC:=1
 export BSG_ML605_FMC:=1
 
-#export BSG_GATEWAY_TARGET:=bsg_gateway_no_serdes
-export BSG_GATEWAY_TARGET:=bsg_gateway_serdes
+export BSG_GATEWAY_TARGET:=bsg_gateway_no_serdes
+#export BSG_GATEWAY_TARGET:=bsg_gateway_serdes
 export BSG_ASIC_TOP_NAME:=bsg_two_loopback_new
 
 export BSG_BASE_DIR:=$(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
