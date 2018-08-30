@@ -9,42 +9,43 @@
 module bsg_gateway_serdes #
 
   (parameter width = 8
+  ,parameter num_channel = 4
   ,parameter tap_array = {8'd35, 8'd35, 8'd35, 8'd35})
 
   (
   // Output Side
    input io_master_clk_i
   ,input clk_2x_i
-  ,input [3:0] io_serdes_clk_i
-  ,input [3:0] io_strobe_i
+  ,input [num_channel-1:0] io_serdes_clk_i
+  ,input [num_channel-1:0] io_strobe_i
   ,input core_calib_done_i
   
-  ,input [39:0] data_output_i [3:0]
-  ,input [4:0] valid_output_i [3:0]
-  ,output [3:0] token_input_o
+  ,input [39:0] data_output_i [num_channel-1:0]
+  ,input [4:0] valid_output_i [num_channel-1:0]
+  ,output [num_channel-1:0] token_input_o
   
-  ,output [3:0] clk_output_o
-  ,output [7:0] data_output_o [3:0]
-  ,output [3:0] valid_output_o
-  ,input [3:0] token_input_i
+  ,output [num_channel-1:0] clk_output_o
+  ,output [7:0] data_output_o [num_channel-1:0]
+  ,output [num_channel-1:0] valid_output_o
+  ,input [num_channel-1:0] token_input_i
   
   // Input side
-  ,input [3:0] raw_clk0_i
-  ,output [3:0] div_clk_o
+  ,input [num_channel-1:0] raw_clk0_i
+  ,output [num_channel-1:0] div_clk_o
   
-  ,input [7:0] data_input_i [3:0]
-  ,input [3:0] valid_input_i
-  ,output [3:0] token_output_o
+  ,input [7:0] data_input_i [num_channel-1:0]
+  ,input [num_channel-1:0] valid_input_i
+  ,output [num_channel-1:0] token_output_o
 
-  ,output [7:0] data_input_0_o [3:0]
-  ,output [7:0] data_input_1_o [3:0]
-  ,output [3:0] valid_input_0_o
-  ,output [3:0] valid_input_1_o
-  ,input [3:0] token_output_i);
+  ,output [7:0] data_input_0_o [num_channel-1:0]
+  ,output [7:0] data_input_1_o [num_channel-1:0]
+  ,output [num_channel-1:0] valid_input_0_o
+  ,output [num_channel-1:0] valid_input_1_o
+  ,input [num_channel-1:0] token_output_i);
   
 	genvar i;
 	
-	for (i=0;i<4;i=i+1) begin: all_ch
+	for (i=0;i<num_channel;i=i+1) begin: all_ch
 	
 		// Output channel
 		bsg_gateway_serdes_channel #

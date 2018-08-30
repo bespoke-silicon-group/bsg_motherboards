@@ -414,35 +414,36 @@ module bsg_gateway
   // SERDES
 	bsg_gateway_serdes #
 	(.width(5)
-	,.tap_array({8'd72, 8'd72, 8'd74, 8'd71}))
+    ,.num_channel(1)
+	,.tap_array({8'd71}))
 	gw_serdes
 	(.io_master_clk_i(io_master_clk_lo)
 	,.clk_2x_i(clk_2x_lo)
-	,.io_serdes_clk_i(io_serdes_clk_lo)
-	,.io_strobe_i(io_strobe_lo)
+	,.io_serdes_clk_i(io_serdes_clk_lo[0])
+	,.io_strobe_i(io_strobe_lo[0])
 	,.core_calib_done_i(bcl_core_calib_done_lo)
 
-	,.data_output_i(`BSG_SWIZZLE_3120(bcl_im_data_lo))
-	,.valid_output_i(`BSG_SWIZZLE_3120(bcl_im_valid_lo))
-	,.token_input_o(`BSG_SWIZZLE_3120(token_clk_li))
+	,.data_output_i(`BSG_SWIZZLE_3120(bcl_im_data_lo)[0])
+	,.valid_output_i(`BSG_SWIZZLE_3120(bcl_im_valid_lo)[0])
+	,.token_input_o(`BSG_SWIZZLE_3120(token_clk_li)[0])
 
-	,.clk_output_o(bcl_im_clk_lo_serdes)
-	,.data_output_o(bcl_im_data_lo_serdes)
-	,.valid_output_o(bcl_im_valid_lo_serdes)
-	,.token_input_i(token_clk_li_serdes)
+	,.clk_output_o(bcl_im_clk_lo_serdes[0])
+	,.data_output_o(bcl_im_data_lo_serdes[0])
+	,.valid_output_o(bcl_im_valid_lo_serdes[0])
+	,.token_input_i(token_clk_li_serdes[0])
 	
-	,.raw_clk0_i(io_clk0_li)
-	,.div_clk_o(io_clk_li_serdes)
+	,.raw_clk0_i(io_clk0_li[0])
+	,.div_clk_o(io_clk_li_serdes[0])
 
-	,.data_input_i(io_data_li)
-	,.valid_input_i(io_valid_li)
-	,.token_output_o(bcl_io_token_lo)
+	,.data_input_i(io_data_li[0])
+	,.valid_input_i(io_valid_li[0])
+	,.token_output_o(bcl_io_token_lo[0])
 
-	,.data_input_0_o(io_data_0_li_serdes)
-	,.data_input_1_o(io_data_1_li_serdes)
-	,.valid_input_0_o(io_valid_0_li_serdes)
-	,.valid_input_1_o(io_valid_1_li_serdes)
-	,.token_output_i(bcl_io_token_lo_serdes));
+	,.data_input_0_o(io_data_0_li_serdes[0])
+	,.data_input_1_o(io_data_1_li_serdes[0])
+	,.valid_input_0_o(io_valid_0_li_serdes[0])
+	,.valid_input_1_o(io_valid_1_li_serdes[0])
+	,.token_output_i(bcl_io_token_lo_serdes[0]));
 	
   // common_link
   bsg_comm_link_serdes #
@@ -488,7 +489,7 @@ module bsg_gateway
 
   // channel in
 
-  assign io_clk0_li = {DOC0, COC0, BOC0, AOC0};
+  assign io_clk0_li = {1'b0, 1'b0, 1'b0, AOC0};
 
   assign io_valid_li = {1'b0, 1'b0, 1'b0, AOD8};
 
@@ -497,7 +498,7 @@ module bsg_gateway
                            ,{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
                            ,{AOD7, AOD6, AOD5, AOD4, AOD3, AOD2, AOD1, AOD0}};
 
-  assign AOT0}= bcl_io_token_lo[0];
+  assign AOT0 = bcl_io_token_lo[0];
 
   // channel out
 
@@ -541,8 +542,8 @@ module bsg_gateway
 
 	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
 	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
-	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b10;
-	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b10;
+	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b11;
+	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b11;
 	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
 	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
 

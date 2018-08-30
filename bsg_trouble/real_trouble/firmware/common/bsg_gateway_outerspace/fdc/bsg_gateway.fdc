@@ -266,14 +266,14 @@ define_io_standard {ASIC_TAG_TMS} syn_pad_type {LVCMOS_18}
 
 # channel clock in
 define_attribute {AOC0} syn_loc {U25}
-define_attribute {BOC0} syn_loc {N8}
-define_attribute {COC0} syn_loc {P21}
-define_attribute {DOC0} syn_loc {T3}
+# define_attribute {BOC0} syn_loc {N8}
+# define_attribute {COC0} syn_loc {P21}
+# define_attribute {DOC0} syn_loc {T3}
 
 define_io_standard {AOC0} syn_pad_type {SSTL_18_Class_I}
-define_io_standard {BOC0} syn_pad_type {SSTL_18_Class_I}
-define_io_standard {COC0} syn_pad_type {SSTL_18_Class_I}
-define_io_standard {DOC0} syn_pad_type {SSTL_18_Class_I}
+# define_io_standard {BOC0} syn_pad_type {SSTL_18_Class_I}
+# define_io_standard {COC0} syn_pad_type {SSTL_18_Class_I}
+# define_io_standard {DOC0} syn_pad_type {SSTL_18_Class_I}
 
 # channel valid in
 define_attribute {AOD8} syn_loc {Y20}

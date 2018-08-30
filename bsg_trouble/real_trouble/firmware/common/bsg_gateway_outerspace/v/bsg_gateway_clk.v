@@ -32,7 +32,7 @@ module bsg_gateway_clk
   ,output [3:0] io_strobe_o
   // external clk
   ,output ext_core_clk_o
-  ,output ext_io_clk_0
+  ,output ext_io_clk_o
   ,output ext_fsb_clk_o
   ,output ext_op_clk_o
   // locked
