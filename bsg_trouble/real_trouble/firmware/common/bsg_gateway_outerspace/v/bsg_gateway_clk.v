@@ -30,6 +30,11 @@ module bsg_gateway_clk
   // serdes clk
   ,output [3:0] io_serdes_clk_o
   ,output [3:0] io_strobe_o
+  // external clk
+  ,output ext_core_clk_o
+  ,output ext_io_clk_0
+  ,output ext_fsb_clk_o
+  ,output ext_op_clk_o
   // locked
   ,output locked_o);
 
@@ -237,6 +242,46 @@ module bsg_gateway_clk
   // int mb clock
   assign mb_clk_o = bufg_mb_clk_0_deg_lo;  
   
+  ODDR2 oddr_ext_core_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_fast_core_clk_lo)
+    ,.C1(~bufg_fast_core_clk_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_core_clk_o));
+
+  ODDR2 oddr_ext_io_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_fast_core_clk_lo)
+    ,.C1(~bufg_fast_core_clk_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_io_clk_o));
+    
+  ODDR2 oddr_ext_fsb_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_fast_core_clk_lo)
+    ,.C1(~bufg_fast_core_clk_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_fsb_clk_o));
+    
+  ODDR2 oddr_ext_op_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_fast_core_clk_lo)
+    ,.C1(~bufg_fast_core_clk_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_op_clk_o));
+   
   
   assign locked_o = pll_locked_lo & dcm_locked_lo;
 

@@ -7,7 +7,8 @@ set sys_clk_period 6.667
 set io_clk_period 9.524
 set clk_2x_period 4.762
 set core_clk_period 19.047
-set fast_core_clk_period 3.809
+#set fast_core_clk_period 3.809
+set fast_core_clk_period 4.762
 set io_clk_chip_period 2.000
 
 # Clk DDR Rate
@@ -265,14 +266,14 @@ define_io_standard {ASIC_TAG_TMS} syn_pad_type {LVCMOS_18}
 
 # channel clock in
 define_attribute {AOC0} syn_loc {U25}
-# define_attribute {BOC0} syn_loc {N8}
-# define_attribute {COC0} syn_loc {P21}
-# define_attribute {DOC0} syn_loc {T3}
+define_attribute {BOC0} syn_loc {N8}
+define_attribute {COC0} syn_loc {P21}
+define_attribute {DOC0} syn_loc {T3}
 
 define_io_standard {AOC0} syn_pad_type {SSTL_18_Class_I}
-# define_io_standard {BOC0} syn_pad_type {SSTL_18_Class_I}
-# define_io_standard {COC0} syn_pad_type {SSTL_18_Class_I}
-# define_io_standard {DOC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {BOC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {COC0} syn_pad_type {SSTL_18_Class_I}
+define_io_standard {DOC0} syn_pad_type {SSTL_18_Class_I}
 
 # channel valid in
 define_attribute {AOD8} syn_loc {Y20}

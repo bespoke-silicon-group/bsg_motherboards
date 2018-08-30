@@ -83,38 +83,38 @@ module bsg_gateway
   // channel clk in
   ,input AOC0, BOC0, COC0, DOC0
   // channel valid in
-  ,input AOD8, BOD8, COD8, DOD8
+  ,input AOD8
   // channel data in
   //      A     B     C     D
-  ,input AOD0, BOD0, COD0, DOD0
-  ,input AOD1, BOD1, COD1, DOD1
-  ,input AOD2, BOD2, COD2, DOD2
-  ,input AOD3, BOD3, COD3, DOD3
-  ,input AOD4, BOD4, COD4, DOD4
-  ,input AOD5, BOD5, COD5, DOD5
-  ,input AOD6, BOD6, COD6, DOD6
-  ,input AOD7, BOD7, COD7, DOD7
+  ,input AOD0
+  ,input AOD1
+  ,input AOD2
+  ,input AOD3
+  ,input AOD4
+  ,input AOD5
+  ,input AOD6
+  ,input AOD7
   // channel token out
-  ,output AOT0, BOT0, COT0, DOT0
+  ,output AOT0
 
   // channel out
 
   // channel clk out
-  ,output AIC0, BIC0, CIC0, DIC0
+  ,output AIC0
   // channel valid out
-  ,output AID8, BID8, CID8, DID8
+  ,output AID8
   // channel data out
   //       A     B     C     D
-  ,output AID0, BID0, CID0, DID0
-  ,output AID1, BID1, CID1, DID1
-  ,output AID2, BID2, CID2, DID2
-  ,output AID3, BID3, CID3, DID3
-  ,output AID4, BID4, CID4, DID4
-  ,output AID5, BID5, CID5, DID5
-  ,output AID6, BID6, CID6, DID6
-  ,output AID7, BID7, CID7, DID7
+  ,output AID0
+  ,output AID1
+  ,output AID2
+  ,output AID3
+  ,output AID4
+  ,output AID5
+  ,output AID6
+  ,output AID7
   // channel token in
-  ,input AIT0, BIT0, CIT0, DIT0
+  ,input AIT0
 
   // -------- FMC --------
   // see bsg_gateway_fmc.v for notes on FMC usage.
@@ -192,11 +192,13 @@ module bsg_gateway
 	// serdes clk
 	,.io_serdes_clk_o(io_serdes_clk_lo)
 	,.io_strobe_o(io_strobe_lo)
+    // ext clk
+    ,.ext_core_clk_o(MSTR_SDO_CLK)
+    ,.ext_io_clk_o(PLL_CLK_I)
+    ,.ext_fsb_clk_o(ASIC_FSB_CLK)
+    ,.ext_op_clk_o(ASIC_OP_CLK)
     // locked
     ,.locked_o(locked_lo));
-	
-	assign PLL_CLK_I = 1'b0;
-	assign MSTR_SDO_CLK = 1'b0;
 	
 	
 	logic mb_control_lo;
@@ -488,27 +490,27 @@ module bsg_gateway
 
   assign io_clk0_li = {DOC0, COC0, BOC0, AOC0};
 
-  assign io_valid_li = {DOD8, COD8, BOD8, AOD8};
+  assign io_valid_li = {1'b0, 1'b0, 1'b0, AOD8};
 
-  assign io_data_li = {{DOD7, DOD6, DOD5, DOD4, DOD3, DOD2, DOD1, DOD0}
-                           ,{COD7, COD6, COD5, COD4, COD3, COD2, COD1, COD0}
-                           ,{BOD7, BOD6, BOD5, BOD4, BOD3, BOD2, BOD1, BOD0}
+  assign io_data_li = {{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
+                           ,{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
+                           ,{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
                            ,{AOD7, AOD6, AOD5, AOD4, AOD3, AOD2, AOD1, AOD0}};
 
-  assign {DOT0, COT0, BOT0, AOT0} = bcl_io_token_lo;
+  assign AOT0}= bcl_io_token_lo[0];
 
   // channel out
 
-  assign {DIC0, CIC0, BIC0, AIC0} = bcl_im_clk_lo_serdes;
+  assign AIC0 = bcl_im_clk_lo_serdes[0];
 
-  assign {DID8, CID8, BID8, AID8} = bcl_im_valid_lo_serdes;
+  assign AID8 = bcl_im_valid_lo_serdes[0];
 
-  assign {DID7, DID6, DID5, DID4, DID3, DID2, DID1, DID0} = bcl_im_data_lo_serdes[3];
-  assign {CID7, CID6, CID5, CID4, CID3, CID2, CID1, CID0} = bcl_im_data_lo_serdes[2];
-  assign {BID7, BID6, BID5, BID4, BID3, BID2, BID1, BID0} = bcl_im_data_lo_serdes[1];
+  //assign {DID7, DID6, DID5, DID4, DID3, DID2, DID1, DID0} = bcl_im_data_lo_serdes[3];
+  //assign {CID7, CID6, CID5, CID4, CID3, CID2, CID1, CID0} = bcl_im_data_lo_serdes[2];
+  //assign {BID7, BID6, BID5, BID4, BID3, BID2, BID1, BID0} = bcl_im_data_lo_serdes[1];
   assign {AID7, AID6, AID5, AID4, AID3, AID2, AID1, AID0} = bcl_im_data_lo_serdes[0];
 
-  assign token_clk_li_serdes = {DIT0, CIT0, BIT0, AIT0};
+  assign token_clk_li_serdes = {1'b0, 1'b0, 1'b0,  AIT0};
 
   // reset for asic
   assign Q7 = bcl_slave_reset_lo;
@@ -528,14 +530,22 @@ module bsg_gateway
     
 	assign ASIC_CORE_RESET = clk_reset_lo[0];
     assign ASIC_IO_RESET = clk_reset_lo[1];
-    
+/*    
 	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
 	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = clk_set_lo[1];
 	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
 	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
 	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
 	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
-	
+*/	
+
+	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
+	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
+	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b10;
+	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b10;
+	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
+	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
+
 	logic tag_tdi_lo, tag_tms_lo;
 	assign ASIC_TAG_TDI = tag_tdi_lo;
 	assign ASIC_TAG_TMS = tag_tms_lo;
@@ -550,7 +560,7 @@ module bsg_gateway
      ,.num_clk_p(6))
     tag_inst
 	(.clk_i(mb_clk_lo)
-	,.reset_i(fmc_tag_reset_lo)
+	,.reset_i(1'b1)
 	,.done_o(done_li)
 	
 	,.mb_control_i()
