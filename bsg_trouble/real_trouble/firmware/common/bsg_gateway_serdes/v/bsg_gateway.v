@@ -390,7 +390,7 @@ module bsg_gateway
   
   
   // Channel select mask
-  parameter channel_select = 4'b1111;
+  parameter channel_select = 4'b0001;
   
   
   // SERDES

@@ -28,19 +28,19 @@ create_clock -period 20.0 -name {mb_clk} {n:mb_clk_lo}
 
 # create input clock from ASIC
 create_clock -period $io_ddr_clk_chip_period -name {clk_a_fdc} {n:io_clk_li_serdes[0]}
-create_clock -period $io_ddr_clk_chip_period -name {clk_b_fdc} {n:io_clk_li_serdes[1]}
-create_clock -period $io_ddr_clk_chip_period -name {clk_c_fdc} {n:io_clk_li_serdes[2]}
-create_clock -period $io_ddr_clk_chip_period -name {clk_d_fdc} {n:io_clk_li_serdes[3]}
+#create_clock -period $io_ddr_clk_chip_period -name {clk_b_fdc} {n:io_clk_li_serdes[1]}
+#create_clock -period $io_ddr_clk_chip_period -name {clk_c_fdc} {n:io_clk_li_serdes[2]}
+#create_clock -period $io_ddr_clk_chip_period -name {clk_d_fdc} {n:io_clk_li_serdes[3]}
 
 create_clock -period $io_ddr_clk_chip_period -name {clk0_a_raw} -add {p:AOC0}
-create_clock -period $io_ddr_clk_chip_period -name {clk0_b_raw} -add {p:BOC0}
-create_clock -period $io_ddr_clk_chip_period -name {clk0_c_raw} -add {p:COC0}
-create_clock -period $io_ddr_clk_chip_period -name {clk0_d_raw} -add {p:DOC0}
+#create_clock -period $io_ddr_clk_chip_period -name {clk0_b_raw} -add {p:BOC0}
+#create_clock -period $io_ddr_clk_chip_period -name {clk0_c_raw} -add {p:COC0}
+#create_clock -period $io_ddr_clk_chip_period -name {clk0_d_raw} -add {p:DOC0}
 
 create_clock -period $io_ddr_clk_period -name {token_a_fdc} {p:AIT0}
-create_clock -period $io_ddr_clk_period -name {token_b_fdc} {p:BIT0}
-create_clock -period $io_ddr_clk_period -name {token_c_fdc} {p:CIT0}
-create_clock -period $io_ddr_clk_period -name {token_d_fdc} {p:DIT0}
+#create_clock -period $io_ddr_clk_period -name {token_b_fdc} {p:BIT0}
+#create_clock -period $io_ddr_clk_period -name {token_c_fdc} {p:CIT0}
+#create_clock -period $io_ddr_clk_period -name {token_d_fdc} {p:DIT0}
 
 set_clock_groups -asynchronous \
   -derive \
@@ -51,17 +51,17 @@ set_clock_groups -asynchronous \
   -group {clk_2x_clk} \
   -group {sys_clk} \
   -group {clk0_a_raw} \
-  -group {clk0_b_raw} \
-  -group {clk0_c_raw} \
-  -group {clk0_d_raw} \
+#  -group {clk0_b_raw} \
+#  -group {clk0_c_raw} \
+#  -group {clk0_d_raw} \
   -group {clk_a_fdc} \
-  -group {clk_b_fdc} \
-  -group {clk_c_fdc} \
-  -group {clk_d_fdc} \
+#  -group {clk_b_fdc} \
+#  -group {clk_c_fdc} \
+#  -group {clk_d_fdc} \
   -group {token_a_fdc} \
-  -group {token_b_fdc} \
-  -group {token_c_fdc} \
-  -group {token_d_fdc}
+#  -group {token_b_fdc} \
+#  -group {token_c_fdc} \
+#  -group {token_d_fdc}
 
 set_false_path -from {c:mb_clk} -to {c:io_master_clk}
 

@@ -47,7 +47,7 @@ module bsg_gateway_serdes_channel_rx #
 	
 	// Input clock buf
 	IBUFG #(
-	.IOSTANDARD("SSTL_3_Class_I") // Specify the input I/O standard
+	.IOSTANDARD("SSTL_18_Class_I") // Specify the input I/O standard
 	) IBUFG_clk0 (
 	.O(ibufg_clk0_lo), // Clock buffer output
 	.I(raw_clk0_i) // Clock buffer input (connect directly to top-level port)
