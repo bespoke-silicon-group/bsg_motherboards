@@ -536,16 +536,16 @@ module bsg_gateway
 	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = clk_set_lo[1];
 //	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
 //	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
-//	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
-//	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
+	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
+	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
 	
 
-	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
+	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b11;
 //	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
 	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b11;
 	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b11;
-	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
-	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
+//	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
+//	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
 
     
 	logic tag_tdi_lo, tag_tms_lo;
