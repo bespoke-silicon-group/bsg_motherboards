@@ -423,9 +423,9 @@ module bsg_gateway
 	,.io_strobe_i(io_strobe_lo[0])
 	,.core_calib_done_i(bcl_core_calib_done_lo)
 
-	,.data_output_i(`BSG_SWIZZLE_3120(bcl_im_data_lo)[0])
-	,.valid_output_i(`BSG_SWIZZLE_3120(bcl_im_valid_lo)[0])
-	,.token_input_o(`BSG_SWIZZLE_3120(token_clk_li)[0])
+	,.data_output_i(bcl_im_data_lo[0]) //swizzle
+	,.valid_output_i(bcl_im_valid_lo[0]) //swizzle
+	,.token_input_o(token_clk_li[0]) //swizzle
 
 	,.clk_output_o(bcl_im_clk_lo_serdes[0])
 	,.data_output_o(bcl_im_data_lo_serdes[0])
@@ -531,37 +531,37 @@ module bsg_gateway
     
 	assign ASIC_CORE_RESET = clk_reset_lo[0];
     assign ASIC_IO_RESET = clk_reset_lo[1];
-/*    
-	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
+    
+//	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
 	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = clk_set_lo[1];
-	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
-	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
-	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
-	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
-*/	
+//	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
+//	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
+//	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
+//	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
+	
 
 	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
-	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
+//	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
 	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b11;
 	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b11;
 	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
 	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
 
+    
 	logic tag_tdi_lo, tag_tms_lo;
 	assign ASIC_TAG_TDI = tag_tdi_lo;
 	assign ASIC_TAG_TMS = tag_tms_lo;
 	
 	logic test_output_lo;
 	assign FPGA_LED3 = test_output_lo;
-	
-	logic fmc_tag_reset_lo = FG_SW5;
+	logic tag_reset_lo = FG_SW5;
   
 	bsg_gateway_tag
 	#(.ring_width_p(36)
      ,.num_clk_p(6))
     tag_inst
 	(.clk_i(mb_clk_lo)
-	,.reset_i(1'b1)
+	,.reset_i(tag_reset_lo)
 	,.done_o(done_li)
 	
 	,.mb_control_i()

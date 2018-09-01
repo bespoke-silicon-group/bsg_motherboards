@@ -36,7 +36,7 @@ module bsg_tag_output
 	// These are the same as definition in "bsg_two_manycore_vanilla_clk_gen/bsg_chip.v"
 	localparam num_adgs_p = 1;
 	localparam ds_width_p = 8;
-	localparam tag_els_p = 2*num_clk_p;
+	localparam tag_els_p = 3*num_clk_p;
 	
 	`declare_bsg_clk_gen_osc_tag_payload_s(num_adgs_p)
 	`declare_bsg_clk_gen_ds_tag_payload_s(ds_width_p)
@@ -46,8 +46,10 @@ module bsg_tag_output
 	
 	bsg_tag_header_s ds_tag_header;
 	bsg_tag_header_s osc_tag_header;
+    bsg_tag_header_s osc_trigger_tag_header;
 	bsg_clk_gen_osc_tag_payload_s osc_tag_payload;
 	bsg_clk_gen_ds_tag_payload_s ds_tag_payload;
+    logic osc_trigger_tag_payload;
 	
 	localparam osc_pkt_size_lp = $bits(bsg_tag_header_s)+$bits(bsg_clk_gen_osc_tag_payload_s)+1+1;
 	wire [osc_pkt_size_lp-1:0] osc_pkt = { 1'b0, osc_tag_payload, osc_tag_header,1'b1 };
@@ -55,13 +57,17 @@ module bsg_tag_output
 	localparam ds_pkt_size_lp  = $bits(bsg_tag_header_s)+$bits(bsg_clk_gen_ds_tag_payload_s)+1+1;
 	wire [ds_pkt_size_lp-1:0]  ds_pkt  = { 1'b0, ds_tag_payload, ds_tag_header,1'b1 };
 	
+    localparam osc_trigger_pkt_size_lp  = $bits(bsg_tag_header_s)+1+1+1;
+    wire [osc_trigger_pkt_size_lp-1:0] osc_trigger_pkt 
+                                       = { 1'b0, osc_trigger_tag_payload, osc_trigger_tag_header, 1'b1};
+                                      
 	/* define param end */
 	
 	/* map data to different packets begin */
 	
     logic [`BSG_SAFE_CLOG2(tag_els_p)-1:0] id_lo;
 	logic [3:0] sub_op_lo;
-    logic [2:0] is_downsampler;
+    logic [2:0] mode_lo;
 	logic data_not_reset_lo;
 	logic [3:0] cycle_lo;
 	logic [4:0] osc_payload_lo;
@@ -73,7 +79,7 @@ module bsg_tag_output
     
         id_lo = 0;
         sub_op_lo = data_i[22+:4];
-        is_downsampler = data_i[19+:3];
+        mode_lo = data_i[19+:3];
         data_not_reset_lo = data_i[18+:1];
         cycle_lo = data_i[14+:4];
         osc_payload_lo = data_i[9+:5];
@@ -81,7 +87,7 @@ module bsg_tag_output
         ds_payload_reset_lo = data_i[0+:1];
         for (i = 0; i < num_clk_p; i++) begin
             if (data_i[26+:6] == i)
-                id_lo = i*2 + is_downsampler;
+                id_lo = i*3 + mode_lo;
         end
         
     end
@@ -94,13 +100,18 @@ module bsg_tag_output
 	assign ds_tag_header.data_not_reset = data_not_reset_lo;
 	assign ds_tag_header.len = cycle_lo[lg_max_payload_length_lp-1:0];
 	
+    assign osc_trigger_tag_header.nodeID = id_lo[`BSG_SAFE_CLOG2(tag_els_p)-1:0];
+	assign osc_trigger_tag_header.data_not_reset = data_not_reset_lo;
+	assign osc_trigger_tag_header.len = cycle_lo[lg_max_payload_length_lp-1:0];
+    
 	// Microblaze control
 	//logic [4:0] osc_preSelect = mb_osc_i;
 	//logic [7:0] div_preSelect = mb_div_i;
 	
-	//assign osc_tag_payload = (valid_mb_i&mb_control_i)? osc_preSelect : osc_payload_lo[num_adgs_p+4-1:0];
-	//assign ds_tag_payload.val = (valid_mb_i&mb_control_i)? div_preSelect : ds_payload_lo[ds_width_p-1:0];
-	//assign ds_tag_payload.reset = ds_payload_reset_lo;
+	assign osc_tag_payload = osc_payload_lo[num_adgs_p+4-1:0];
+	assign ds_tag_payload.val = ds_payload_lo[ds_width_p-1:0];
+	assign ds_tag_payload.reset = ds_payload_reset_lo;
+    assign osc_trigger_tag_payload = ds_payload_reset_lo;
 	
 	/* map data to different packets end */
 	
@@ -151,6 +162,10 @@ module bsg_tag_output
 				shift_n[ds_pkt_size_lp-1:0] = ds_pkt[ds_pkt_size_lp-1:0];
 			end
 			if (sub_op_lo == 4'd3) begin
+				cycle_n = osc_trigger_pkt_size_lp;
+				shift_n[osc_trigger_pkt_size_lp-1:0] = osc_trigger_pkt[osc_trigger_pkt_size_lp-1:0];
+			end
+            if (sub_op_lo == 4'd4) begin
 				cycle_n = 8'd1;
 				shift_n[0] = 1'b1;
 			end

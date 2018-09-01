@@ -63,9 +63,6 @@ module  bsg_gateway_tag
 	// For tag control
 	logic valid_control_lo;
 	logic [31:0] data_control_lo;
-	
-	// For microblaze
-	logic valid_mb_lo;
 
 	// conversion from fsb_trace_replay to bsg_tag modules
 	always_comb
@@ -73,7 +70,6 @@ module  bsg_gateway_tag
 		valid_wait_lo = (v_lo & data_lo[ring_width_p-1] & yumi_li);
 		valid_tag_lo = (v_lo & data_lo[ring_width_p-2] & yumi_li);
 		valid_control_lo = (v_lo & data_lo[ring_width_p-3] & yumi_li);
-		valid_mb_lo = data_lo[ring_width_p-4];
 		cycle_wait_lo = data_lo[31:0];
 		data_tag_lo = data_lo[31:0];
 		data_control_lo = data_lo[31:0];
@@ -129,7 +125,7 @@ module  bsg_gateway_tag
 	,.enable_i(valid_tag_lo)
 	,.clk_i(clk_i)
 	,.data_i(data_tag_lo)
-	,.valid_mb_i(valid_mb_lo)
+	,.valid_mb_i()
 	,.mb_control_i(mb_control_i)
 	,.mb_osc_i(mb_osc_i)
 	,.mb_div_i(mb_div_i)
@@ -144,7 +140,7 @@ module  bsg_gateway_tag
 	,.enable_i(valid_control_lo)
 	,.clk_i(clk_i)
 	,.data_i(data_control_lo)
-	,.valid_mb_i(valid_mb_lo)
+	,.valid_mb_i()
 	,.mb_control_i(mb_control_i)
 	,.mb_isDiv_i(mb_isDiv_i)
 	,.clk_set_o(clk_set_o)
