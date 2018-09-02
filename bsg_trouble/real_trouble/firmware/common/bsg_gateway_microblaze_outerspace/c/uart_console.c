@@ -19,6 +19,7 @@ int check_console()
 {
     u8 cmd;
     u8 parameter;
+    u8 p_array[256];
     int status;
     status = XST_FAILURE;
     uart_recv(&cmd, 1);
@@ -123,32 +124,12 @@ int check_console()
                 uart_send(cur_mon_misc, sizeof(cur_mon_misc));
             }
             break;
-		case CMD_PLL_SET_CONTROL:
-			status = pll_set_control();
+		case CMD_PROG_TAG:
+			uart_recv(p_array, 3);
+			status = prog_tag(p_array[0], p_array[1], p_array[2]);
 			break;
-		case CMD_PLL_SET_IO_OSC:
-			uart_recv(&parameter, 1);
-			status = pll_set_io_osc(parameter);
-			break;
-		case CMD_PLL_SET_IO_DIV:
-			uart_recv(&parameter, 1);
-			status = pll_set_io_div(parameter);
-			break;
-		case CMD_PLL_SET_IO_ISDIV:
-			uart_recv(&parameter, 1);
-			status = pll_set_io_isDiv(parameter);
-			break;
-		case CMD_PLL_SET_CORE_OSC:
-			uart_recv(&parameter, 1);
-			status = pll_set_core_osc(parameter);
-			break;
-		case CMD_PLL_SET_CORE_DIV:
-			uart_recv(&parameter, 1);
-			status = pll_set_core_div(parameter);
-			break;
-		case CMD_PLL_SET_CORE_ISDIV:
-			uart_recv(&parameter, 1);
-			status = pll_set_core_isDiv(parameter);
+		case CMD_RESET_TAG:
+			status = reset_tag();
 			break;
         case CMD_NOP:
             status = XST_SUCCESS;

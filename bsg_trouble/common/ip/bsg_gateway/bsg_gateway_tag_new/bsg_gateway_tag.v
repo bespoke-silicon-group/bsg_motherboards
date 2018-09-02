@@ -15,10 +15,11 @@ module  bsg_gateway_tag
 	,input reset_i
 	,output done_o
 	// microblaze control
-	,input [num_clk_p-1:0] mb_control_i
-	,input [4:0] mb_osc_i
-	,input [7:0] mb_div_i
-	,input mb_isDiv_i
+    ,input mb_control_i
+	,input [num_clk_p-1:0] mb_select_i
+    ,input [7:0] mb_counter_i
+	,input [7:0] mb_load_i
+	,input [2:0] mb_mode_i
 	// CLK control
 	,output [1:0] clk_set_o [num_clk_p-1:0]
 	,output [num_clk_p-1:0] clk_reset_o
@@ -116,6 +117,29 @@ module  bsg_gateway_tag
 	,.cycle_i(cycle_wait_lo)
 	,.ready_r_o(ready_wait_li)
 	,.test_o(test_output));
+    
+    
+    // For MB control
+    logic mb_valid_lo;
+    logic [31:0] mb_data_lo;
+    logic mb_yumi_lo;
+    
+    bsg_tag_mb
+    #(.num_clk_p(num_clk_p))
+    mb_control
+    (.reset_i(reset_lo)
+    ,.clk_i(clk_i)
+    // input from MB
+    ,.mb_control_i(mb_control_i)
+    ,.mb_select_i(mb_select_i)
+    ,.mb_counter_i(mb_counter_i)
+	,.mb_load_i(mb_load_i)
+	,.mb_mode_i(mb_mode_i)
+    // output to bsg_tag
+    ,.mb_valid_o(mb_valid_lo)
+    ,.mb_data_o(mb_data_lo)
+    ,.mb_yumi_i(mb_yumi_lo));
+    
 	
 	// For programming bsg_tag
   bsg_tag_output 
@@ -125,10 +149,9 @@ module  bsg_gateway_tag
 	,.enable_i(valid_tag_lo)
 	,.clk_i(clk_i)
 	,.data_i(data_tag_lo)
-	,.valid_mb_i()
-	,.mb_control_i(mb_control_i)
-	,.mb_osc_i(mb_osc_i)
-	,.mb_div_i(mb_div_i)
+	,.mb_valid_i(mb_valid_lo)
+	,.mb_data_i(mb_data_lo)
+	,.mb_yumi_o(mb_yumi_lo)
 	,.ready_r_o(ready_tag_li)
 	,.tag_tdi_o(tag_tdi_o));
 	
@@ -140,9 +163,6 @@ module  bsg_gateway_tag
 	,.enable_i(valid_control_lo)
 	,.clk_i(clk_i)
 	,.data_i(data_control_lo)
-	,.valid_mb_i()
-	,.mb_control_i(mb_control_i)
-	,.mb_isDiv_i(mb_isDiv_i)
 	,.clk_set_o(clk_set_o)
 	,.clk_reset_o(clk_reset_o)
 	,.tag_tms_o(tag_tms_o));

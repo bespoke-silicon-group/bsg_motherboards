@@ -40,13 +40,8 @@ void gpio_clear_override();
 //u32 read_switch(u32 id);
 //u32 read_switches();
 
-int pll_set_control();
-int pll_set_io_osc(u32 val);
-int pll_set_io_div(u32 val);
-int pll_set_io_isDiv(u32 val);
-int pll_set_core_osc(u32 val);
-int pll_set_core_div(u32 val);
-int pll_set_core_isDiv(u32 val);
+int prog_tag(u8 select, u8 load, u8 mode);
+int reset_tag();
 
 int change_pin(u32 id, u32 val);
 u32 read_pin(u32 id);

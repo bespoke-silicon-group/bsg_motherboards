@@ -21,10 +21,9 @@ module bsg_tag_output
 	// Command data in
 	,input [31:0] data_i
 	// microblaze control
-	,input valid_mb_i
-	,input [num_clk_p-1:0] mb_control_i
-	,input [4:0] mb_osc_i
-	,input [7:0] mb_div_i
+	,input mb_valid_i
+	,input [31:0] mb_data_i
+	,output mb_yumi_o
 	// Ready signal out
 	,output logic ready_r_o
 	// Output bit
@@ -73,20 +72,28 @@ module bsg_tag_output
 	logic [4:0] osc_payload_lo;
 	logic [7:0] ds_payload_lo;
 	logic ds_payload_reset_lo;
+    
+    logic [31:0] useful_data_lo;
 	
     integer i;
     always_comb begin
     
+        if (mb_valid_i)
+            useful_data_lo = mb_data_i;
+        else
+            useful_data_lo = data_i;
+    
         id_lo = 0;
-        sub_op_lo = data_i[22+:4];
-        mode_lo = data_i[19+:3];
-        data_not_reset_lo = data_i[18+:1];
-        cycle_lo = data_i[14+:4];
-        osc_payload_lo = data_i[9+:5];
-        ds_payload_lo = data_i[1+:8];
-        ds_payload_reset_lo = data_i[0+:1];
+
+        sub_op_lo = useful_data_lo[22+:4];
+        mode_lo = useful_data_lo[19+:3];
+        data_not_reset_lo = useful_data_lo[18+:1];
+        cycle_lo = useful_data_lo[14+:4];
+        osc_payload_lo = useful_data_lo[9+:5];
+        ds_payload_lo = useful_data_lo[1+:8];
+        ds_payload_reset_lo = useful_data_lo[0+:1];
         for (i = 0; i < num_clk_p; i++) begin
-            if (data_i[26+:6] == i)
+            if (useful_data_lo[26+:6] == i)
                 id_lo = i*3 + mode_lo;
         end
         
@@ -151,7 +158,7 @@ module bsg_tag_output
 		shift_n = shift_r;
 		
 		// Send out different types of new packet
-		if ((ready_r == 1'b1) & (enable_i == 1'b1)) begin
+		if ((ready_r == 1'b1) & (enable_i == 1'b1 || mb_valid_i == 1'b1)) begin
 			ready_n = 1'b0;
 			if (sub_op_lo == 4'd1) begin
 				cycle_n = osc_pkt_size_lp;
@@ -182,5 +189,7 @@ module bsg_tag_output
 		end
 		
 	end
+    
+    assign mb_yumi_o = ready_r & mb_valid_i;
 	
 endmodule

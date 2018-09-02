@@ -17,6 +17,7 @@
 
 static u32 output_buf;
 static u32 output_buf_2;
+static u8 internal_counter;
 
 XGpio gpio_inst;
 
@@ -32,6 +33,7 @@ int gpio_init()
     output_buf_2 = 0xFFFFFFFF;
     XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
 	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL_2, output_buf_2);
+    internal_counter = 0;
     return XST_SUCCESS;
 }
 
@@ -85,57 +87,27 @@ int change_pin(u32 id, u32 val)
     return gpio_is_override() ? XST_SUCCESS : XST_FAILURE;
 }
 
-int pll_set_control(){
-	output_buf &= ~(1 << 0);
-    output_buf |= (1 << 0);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+int prog_tag(u8 select, u8 load, u8 mode){
+	// program
+    internal_counter += 1;
+    output_buf = 0x02000000;
+    output_buf |= select << 19;
+    output_buf |= internal_counter << 11;
+    output_buf |= load << 3;
+    output_buf |= mode;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+    // disable
+	output_buf = 0x00000000;
+    output_buf |= internal_counter << 11;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
 	return XST_SUCCESS;
 }
 
-int pll_set_io_osc(u32 val){
-	if (val >= 32) return XST_FAILURE;
-	output_buf &= ~(31 << 1);
-    output_buf |= (val << 1);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
-	return XST_SUCCESS;
-}
-
-int pll_set_io_div(u32 val){
-	if (val >= 256) return XST_FAILURE;
-	output_buf &= ~(255 << 6);
-    output_buf |= (val << 6);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
-	return XST_SUCCESS;
-}
-
-int pll_set_io_isDiv(u32 val){
-	if (val >= 2) return XST_FAILURE;
-	output_buf &= ~(1 << 14);
-    output_buf |= (val << 14);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
-	return XST_SUCCESS;
-}
-
-int pll_set_core_osc(u32 val){
-	if (val >= 32) return XST_FAILURE;
-	output_buf &= ~(31 << 15);
-    output_buf |= (val << 15);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
-	return XST_SUCCESS;
-}
-
-int pll_set_core_div(u32 val){
-	if (val >= 256) return XST_FAILURE;
-	output_buf &= ~(255 << 20);
-    output_buf |= (val << 20);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
-	return XST_SUCCESS;
-}
-
-int pll_set_core_isDiv(u32 val){
-	if (val >= 2) return XST_FAILURE;
-	output_buf &= ~(1 << 28);
-    output_buf |= (val << 28);
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+int reset_tag(){
+	output_buf = 0x04000000;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+    output_buf = 0x00000000;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+    internal_counter = 0;
 	return XST_SUCCESS;
 }

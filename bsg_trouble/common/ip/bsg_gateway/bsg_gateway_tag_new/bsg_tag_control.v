@@ -16,10 +16,6 @@ module bsg_tag_control
 	,input clk_i
 	// Command data
 	,input [31:0] data_i
-	// microblaze control
-	,input valid_mb_i
-	,input [num_clk_p-1:0] mb_control_i
-	,input mb_isDiv_i
 	// clock control
 	,output logic [1:0] clk_set_o [num_clk_p-1:0]
 	,output logic [num_clk_p-1:0] clk_reset_o

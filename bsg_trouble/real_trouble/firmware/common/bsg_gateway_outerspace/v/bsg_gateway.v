@@ -200,27 +200,24 @@ module bsg_gateway
     // locked
     ,.locked_o(locked_lo));
 	
-	
+	logic mb_reset_lo;
 	logic mb_control_lo;
-	logic [4:0] mb_io_osc_lo;
-	logic [7:0] mb_io_div_lo;
-	logic mb_io_isDiv_lo;
-	logic [4:0] mb_core_osc_lo;
-	logic [7:0] mb_core_div_lo;
-	logic mb_core_isDiv_lo;
+	logic [5:0] mb_select_lo;
+	logic [7:0] mb_counter_lo;
+	logic [7:0] mb_load_lo;
+	logic [2:0] mb_mode_lo;
 
 `ifndef SIMULATION
 
 	// bsg_tag_gpio
 	logic [31:0] tag_gpio;
 	
-	assign mb_control_lo = tag_gpio[0];
-	assign mb_io_osc_lo = tag_gpio[1+:5];
-	assign mb_io_div_lo = tag_gpio[6+:8];
-	assign mb_io_isDiv_lo = tag_gpio[14];
-	assign mb_core_osc_lo = tag_gpio[15+:5];
-	assign mb_core_div_lo = tag_gpio[20+:8];
-	assign mb_core_isDiv_lo = tag_gpio[28];
+    assign mb_reset_lo = tag_gpio[26];
+	assign mb_control_lo = tag_gpio[25];
+	assign mb_select_lo = tag_gpio[19+:6];
+	assign mb_counter_lo = tag_gpio[11+:8];
+	assign mb_load_lo = tag_gpio[3+:8];
+	assign mb_mode_lo = tag_gpio[0+:3];
 
   // power control
 
@@ -532,7 +529,7 @@ module bsg_gateway
 	assign ASIC_CORE_RESET = clk_reset_lo[0];
     assign ASIC_IO_RESET = clk_reset_lo[1];
     
-//	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
+	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
 	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = clk_set_lo[1];
 //	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
 //	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
@@ -540,7 +537,7 @@ module bsg_gateway
 	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
 	
 
-	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b11;
+//	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
 //	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
 	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b11;
 	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b11;
@@ -554,7 +551,7 @@ module bsg_gateway
 	
 	logic test_output_lo;
 	assign FPGA_LED3 = test_output_lo;
-	logic tag_reset_lo = FG_SW5;
+	logic tag_reset_lo = FG_SW5 | mb_reset_lo;
   
 	bsg_gateway_tag
 	#(.ring_width_p(36)
@@ -564,10 +561,11 @@ module bsg_gateway
 	,.reset_i(tag_reset_lo)
 	,.done_o(done_li)
 	
-	,.mb_control_i()
-	,.mb_osc_i()
-	,.mb_div_i()
-	,.mb_isDiv_i()
+	,.mb_control_i(mb_control_lo)
+    ,.mb_select_i(mb_select_lo)
+	,.mb_counter_i(mb_counter_lo)
+	,.mb_load_i(mb_load_lo)
+	,.mb_mode_i(mb_mode_lo)
   
 	,.clk_set_o(clk_set_lo)
 	,.clk_reset_o(clk_reset_lo)
