@@ -55,6 +55,7 @@ set GW_RTL_FILES [join "
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag_new/bsg_gateway_tag.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag_new/bsg_tag_output.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag_new/bsg_tag_control.v
+  $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag_new/bsg_tag_mb.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_tag_new/wait_cycle_32.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes.v
   $bsg_fpga_ip_dir/bsg_gateway/bsg_gateway_serdes/input_output/bsg_gateway_serdes_channel.v
