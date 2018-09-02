@@ -29,11 +29,16 @@ int gpio_init()
     XGpio_SetDataDirection(&gpio_inst, OUTPUT_CHANNEL, 0x00000000);
 	XGpio_SetDataDirection(&gpio_inst, OUTPUT_CHANNEL_2, 0x00000000);
     // hypothesis: will read from buffer output pin, if 3-state buffer disabled, can not read back, take down
-	output_buf = 0x00000000;
+    
     output_buf_2 = 0xFFFFFFFF;
-    XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
 	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL_2, output_buf_2);
+    
+    output_buf = 0x04000000;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
+    output_buf = 0x00000000;
+	XGpio_DiscreteWrite(&gpio_inst, OUTPUT_CHANNEL, output_buf);
     internal_counter = 0;
+    
     return XST_SUCCESS;
 }
 
