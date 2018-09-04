@@ -64,7 +64,38 @@ set_clock_groups -asynchronous \
   -group {token_d_fdc}
 
 set_false_path -from {c:mb_clk} -to {c:io_master_clk}
+set_false_path -from {c:mb_clk} -to {c:core_clk}
+set_false_path -from {c:mb_clk} -to {c:fast_core_clk}
+set_false_path -from {c:mb_clk} -to {c:clk_2x_clk}
+set_false_path -from {c:mb_clk} -to {c:clk_a_fdc}
+
+set_false_path -from {c:io_master_clk} -to {c:mb_clk}
+set_false_path -from {c:io_master_clk} -to {c:core_clk}
+set_false_path -from {c:io_master_clk} -to {c:fast_core_clk}
 set_false_path -from {c:io_master_clk} -to {c:clk_a_fdc}
+
+set_false_path -from {c:core_clk} -to {c:mb_clk}
+set_false_path -from {c:core_clk} -to {c:io_master_clk}
+set_false_path -from {c:core_clk} -to {c:fast_core_clk}
+set_false_path -from {c:core_clk} -to {c:clk_2x_clk}
+set_false_path -from {c:core_clk} -to {c:clk_a_fdc}
+
+set_false_path -from {c:fast_core_clk} -to {c:mb_clk}
+set_false_path -from {c:fast_core_clk} -to {c:io_master_clk}
+set_false_path -from {c:fast_core_clk} -to {c:core_clk}
+set_false_path -from {c:fast_core_clk} -to {c:clk_2x_clk}
+set_false_path -from {c:fast_core_clk} -to {c:clk_a_fdc}
+
+set_false_path -from {c:clk_2x_clk} -to {c:mb_clk}
+set_false_path -from {c:clk_2x_clk} -to {c:core_clk}
+set_false_path -from {c:clk_2x_clk} -to {c:fast_core_clk}
+set_false_path -from {c:clk_2x_clk} -to {c:clk_a_fdc}
+
+set_false_path -from {c:clk_a_fdc} -to {c:mb_clk}
+set_false_path -from {c:clk_a_fdc} -to {c:io_master_clk}
+set_false_path -from {c:clk_a_fdc} -to {c:core_clk}
+set_false_path -from {c:clk_a_fdc} -to {c:fast_core_clk}
+set_false_path -from {c:clk_a_fdc} -to {c:clk_2x_clk}
 
 # clk osc
 define_attribute {CLK_OSC_P} syn_loc {C13}

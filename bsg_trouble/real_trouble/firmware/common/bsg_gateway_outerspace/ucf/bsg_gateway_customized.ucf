@@ -5,6 +5,4 @@ TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_0_
 NET "gw_serdes/all_ch[0].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_0__ch_input_clk1_lo"; 
 TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_0__ch_input_clk1_lo" 3.810 ns HIGH 50.00%;
 
-TIMESPEC "TS_AOC0_9" = FROM "gw_serdes_all_ch_0__ch_input_clk0_lo" TO "io_clk_li_serdes_0_" 3.810;
-
 TIMESPEC "TS_CLK_2X" = FROM "io_master_clk_lo" TO "clk_2x_lo" 4.762;
