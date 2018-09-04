@@ -7,7 +7,7 @@ set sys_clk_period 6.667
 set io_clk_period 9.524
 set clk_2x_period 4.762
 set core_clk_period 4.762
-set fast_core_clk_period 3.810
+set fast_core_clk_period 4.762
 set io_clk_chip_period 1.905
 
 # Clk DDR Rate

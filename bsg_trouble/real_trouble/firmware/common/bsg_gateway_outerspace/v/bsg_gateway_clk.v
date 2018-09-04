@@ -56,7 +56,7 @@ module bsg_gateway_clk
   // if dcm_mult_lp=7 and dcm_io_master_clk_divide_lp=9,
   // then (int/ext) io_master_clk_o are 66.67MHz
   localparam pll_core_clk_divide_lp = 5;
-  localparam pll_fast_core_clk_divide_lp = 4;
+  localparam pll_fast_core_clk_divide_lp = 5;
   localparam pll_io_master_clk_1x_divide_lp = 10;
   localparam pll_io_master_clk_2x_divide_lp = 5;
   localparam pll_io_serdes_clk_divide_lp = 1;
