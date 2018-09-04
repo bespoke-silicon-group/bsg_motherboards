@@ -6,9 +6,9 @@
 set sys_clk_period 6.667
 set io_clk_period 9.524
 set clk_2x_period 4.762
-set core_clk_period 19.047
-set fast_core_clk_period 3.809
-set io_clk_chip_period 1.9045
+set core_clk_period 4.762
+set fast_core_clk_period 4.762
+set io_clk_chip_period 2.000
 
 # Clk DDR Rate
 set io_ddr_clk_period [expr $io_clk_period*2]
@@ -58,7 +58,7 @@ set_clock_groups -asynchronous \
 #  -group {clk_b_fdc} \
 #  -group {clk_c_fdc} \
 #  -group {clk_d_fdc} \
-  -group {token_a_fdc} \
+  -group {token_a_fdc} 
 #  -group {token_b_fdc} \
 #  -group {token_c_fdc} \
 #  -group {token_d_fdc}
