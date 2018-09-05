@@ -6,9 +6,9 @@
 set sys_clk_period 6.667
 set io_clk_period 9.524
 set clk_2x_period 4.762
-set core_clk_period 4.762
+set core_clk_period 6.667
 set fast_core_clk_period 4.762
-set io_clk_chip_period 1.905
+set io_clk_chip_period 2.000
 
 # Clk DDR Rate
 set io_ddr_clk_period [expr $io_clk_period*2]
