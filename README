@@ -1,4 +1,4 @@
-```
+
 ### Overview ###
 
 Guide for using the BSG board series.
@@ -18,6 +18,8 @@ bsg_rocket
 ### Organization ###
 
 A sample directory structure for bsg_motherboards is:
+
+```
 
 bsg_motherboards
 |
