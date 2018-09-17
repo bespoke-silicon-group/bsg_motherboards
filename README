@@ -1,4 +1,4 @@
-
+```
 ### Overview ###
 
 Guide for using the BSG board series.
@@ -112,4 +112,4 @@ bsg_motherboards
         `-- software                          # all host programs
             `-- trouble_master                # host python program to communicate with board via UART
             
-    
+ ```   
