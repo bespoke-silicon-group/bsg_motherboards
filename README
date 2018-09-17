@@ -67,51 +67,51 @@ A sample directory structure for bsg_motherboards is:
         |   |-- bsg_two_loopback_new
         |   `-- ...
         |
-    `-- super_trouble                         # prototyping platform for Celerity
-        |
-        |-- pcb_development                   # all pcb related file
-        |   |-- pcb_design                    # include schematic, layout and library
-        |   |-- pcb_fabrication               # include stackup information, CAM files and docs related to fab
-        |   `-- pcb_assembly                  # include BOM, component_map and scripts
-        |   
-        |-- firmware                          # all projects available for this board
-        |   |
-        |   |-- common                        # codes same among all projects
-        |   |   |
-        |   |   |-- bsg_gateway               # project-specific files for gateway
-        |   |   |   |-- Makefile
-        |   |   |   |-- fdc
-        |   |   |   |-- tcl
-        |   |   |   |-- trace
-        |   |   |   |-- ucf
-        |   |   |   `-- v
-        |   |   |
-        |   |   `-- bsg_gateway_no_serdes     # slow but scalable gateway design
-        |   |       `-- ...
-        |   |
-        |   |-- bsg_celerity_rocket_loopback  # ml605 project for Celerity testing
-        |   |   |
-        |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
-        |   |   |   
-        |   |   `-- bsg_ml605                 # project-specific files for ml605
-        |   |       |-- Makefile
-        |   |       |-- fdc
-        |   |       |-- tcl
-        |   |       |-- trace
-        |   |       `-- v
-        |   |    
-        |   |-- bsg_celerity_zedboard         # Normal general project for Celerity testing
-        |   |   |
-        |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
-        |   |   |
-        |   |   `-- bsg_zedboard              # project-specific files for zedboard
-        |   |       |-- Makefile
-        |   |       |-- xdc
-        |   |       |-- tcl
-        |   |       `-- v  
-        |   `-- ...
-        |
-        `-- software                          # all host programs
-            `-- trouble_master                # host python program to communicate with board via UART
+        `-- super_trouble                         # prototyping platform for Celerity
+            |
+            |-- pcb_development                   # all pcb related file
+            |   |-- pcb_design                    # include schematic, layout and library
+            |   |-- pcb_fabrication               # include stackup information, CAM files and docs related to fab
+            |   `-- pcb_assembly                  # include BOM, component_map and scripts
+            |   
+            |-- firmware                          # all projects available for this board
+            |   |
+            |   |-- common                        # codes same among all projects
+            |   |   |
+            |   |   |-- bsg_gateway               # project-specific files for gateway
+            |   |   |   |-- Makefile
+            |   |   |   |-- fdc
+            |   |   |   |-- tcl
+            |   |   |   |-- trace
+            |   |   |   |-- ucf
+            |   |   |   `-- v
+            |   |   |
+            |   |   `-- bsg_gateway_no_serdes     # slow but scalable gateway design
+            |   |       `-- ...
+            |   |
+            |   |-- bsg_celerity_rocket_loopback  # ml605 project for Celerity testing
+            |   |   |
+            |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
+            |   |   |   
+            |   |   `-- bsg_ml605                 # project-specific files for ml605
+            |   |       |-- Makefile
+            |   |       |-- fdc
+            |   |       |-- tcl
+            |   |       |-- trace
+            |   |       `-- v
+            |   |    
+            |   |-- bsg_celerity_zedboard         # Normal general project for Celerity testing
+            |   |   |
+            |   |   |-- Makefile                  # Makefile for the project, can choose using serdes or not
+            |   |   |
+            |   |   `-- bsg_zedboard              # project-specific files for zedboard
+            |   |       |-- Makefile
+            |   |       |-- xdc
+            |   |       |-- tcl
+            |   |       `-- v  
+            |   `-- ...
+            |
+            `-- software                          # all host programs
+                `-- trouble_master                # host python program to communicate with board via UART
             
    
