@@ -23,8 +23,6 @@ A sample directory structure for bsg_motherboards is:
 
     bsg_motherboards
     |
-    |-- cloud_series
-    |
     `-- trouble_series
         |
         |-- common                                # Shared by double, real and super trouble
