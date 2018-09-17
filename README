@@ -19,54 +19,54 @@ bsg_rocket
 
 A sample directory structure for bsg_motherboards is:
 
-```
 
-bsg_motherboards
-|
-|-- cloud_series
-|
-`-- trouble_series
+
+    bsg_motherboards
     |
-    |-- common                                # Shared by double, real and super trouble
-    |    |
-    |    |-- document                         # all docs needed
-    |    |    |-- datasheet
-    |    |    `-- fpga_ref
-    |    |
-    |    `-- ip                               # shared ip blocks (similar to current ip dir in bsg_fpga repo)
-    |         |                               
-    |         |-- bsg_gateway                 # The gateway library
-    |         |   |-- bsg_gateway_fmc
-    |         |   |-- bsg_gateway_chipscope
-    |         |   |-- bsg_gateway_serdes
-    |         |   |-- bsg_gateway_tag
-    |         |   |-- bsg_gateway_pll
-    |         |   |-- bsg_gateway_microblaze
-    |         |   `-- ...
-    |         |
-    |         |-- bsg_ml605                   # The ml605 library
-    |         |   |-- bsg_ml605_fmc
-    |         |   |-- bsg_ml605_chipscope
-    |         |   `-- ...    
-    |         |   
-    |         `-- bsg_zedboard                # The zedboard library
-    |             |-- bsg_zedboard_fmc
-    |             |-- bsg_zedboard_rocket
-    |             `-- ...            
+    |-- cloud_series
     |
-    |-- double_trouble                        # ASIC emulation platform
-    |   |-- common
-    |   |-- bsg_one_loopback
-    |   |-- bsg_two_loopback_new
-    |   |-- bsg_rocket_baseline
-    |   |-- bsg_two_coyote_accum
-    |   `-- ...
-    |
-    |-- real_trouble                          # prototyping platform for BSX
-    |   |-- common
-    |   |-- bsg_two_loopback_new
-    |   `-- ...
-    |
+    `-- trouble_series
+        |
+        |-- common                                # Shared by double, real and super trouble
+        |    |
+        |    |-- document                         # all docs needed
+        |    |    |-- datasheet
+        |    |    `-- fpga_ref
+        |    |
+        |    `-- ip                               # shared ip blocks (similar to current ip dir in bsg_fpga repo)
+        |         |                               
+        |         |-- bsg_gateway                 # The gateway library
+        |         |   |-- bsg_gateway_fmc
+        |         |   |-- bsg_gateway_chipscope
+        |         |   |-- bsg_gateway_serdes
+        |         |   |-- bsg_gateway_tag
+        |         |   |-- bsg_gateway_pll
+        |         |   |-- bsg_gateway_microblaze
+        |         |   `-- ...
+        |         |
+        |         |-- bsg_ml605                   # The ml605 library
+        |         |   |-- bsg_ml605_fmc
+        |         |   |-- bsg_ml605_chipscope
+        |         |   `-- ...    
+        |         |   
+        |         `-- bsg_zedboard                # The zedboard library
+        |             |-- bsg_zedboard_fmc
+        |             |-- bsg_zedboard_rocket
+        |             `-- ...            
+        |
+        |-- double_trouble                        # ASIC emulation platform
+        |   |-- common
+        |   |-- bsg_one_loopback
+        |   |-- bsg_two_loopback_new
+        |   |-- bsg_rocket_baseline
+        |   |-- bsg_two_coyote_accum
+        |   `-- ...
+        |
+        |-- real_trouble                          # prototyping platform for BSX
+        |   |-- common
+        |   |-- bsg_two_loopback_new
+        |   `-- ...
+        |
     `-- super_trouble                         # prototyping platform for Celerity
         |
         |-- pcb_development                   # all pcb related file
@@ -114,4 +114,4 @@ bsg_motherboards
         `-- software                          # all host programs
             `-- trouble_master                # host python program to communicate with board via UART
             
- ```   
+   
