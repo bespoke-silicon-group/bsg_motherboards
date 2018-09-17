@@ -55,17 +55,10 @@ A sample directory structure for bsg_motherboards is:
         |             `-- ...            
         |
         |-- double_trouble                        # ASIC emulation platform
-        |   |-- common
-        |   |-- bsg_one_loopback
-        |   |-- bsg_two_loopback_new
-        |   |-- bsg_rocket_baseline
-        |   |-- bsg_two_coyote_accum
-        |   `-- ...
+        |   `-- (see super_trouble hierachy)
         |
         |-- real_trouble                          # prototyping platform for BSX
-        |   |-- common
-        |   |-- bsg_two_loopback_new
-        |   `-- ...
+        |   `-- (see super_trouble hierachy)
         |
         `-- super_trouble                         # prototyping platform for Celerity
             |
@@ -112,6 +105,7 @@ A sample directory structure for bsg_motherboards is:
             |   `-- ...
             |
             `-- software                          # all host programs
-                `-- trouble_master                # host python program to communicate with board via UART
-            
+            |    `-- trouble_master               # host python program to communicate with board via UART
+            |
+            `-- misc_docs                         # misc docs for supertrouble
    
