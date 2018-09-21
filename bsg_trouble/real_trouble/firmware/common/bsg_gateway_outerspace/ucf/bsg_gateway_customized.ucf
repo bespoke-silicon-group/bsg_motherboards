@@ -1,0 +1,8 @@
+
+
+NET "gw_serdes/all_ch[0].ch_input/clk0_lo" TNM_NET = "gw_serdes_all_ch_0__ch_input_clk0_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk0_lo" = PERIOD "gw_serdes_all_ch_0__ch_input_clk0_lo" 4.000 ns HIGH 50.00%;
+NET "gw_serdes/all_ch[0].ch_input/clk1_lo" TNM_NET = "gw_serdes_all_ch_0__ch_input_clk1_lo"; 
+TIMESPEC "TS_gw_serdes_all_ch_0__ch_input_clk1_lo" = PERIOD "gw_serdes_all_ch_0__ch_input_clk1_lo" 4.000 ns HIGH 50.00%;
+
+TIMESPEC "TS_CLK_2X" = FROM "io_master_clk_lo" TO "clk_2x_lo" 4.762;

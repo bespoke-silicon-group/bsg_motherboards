@@ -40,20 +40,36 @@ module bsg_gateway
   // -------- ASIC --------
 
   // asic clk control
-  ,output ASIC_CLK_OUT
   ,output ASIC_CLK_SET_1
   ,output ASIC_CLK_SET_0
-  ,input ASIC_CLK
+  ,input  ASIC_CLK
+  ,output ASIC_CLK_SMA
+  
+  ,output ASIC_CORE_SET_1
+  ,output ASIC_CORE_SET_0
+  ,output ASIC_CORE_RESET
+  ,output MSTR_SDO_CLK
   
   ,output ASIC_IO_SET_1
   ,output ASIC_IO_SET_0
   ,output ASIC_IO_RESET
   ,output PLL_CLK_I
   
-  ,output ASIC_CORE_SET_1
-  ,output ASIC_CORE_SET_0
-  ,output ASIC_CORE_RESET
-  ,output MSTR_SDO_CLK
+  ,output ASIC_DFI2X_SET_1
+  ,output ASIC_DFI2X_SET_0
+  ,output ASIC_DFI2X_CLK
+  
+  ,output ASIC_DRLP_SET_1
+  ,output ASIC_DRLP_SET_0
+  ,output ASIC_DRLP_CLK
+  
+  ,output ASIC_FSB_SET_1
+  ,output ASIC_FSB_SET_0
+  ,output ASIC_FSB_CLK
+  
+  ,output ASIC_OP_SET_1
+  ,output ASIC_OP_SET_0
+  ,output ASIC_OP_CLK
   
   ,output ASIC_TAG_TCK
   ,output ASIC_TAG_TDI
@@ -67,38 +83,38 @@ module bsg_gateway
   // channel clk in
   ,input AOC0, BOC0, COC0, DOC0
   // channel valid in
-  ,input AOD8, BOD8, COD8, DOD8
+  ,input AOD8
   // channel data in
   //      A     B     C     D
-  ,input AOD0, BOD0, COD0, DOD0
-  ,input AOD1, BOD1, COD1, DOD1
-  ,input AOD2, BOD2, COD2, DOD2
-  ,input AOD3, BOD3, COD3, DOD3
-  ,input AOD4, BOD4, COD4, DOD4
-  ,input AOD5, BOD5, COD5, DOD5
-  ,input AOD6, BOD6, COD6, DOD6
-  ,input AOD7, BOD7, COD7, DOD7
+  ,input AOD0
+  ,input AOD1
+  ,input AOD2
+  ,input AOD3
+  ,input AOD4
+  ,input AOD5
+  ,input AOD6
+  ,input AOD7
   // channel token out
-  ,output AOT0, BOT0, COT0, DOT0
+  ,output AOT0
 
   // channel out
 
   // channel clk out
-  ,output AIC0, BIC0, CIC0, DIC0
+  ,output AIC0
   // channel valid out
-  ,output AID8, BID8, CID8, DID8
+  ,output AID8
   // channel data out
   //       A     B     C     D
-  ,output AID0, BID0, CID0, DID0
-  ,output AID1, BID1, CID1, DID1
-  ,output AID2, BID2, CID2, DID2
-  ,output AID3, BID3, CID3, DID3
-  ,output AID4, BID4, CID4, DID4
-  ,output AID5, BID5, CID5, DID5
-  ,output AID6, BID6, CID6, DID6
-  ,output AID7, BID7, CID7, DID7
+  ,output AID0
+  ,output AID1
+  ,output AID2
+  ,output AID3
+  ,output AID4
+  ,output AID5
+  ,output AID6
+  ,output AID7
   // channel token in
-  ,input AIT0, BIT0, CIT0, DIT0
+  ,input AIT0
 
   // -------- FMC --------
   // see bsg_gateway_fmc.v for notes on FMC usage.
@@ -176,33 +192,32 @@ module bsg_gateway
 	// serdes clk
 	,.io_serdes_clk_o(io_serdes_clk_lo)
 	,.io_strobe_o(io_strobe_lo)
+    // ext clk
+    ,.ext_core_clk_o(MSTR_SDO_CLK)
+    ,.ext_io_clk_o(PLL_CLK_I)
+    ,.ext_fsb_clk_o(ASIC_FSB_CLK)
+    ,.ext_op_clk_o(ASIC_OP_CLK)
     // locked
     ,.locked_o(locked_lo));
 	
-	assign PLL_CLK_I = 1'b0;
-	assign MSTR_SDO_CLK = 1'b0;
-	
-	
+	logic mb_reset_lo;
 	logic mb_control_lo;
-	logic [4:0] mb_io_osc_lo;
-	logic [7:0] mb_io_div_lo;
-	logic mb_io_isDiv_lo;
-	logic [4:0] mb_core_osc_lo;
-	logic [7:0] mb_core_div_lo;
-	logic mb_core_isDiv_lo;
+	logic [5:0] mb_select_lo;
+	logic [7:0] mb_counter_lo;
+	logic [7:0] mb_load_lo;
+	logic [2:0] mb_mode_lo;
 
 `ifndef SIMULATION
 
 	// bsg_tag_gpio
 	logic [31:0] tag_gpio;
 	
-	assign mb_control_lo = tag_gpio[0];
-	assign mb_io_osc_lo = tag_gpio[1+:5];
-	assign mb_io_div_lo = tag_gpio[6+:8];
-	assign mb_io_isDiv_lo = tag_gpio[14];
-	assign mb_core_osc_lo = tag_gpio[15+:5];
-	assign mb_core_div_lo = tag_gpio[20+:8];
-	assign mb_core_isDiv_lo = tag_gpio[28];
+    assign mb_reset_lo = tag_gpio[26];
+	assign mb_control_lo = tag_gpio[25];
+	assign mb_select_lo = tag_gpio[19+:6];
+	assign mb_counter_lo = tag_gpio[11+:8];
+	assign mb_load_lo = tag_gpio[3+:8];
+	assign mb_mode_lo = tag_gpio[0+:3];
 
   // power control
 
@@ -396,35 +411,36 @@ module bsg_gateway
   // SERDES
 	bsg_gateway_serdes #
 	(.width(5)
-	,.tap_array({8'd72, 8'd72, 8'd74, 8'd71}))
+    ,.num_channel(1)
+	,.tap_array({8'd71}))
 	gw_serdes
 	(.io_master_clk_i(io_master_clk_lo)
 	,.clk_2x_i(clk_2x_lo)
-	,.io_serdes_clk_i(io_serdes_clk_lo)
-	,.io_strobe_i(io_strobe_lo)
+	,.io_serdes_clk_i(io_serdes_clk_lo[0])
+	,.io_strobe_i(io_strobe_lo[0])
 	,.core_calib_done_i(bcl_core_calib_done_lo)
 
-	,.data_output_i(`BSG_SWIZZLE_3120(bcl_im_data_lo))
-	,.valid_output_i(`BSG_SWIZZLE_3120(bcl_im_valid_lo))
-	,.token_input_o(`BSG_SWIZZLE_3120(token_clk_li))
+	,.data_output_i(bcl_im_data_lo[0]) //swizzle
+	,.valid_output_i(bcl_im_valid_lo[0]) //swizzle
+	,.token_input_o(token_clk_li[0]) //swizzle
 
-	,.clk_output_o(bcl_im_clk_lo_serdes)
-	,.data_output_o(bcl_im_data_lo_serdes)
-	,.valid_output_o(bcl_im_valid_lo_serdes)
-	,.token_input_i(token_clk_li_serdes)
+	,.clk_output_o(bcl_im_clk_lo_serdes[0])
+	,.data_output_o(bcl_im_data_lo_serdes[0])
+	,.valid_output_o(bcl_im_valid_lo_serdes[0])
+	,.token_input_i(token_clk_li_serdes[0])
 	
-	,.raw_clk0_i(io_clk0_li)
-	,.div_clk_o(io_clk_li_serdes)
+	,.raw_clk0_i(io_clk0_li[0])
+	,.div_clk_o(io_clk_li_serdes[0])
 
-	,.data_input_i(io_data_li)
-	,.valid_input_i(io_valid_li)
-	,.token_output_o(bcl_io_token_lo)
+	,.data_input_i(io_data_li[0])
+	,.valid_input_i(io_valid_li[0])
+	,.token_output_o(bcl_io_token_lo[0])
 
-	,.data_input_0_o(io_data_0_li_serdes)
-	,.data_input_1_o(io_data_1_li_serdes)
-	,.valid_input_0_o(io_valid_0_li_serdes)
-	,.valid_input_1_o(io_valid_1_li_serdes)
-	,.token_output_i(bcl_io_token_lo_serdes));
+	,.data_input_0_o(io_data_0_li_serdes[0])
+	,.data_input_1_o(io_data_1_li_serdes[0])
+	,.valid_input_0_o(io_valid_0_li_serdes[0])
+	,.valid_input_1_o(io_valid_1_li_serdes[0])
+	,.token_output_i(bcl_io_token_lo_serdes[0]));
 	
   // common_link
   bsg_comm_link_serdes #
@@ -470,29 +486,29 @@ module bsg_gateway
 
   // channel in
 
-  assign io_clk0_li = {DOC0, COC0, BOC0, AOC0};
+  assign io_clk0_li = {1'b0, 1'b0, 1'b0, AOC0};
 
-  assign io_valid_li = {DOD8, COD8, BOD8, AOD8};
+  assign io_valid_li = {1'b0, 1'b0, 1'b0, AOD8};
 
-  assign io_data_li = {{DOD7, DOD6, DOD5, DOD4, DOD3, DOD2, DOD1, DOD0}
-                           ,{COD7, COD6, COD5, COD4, COD3, COD2, COD1, COD0}
-                           ,{BOD7, BOD6, BOD5, BOD4, BOD3, BOD2, BOD1, BOD0}
+  assign io_data_li = {{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
+                           ,{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
+                           ,{1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0, 1'b0}
                            ,{AOD7, AOD6, AOD5, AOD4, AOD3, AOD2, AOD1, AOD0}};
 
-  assign {DOT0, COT0, BOT0, AOT0} = bcl_io_token_lo;
+  assign AOT0 = bcl_io_token_lo[0];
 
   // channel out
 
-  assign {DIC0, CIC0, BIC0, AIC0} = bcl_im_clk_lo_serdes;
+  assign AIC0 = bcl_im_clk_lo_serdes[0];
 
-  assign {DID8, CID8, BID8, AID8} = bcl_im_valid_lo_serdes;
+  assign AID8 = bcl_im_valid_lo_serdes[0];
 
-  assign {DID7, DID6, DID5, DID4, DID3, DID2, DID1, DID0} = bcl_im_data_lo_serdes[3];
-  assign {CID7, CID6, CID5, CID4, CID3, CID2, CID1, CID0} = bcl_im_data_lo_serdes[2];
-  assign {BID7, BID6, BID5, BID4, BID3, BID2, BID1, BID0} = bcl_im_data_lo_serdes[1];
+  //assign {DID7, DID6, DID5, DID4, DID3, DID2, DID1, DID0} = bcl_im_data_lo_serdes[3];
+  //assign {CID7, CID6, CID5, CID4, CID3, CID2, CID1, CID0} = bcl_im_data_lo_serdes[2];
+  //assign {BID7, BID6, BID5, BID4, BID3, BID2, BID1, BID0} = bcl_im_data_lo_serdes[1];
   assign {AID7, AID6, AID5, AID4, AID3, AID2, AID1, AID0} = bcl_im_data_lo_serdes[0];
 
-  assign token_clk_li_serdes = {DIT0, CIT0, BIT0, AIT0};
+  assign token_clk_li_serdes = {1'b0, 1'b0, 1'b0,  AIT0};
 
   // reset for asic
   assign Q7 = bcl_slave_reset_lo;
@@ -504,46 +520,55 @@ module bsg_gateway
   // Set bsg tag clock test pin output mode
   assign ASIC_CLK_SET_1 = FG_SW7;
   assign ASIC_CLK_SET_0 = FG_SW6;
+  assign ASIC_CLK_SMA = ASIC_CLK;
   
   // For testing bsg tag
-	logic io_reset_lo;
-	logic [1:0] io_set_lo;
-	assign ASIC_IO_RESET = io_reset_lo;
-	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = io_set_lo;
+	logic [5:0] clk_reset_lo;
+	logic [1:0] clk_set_lo [5:0];
+    
+	assign ASIC_CORE_RESET = clk_reset_lo[0];
+    assign ASIC_IO_RESET = clk_reset_lo[1];
+    
+	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = clk_set_lo[0];
+	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = clk_set_lo[1];
+//	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = clk_set_lo[2];
+//	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = clk_set_lo[3];
+	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = clk_set_lo[4];
+	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = clk_set_lo[5];
 	
-	logic core_reset_lo;
-	logic [1:0] core_set_lo;
-	assign ASIC_CORE_RESET = core_reset_lo;
-	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = core_set_lo;
-	
+
+//	assign {ASIC_CORE_SET_1, ASIC_CORE_SET_0} = 2'b10;
+//	assign {ASIC_IO_SET_1, ASIC_IO_SET_0} = 2'b10;
+	assign {ASIC_DFI2X_SET_1, ASIC_DFI2X_SET_0} = 2'b11;
+	assign {ASIC_DRLP_SET_1, ASIC_DRLP_SET_0} = 2'b11;
+//	assign {ASIC_FSB_SET_1, ASIC_FSB_SET_0} = 2'b10;
+//	assign {ASIC_OP_SET_1, ASIC_OP_SET_0} = 2'b10;
+
+    
 	logic tag_tdi_lo, tag_tms_lo;
 	assign ASIC_TAG_TDI = tag_tdi_lo;
 	assign ASIC_TAG_TMS = tag_tms_lo;
 	
 	logic test_output_lo;
 	assign FPGA_LED3 = test_output_lo;
-	
-	logic fmc_tag_reset_lo = (FG_SW5)? gateway_reset_lo : 0;
+	logic tag_reset_lo = FG_SW5 | mb_reset_lo;
   
 	bsg_gateway_tag
-	#(.ring_width_p(36))
+	#(.ring_width_p(36)
+     ,.num_clk_p(6))
+    tag_inst
 	(.clk_i(mb_clk_lo)
-	,.reset_i(fmc_tag_reset_lo)
+	,.reset_i(tag_reset_lo)
 	,.done_o(done_li)
 	
 	,.mb_control_i(mb_control_lo)
-	,.mb_io_osc_i(mb_io_osc_lo)
-	,.mb_io_div_i(mb_io_div_lo)
-	,.mb_io_isDiv_i(mb_io_isDiv_lo)
-	,.mb_core_osc_i(mb_core_osc_lo)
-	,.mb_core_div_i(mb_core_div_lo)
-	,.mb_core_isDiv_i(mb_core_isDiv_lo)
+    ,.mb_select_i(mb_select_lo)
+	,.mb_counter_i(mb_counter_lo)
+	,.mb_load_i(mb_load_lo)
+	,.mb_mode_i(mb_mode_lo)
   
-	,.io_set_o(io_set_lo)
-	,.io_reset_o(io_reset_lo)
-
-	,.core_set_o(core_set_lo)
-	,.core_reset_o(core_reset_lo)
+	,.clk_set_o(clk_set_lo)
+	,.clk_reset_o(clk_reset_lo)
 
 	,.tag_tdi_o(tag_tdi_lo)
 	,.tag_tms_o(tag_tms_lo)

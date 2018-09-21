@@ -1,0 +1,188 @@
+#------------------------------------------------------------
+# University of California, San Diego - Bespoke Systems Group
+#------------------------------------------------------------
+# File: board_ctrl.mhs
+#
+# Authors: Luis Vega - lvgutierrez@eng.ucsd.edu
+#------------------------------------------------------------
+
+PARAMETER VERSION = 2.1.0
+
+PORT RESET = RESET, DIR = I, SIGIS = RST, RST_POLARITY = 0
+PORT CLK_50 = CLK_50, DIR = I, SIGIS = CLK, CLK_FREQ = 50000000
+PORT CLK_LOCKED = CLK_LOCKED, DIR = I
+PORT axi_iic_dig_pot_Gpo_pin = axi_iic_dig_pot_Gpo, DIR = O
+PORT axi_iic_dig_pot_Sda_pin = axi_iic_dig_pot_Sda, DIR = IO
+PORT axi_iic_dig_pot_Scl_pin = axi_iic_dig_pot_Scl, DIR = IO
+PORT axi_iic_dig_pot_pll_Gpo_pin = axi_iic_dig_pot_pll_Gpo, DIR = O
+PORT axi_iic_dig_pot_pll_Sda_pin = axi_iic_dig_pot_pll_Sda, DIR = IO
+PORT axi_iic_dig_pot_pll_Scl_pin = axi_iic_dig_pot_pll_Scl, DIR = IO
+PORT axi_iic_cur_mon_Gpo_pin = axi_iic_cur_mon_Gpo, DIR = O
+PORT axi_iic_cur_mon_Sda_pin = axi_iic_cur_mon_Sda, DIR = IO
+PORT axi_iic_cur_mon_Scl_pin = axi_iic_cur_mon_Scl, DIR = IO
+PORT axi_uartlite_0_RX_pin = axi_uartlite_0_RX, DIR = I
+PORT axi_uartlite_0_TX_pin = axi_uartlite_0_TX, DIR = O
+PORT axi_gpio_0_GPIO_IO_O_pin = axi_gpio_0_GPIO_IO_O_0, DIR = O, VEC = [31:0]
+PORT axi_gpio_0_GPIO2_IO_O_pin = axi_gpio_0_GPIO2_IO_O_0, DIR = O, VEC = [31:0]
+
+BEGIN proc_sys_reset
+ PARAMETER INSTANCE = proc_sys_reset_0
+ PARAMETER HW_VER = 3.00.a
+ PARAMETER C_EXT_RESET_HIGH = 0
+ PORT MB_Debug_Sys_Rst = proc_sys_reset_0_MB_Debug_Sys_Rst
+ PORT Dcm_locked = CLK_LOCKED
+ PORT MB_Reset = proc_sys_reset_0_MB_Reset
+ PORT Slowest_sync_clk = CLK_50
+ PORT Interconnect_aresetn = proc_sys_reset_0_Interconnect_aresetn
+ PORT Ext_Reset_In = RESET
+ PORT BUS_STRUCT_RESET = proc_sys_reset_0_BUS_STRUCT_RESET
+END
+
+BEGIN lmb_v10
+ PARAMETER INSTANCE = microblaze_0_ilmb
+ PARAMETER HW_VER = 2.00.b
+ PORT SYS_RST = proc_sys_reset_0_BUS_STRUCT_RESET
+ PORT LMB_CLK = CLK_50
+END
+
+BEGIN lmb_bram_if_cntlr
+ PARAMETER INSTANCE = microblaze_0_i_bram_ctrl
+ PARAMETER HW_VER = 3.10.c
+ PARAMETER C_BASEADDR = 0x00000000
+ PARAMETER C_HIGHADDR = 0x00007fff
+ BUS_INTERFACE SLMB = microblaze_0_ilmb
+ BUS_INTERFACE BRAM_PORT = microblaze_0_i_bram_ctrl_2_microblaze_0_bram_block
+END
+
+BEGIN lmb_v10
+ PARAMETER INSTANCE = microblaze_0_dlmb
+ PARAMETER HW_VER = 2.00.b
+ PORT SYS_RST = proc_sys_reset_0_BUS_STRUCT_RESET
+ PORT LMB_CLK = CLK_50
+END
+
+BEGIN lmb_bram_if_cntlr
+ PARAMETER INSTANCE = microblaze_0_d_bram_ctrl
+ PARAMETER HW_VER = 3.10.c
+ PARAMETER C_BASEADDR = 0x00000000
+ PARAMETER C_HIGHADDR = 0x00007fff
+ BUS_INTERFACE SLMB = microblaze_0_dlmb
+ BUS_INTERFACE BRAM_PORT = microblaze_0_d_bram_ctrl_2_microblaze_0_bram_block
+END
+
+BEGIN bram_block
+ PARAMETER INSTANCE = microblaze_0_bram_block
+ PARAMETER HW_VER = 1.00.a
+ BUS_INTERFACE PORTA = microblaze_0_i_bram_ctrl_2_microblaze_0_bram_block
+ BUS_INTERFACE PORTB = microblaze_0_d_bram_ctrl_2_microblaze_0_bram_block
+END
+
+BEGIN microblaze
+ PARAMETER INSTANCE = microblaze_0
+ PARAMETER HW_VER = 8.50.c
+ PARAMETER C_INTERCONNECT = 2
+ PARAMETER C_USE_BARREL = 1
+ PARAMETER C_USE_FPU = 0
+ PARAMETER C_DEBUG_ENABLED = 1
+ PARAMETER C_ICACHE_BASEADDR = 0X00000000
+ PARAMETER C_ICACHE_HIGHADDR = 0X3FFFFFFF
+ PARAMETER C_USE_ICACHE = 0
+ PARAMETER C_ICACHE_ALWAYS_USED = 0
+ PARAMETER C_DCACHE_BASEADDR = 0X00000000
+ PARAMETER C_DCACHE_HIGHADDR = 0X3FFFFFFF
+ PARAMETER C_USE_DCACHE = 0
+ PARAMETER C_DCACHE_ALWAYS_USED = 0
+ BUS_INTERFACE ILMB = microblaze_0_ilmb
+ BUS_INTERFACE DLMB = microblaze_0_dlmb
+ BUS_INTERFACE M_AXI_DP = axi4lite_0
+ BUS_INTERFACE DEBUG = microblaze_0_debug
+ PORT MB_RESET = proc_sys_reset_0_MB_Reset
+ PORT CLK = CLK_50
+END
+
+BEGIN mdm
+ PARAMETER INSTANCE = debug_module
+ PARAMETER HW_VER = 2.10.a
+ PARAMETER C_INTERCONNECT = 2
+ PARAMETER C_USE_UART = 1
+ PARAMETER C_BASEADDR = 0x41400000
+ PARAMETER C_HIGHADDR = 0x4140ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ BUS_INTERFACE MBDEBUG_0 = microblaze_0_debug
+ PORT Debug_SYS_Rst = proc_sys_reset_0_MB_Debug_Sys_Rst
+ PORT S_AXI_ACLK = CLK_50
+END
+
+BEGIN axi_interconnect
+ PARAMETER INSTANCE = axi4lite_0
+ PARAMETER HW_VER = 1.06.a
+ PARAMETER C_INTERCONNECT_CONNECTIVITY_MODE = 0
+ PORT interconnect_aclk = CLK_50
+ PORT INTERCONNECT_ARESETN = proc_sys_reset_0_Interconnect_aresetn
+END
+
+BEGIN axi_gpio
+ PARAMETER INSTANCE = axi_gpio_0
+ PARAMETER HW_VER = 1.01.b
+ PARAMETER C_IS_DUAL = 1
+ PARAMETER C_GPIO_WIDTH = 32
+ PARAMETER C_GPIO2_WIDTH = 32
+ PARAMETER C_BASEADDR = 0x40000000
+ PARAMETER C_HIGHADDR = 0x4000ffff
+ PARAMETER C_DOUT_DEFAULT = 0x00000000
+ PARAMETER C_TRI_DEFAULT = 0x00000000
+ PARAMETER C_DOUT_DEFAULT_2 = 0xffffffff
+ PARAMETER C_TRI_DEFAULT_2 = 0x00000000
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = CLK_50
+ PORT GPIO2_IO_O = axi_gpio_0_GPIO2_IO_O_0
+ PORT GPIO_IO_O = axi_gpio_0_GPIO_IO_O_0
+END
+
+BEGIN axi_iic
+ PARAMETER INSTANCE = axi_iic_dig_pot
+ PARAMETER HW_VER = 1.02.a
+ PARAMETER C_BASEADDR = 0x40800000
+ PARAMETER C_HIGHADDR = 0x4080ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = CLK_50
+ PORT Gpo = axi_iic_dig_pot_Gpo
+ PORT Sda = axi_iic_dig_pot_Sda
+ PORT Scl = axi_iic_dig_pot_Scl
+END
+
+BEGIN axi_iic
+ PARAMETER INSTANCE = axi_iic_dig_pot_pll
+ PARAMETER HW_VER = 1.02.a
+ PARAMETER C_BASEADDR = 0x40820000
+ PARAMETER C_HIGHADDR = 0x4082ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = CLK_50
+ PORT Gpo = axi_iic_dig_pot_pll_Gpo
+ PORT Sda = axi_iic_dig_pot_pll_Sda
+ PORT Scl = axi_iic_dig_pot_pll_Scl
+END
+
+BEGIN axi_iic
+ PARAMETER INSTANCE = axi_iic_cur_mon
+ PARAMETER HW_VER = 1.02.a
+ PARAMETER C_BASEADDR = 0x40840000
+ PARAMETER C_HIGHADDR = 0x4084ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = CLK_50
+ PORT Gpo = axi_iic_cur_mon_Gpo
+ PORT Sda = axi_iic_cur_mon_Sda
+ PORT Scl = axi_iic_cur_mon_Scl
+END
+
+BEGIN axi_uartlite
+ PARAMETER INSTANCE = axi_uartlite_0
+ PARAMETER HW_VER = 1.02.a
+ PARAMETER C_BAUDRATE = 115200
+ PARAMETER C_BASEADDR = 0x40600000
+ PARAMETER C_HIGHADDR = 0x4060ffff
+ BUS_INTERFACE S_AXI = axi4lite_0
+ PORT S_AXI_ACLK = CLK_50
+ PORT RX = axi_uartlite_0_RX
+ PORT TX = axi_uartlite_0_TX
+END
