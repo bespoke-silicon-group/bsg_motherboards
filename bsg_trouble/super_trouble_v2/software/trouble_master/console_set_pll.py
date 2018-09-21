@@ -40,6 +40,10 @@ def pll_prog_pll_2():
 def pll_prog_pll_3():
     myFile = open("bsg_gateway_trace_pll_3.in","r")
     pll_prog_pll(myFile, cmd_map['CMD_PROG_PLL_3'])
+    
+def pll_prog_pll_shmoo(i):
+    myFile = open("shmoo/"+str(i)+".in","r")
+    pll_prog_pll(myFile, cmd_map['CMD_PROG_PLL_3'])    
 
 def pll_run_tests():
     i = 1
@@ -61,6 +65,9 @@ prompt_pll = '''
 2. Program PLL 2
 3. Program PLL 3
 4. Run PLL Tests
+-------------------------------------------------
+49-54, 57-62, 65-66, 73-82: manycore shmoo plot
+-------------------------------------------------
 0. Return
 -------------------- Trouble Master --------------------
 '''
@@ -79,6 +86,8 @@ def console_set_pll():
                 pll_prog_pll_3()
             if (cmd == 4):
                 pll_run_tests()
+            if (cmd >= 49 and cmd <= 82):
+                pll_prog_pll_shmoo(cmd)
             elif (cmd == 0):
                 return;
         except:

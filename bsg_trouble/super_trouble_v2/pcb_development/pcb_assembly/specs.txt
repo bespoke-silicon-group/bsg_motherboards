@@ -1,0 +1,7 @@
+X: 6.102
+Y: 2.795
+
+Lines:77
+TH: 39
+SMT: 391
+Lead-less: 9

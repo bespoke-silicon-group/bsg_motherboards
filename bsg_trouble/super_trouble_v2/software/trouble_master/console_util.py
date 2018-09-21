@@ -6,7 +6,7 @@
 # Created by Shengye Wang <shengye@ucsd.edu>
 
 import serial
-ser = serial.Serial('COM5', 115200, timeout=1)
+ser = serial.Serial('COM9', 115200, timeout=1)
 
 cmd_map = { 'CMD_VER':0x00,
             'CMD_DESC':'~',

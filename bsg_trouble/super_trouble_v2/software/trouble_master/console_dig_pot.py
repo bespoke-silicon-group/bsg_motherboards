@@ -12,16 +12,16 @@ def set_allow_token(token):
     ser.write(cmd)
     return check_cmd_return()
 
-def calc_pot_res(voltage):
-    res = int((float(voltage) / 0.5 * 1 - 1) / 10 * 256)
+def calc_pot_res(voltage, r2):
+    res = int((float(voltage) / 0.7 - 1) * r2 / 10 * 255)
     return res
 
-def clac_pot_voltage(res):
-    voltage = (res / 256.0 * 10 + 1) * (0.5 / 1)
+def clac_pot_voltage(res, r2):
+    voltage = (res / 255.0 * 10 / r2 + 1) * 0.7
     return voltage
 
 def set_core_voltage(voltage):
-    cmd = bytearray([cmd_map['CMD_POWER_CORE_SET'], calc_pot_res(voltage)])
+    cmd = bytearray([cmd_map['CMD_POWER_CORE_SET'], calc_pot_res(voltage, 10)])
     ser.write(cmd)
     return check_cmd_return()
 
@@ -37,12 +37,12 @@ def check_core_voltage():
     ser.write([cmd_map['CMD_POWER_CORE_READ']]);
     if check_cmd_return() == CMD_RTN_RESPONSE:
         res = ord(ser.read())
-        voltage = clac_pot_voltage(res)
+        voltage = clac_pot_voltage(res, 10)
         print 'The core voltage is set to %.4fV.' % voltage
     return check_cmd_return()
 
 def set_io_voltage(voltage):
-    cmd = bytearray([cmd_map['CMD_POWER_IO_SET'], calc_pot_res(voltage)])
+    cmd = bytearray([cmd_map['CMD_POWER_IO_SET'], calc_pot_res(voltage, 2.7)])
     ser.write(cmd)
     return check_cmd_return()
 
@@ -58,12 +58,12 @@ def check_io_voltage():
     ser.write([cmd_map['CMD_POWER_IO_READ']]);
     if check_cmd_return() == CMD_RTN_RESPONSE:
         res = ord(ser.read())
-        voltage = clac_pot_voltage(res)
+        voltage = clac_pot_voltage(res, 2.7)
         print 'The IO voltage is set to %.4fV.' % voltage
     return check_cmd_return()
 	
 def set_pll_voltage(voltage):
-    cmd = bytearray([cmd_map['CMD_POWER_PLL_SET'], calc_pot_res(voltage)])
+    cmd = bytearray([cmd_map['CMD_POWER_PLL_SET'], calc_pot_res(voltage, 1)])
     ser.write(cmd)
     return check_cmd_return()
 
@@ -79,12 +79,12 @@ def check_pll_voltage():
     ser.write([cmd_map['CMD_POWER_PLL_READ']]);
     if check_cmd_return() == CMD_RTN_RESPONSE:
         res = ord(ser.read())
-        voltage = clac_pot_voltage(res)
+        voltage = clac_pot_voltage(res, 1)
         print 'The PLL voltage is set to %.4fV.' % voltage
     return check_cmd_return()
 
 def set_ldo_voltage(voltage):
-    cmd = bytearray([cmd_map['CMD_POWER_LDO_SET'], calc_pot_res(voltage)])
+    cmd = bytearray([cmd_map['CMD_POWER_LDO_SET'], calc_pot_res(voltage, 1)])
     ser.write(cmd)
     return check_cmd_return()
 
@@ -100,7 +100,7 @@ def check_ldo_voltage():
     ser.write([cmd_map['CMD_POWER_LDO_READ']]);
     if check_cmd_return() == CMD_RTN_RESPONSE:
         res = ord(ser.read())
-        voltage = clac_pot_voltage(res)
+        voltage = clac_pot_voltage(res, 1)
         print 'The LDO voltage is set to %.4fV.' % voltage
     return check_cmd_return()
 
