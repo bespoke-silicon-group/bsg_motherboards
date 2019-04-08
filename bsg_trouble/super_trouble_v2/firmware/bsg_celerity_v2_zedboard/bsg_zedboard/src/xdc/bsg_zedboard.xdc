@@ -28,3 +28,15 @@ set_property IOSTANDARD LVCMOS33 [get_ports LD4];
 set_property IOSTANDARD LVCMOS33 [get_ports LD5];
 set_property IOSTANDARD LVCMOS33 [get_ports LD6];
 set_property IOSTANDARD LVCMOS33 [get_ports LD7];
+
+# Switches
+set_property PACKAGE_PIN F22 [get_ports SW0];
+set_property PACKAGE_PIN G22 [get_ports SW1];
+set_property PACKAGE_PIN H22 [get_ports SW2];
+set_property PACKAGE_PIN F21 [get_ports SW3];
+set_property PACKAGE_PIN H19 [get_ports SW4];
+set_property IOSTANDARD LVCMOS25 [get_ports SW0];
+set_property IOSTANDARD LVCMOS25 [get_ports SW1];
+set_property IOSTANDARD LVCMOS25 [get_ports SW2];
+set_property IOSTANDARD LVCMOS25 [get_ports SW3];
+set_property IOSTANDARD LVCMOS25 [get_ports SW4];

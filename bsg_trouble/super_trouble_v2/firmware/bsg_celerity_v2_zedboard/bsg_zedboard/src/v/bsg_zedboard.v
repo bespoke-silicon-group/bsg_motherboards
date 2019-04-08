@@ -18,6 +18,8 @@ module bsg_zedboard
   // led
   ,output       LD0, LD1, LD2, LD3
   ,output       LD4, LD5, LD6, LD7
+  // switches
+  ,input SW0, SW1, SW2, SW3, SW4
   // ddr
   ,inout [14:0] DDR_addr
   ,inout  [2:0] DDR_ba
@@ -528,11 +530,32 @@ module bsg_zedboard
   
   for (i=1; i<6; i++) begin
 	if (i != rocket_id_p && i != rocket_id2_p) begin
-		assign core_node_ready_A[i] = 1;
+		// assign core_node_ready_A[i] = 1;
 		assign core_node_v_B[i] = 0;
 		assign core_node_data_B[i] = 0;
 	end
   end
+  
+  
+  
+  // For selecting FSB node dynamically
+  logic [3:0] fsb_select;
+  wire core_node_v_A_dynamic, core_node_ready_A_dynamic;
+  wire [ring_width_p-1:0] core_node_data_A_dynamic;
+  wire [ring_width_p-1:0] core_node_data_B_dynamic;
+
+  assign fsb_select = {SW3, SW2, SW1, SW0};
+  assign core_node_data_B[rocket_id_p] = core_node_data_B_dynamic[75:0] | (fsb_select << 76);
+  assign core_node_v_A_dynamic = core_node_v_A[fsb_select];
+  assign core_node_data_A_dynamic = core_node_data_A[fsb_select];
+  
+  for (i=1; i<6; i++) begin
+	if (i != rocket_id2_p) begin
+        assign core_node_ready_A[i] = (fsb_select == i)? core_node_ready_A_dynamic : 1'b1;
+	end
+  end
+  
+  
   
   bsg_rocket_node_master #
     (.dest_id_p(rocket_id_p))
@@ -542,12 +565,12 @@ module bsg_zedboard
     ,.reset_i(core_node_reset_r[rocket_id_p] | host_reset | ~boot_done)
     ,.en_i(core_node_en_r[rocket_id_p])
     // in
-    ,.v_i(core_node_v_A[rocket_id_p])
-    ,.data_i(core_node_data_A[rocket_id_p])
-    ,.ready_o(core_node_ready_A[rocket_id_p])
+    ,.v_i(core_node_v_A_dynamic)
+    ,.data_i(core_node_data_A_dynamic)
+    ,.ready_o(core_node_ready_A_dynamic)
     // out
     ,.v_o(core_node_v_B[rocket_id_p])
-    ,.data_o(core_node_data_B[rocket_id_p])
+    ,.data_o(core_node_data_B_dynamic)
     ,.yumi_i(core_node_yumi_B[rocket_id_p])
     // host in
     ,.host_valid_i(host_in_valid)
@@ -674,6 +697,8 @@ module bsg_zedboard
     end
   end
   
+  
+  
   always_comb begin
   
     state_n = state_r;
@@ -734,7 +759,7 @@ module bsg_zedboard
     ,.enabled_at_start_vec_p({nodes_p{1'b1}}))
   fsb
     (.clk_i(clk_50_mhz)
-    ,.reset_i(dt_calib_reset)
+    ,.reset_i(dt_calib_reset | SW4)
     // node ctrl
     ,.node_reset_r_o(core_node_reset_r)
     ,.node_en_r_o(core_node_en_r)
