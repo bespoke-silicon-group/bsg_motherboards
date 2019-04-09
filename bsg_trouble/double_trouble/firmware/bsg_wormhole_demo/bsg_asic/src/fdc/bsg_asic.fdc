@@ -1,0 +1,339 @@
+# bsg asic
+
+# timing constraints
+
+set io_2x_clk_period 10
+set io_clk_period [expr $io_2x_clk_period*2]
+set core_clk_period 10
+
+# Constant for offset constraint
+
+set OUTPUT_DELAY [expr $io_2x_clk_period-25.0]
+
+set INPUT_SETUP [expr $io_2x_clk_period-0.75]
+set INPUT_HOLD [expr $INPUT_SETUP+1.5]
+
+
+create_clock -period $io_2x_clk_period -name {io_2x_clk} {n:io_2x_clk_lo}
+create_clock -period $io_clk_period -name {io_clk} {n:io_clk_lo}
+create_clock -period $core_clk_period -name {core_clk} {n:core_clk_lo}
+
+create_clock -period $io_clk_period -name {clk_a} {p:AIC0}
+create_clock -period $io_clk_period -name {clk_b} {p:BIC0}
+create_clock -period $io_clk_period -name {clk_c} {p:CIC0}
+create_clock -period $io_clk_period -name {clk_d} {p:DIC0}
+
+create_clock -period $io_clk_period -name {token_a} {p:AOT0}
+create_clock -period $io_clk_period -name {token_b} {p:BOT0}
+create_clock -period $io_clk_period -name {token_c} {p:COT0}
+create_clock -period $io_clk_period -name {token_d} {p:DOT0}
+
+
+set_clock_groups -asynchronous \
+  -group {io_2x_clk io_clk} \
+  -group {core_clk} \
+  -group {clk_a} \
+  -group {clk_b} \
+  -group {clk_c} \
+  -group {clk_d} \
+  -group {token_a} \
+  -group {token_b} \
+  -group {token_c} \
+  -group {token_d}
+
+
+define_attribute {AOT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {BOT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {COT0} {CLOCK_DEDICATED_ROUTE} {0}
+define_attribute {DOT0} {CLOCK_DEDICATED_ROUTE} {0}
+
+# IO location and voltage constraints
+
+# core clk
+define_attribute {MSTR_SDO_CLK} syn_loc {B10}
+define_io_standard {MSTR_SDO_CLK} syn_pad_type {LVCMOS_33}
+
+# io master clk
+define_attribute {PLL_CLK_I} syn_loc {A10}
+define_io_standard {PLL_CLK_I} syn_pad_type {LVCMOS_33}
+
+# led
+define_attribute {ASIC_LED1} syn_loc {AA2}
+define_attribute {ASIC_LED0} syn_loc {AB2}
+
+define_io_standard {ASIC_LED1} syn_pad_type {LVCMOS_33}
+define_io_standard {ASIC_LED0} syn_pad_type {LVCMOS_33}
+
+# channel clock out
+define_attribute {AOC0} syn_loc {E8}
+define_attribute {BOC0} syn_loc {C13}
+define_attribute {COC0} syn_loc {P8}
+define_attribute {DOC0} syn_loc {P19}
+
+define_io_standard {AOC0} syn_pad_type {LVCMOS_33}
+define_io_standard {BOC0} syn_pad_type {LVCMOS_33}
+define_io_standard {COC0} syn_pad_type {LVCMOS_33}
+define_io_standard {DOC0} syn_pad_type {LVCMOS_33}
+
+# channel valid out
+define_attribute {AOD8} syn_loc {B6}
+define_attribute {BOD8} syn_loc {B16}
+define_attribute {COD8} syn_loc {H4}
+define_attribute {DOD8} syn_loc {M17}
+
+define_io_standard {AOD8} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD8} syn_pad_type {LVCMOS_33}
+define_io_standard {COD8} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD8} syn_pad_type {LVCMOS_33}
+
+# channel data out
+define_attribute {AOD0} syn_loc {G9}
+define_attribute {AOD1} syn_loc {C9}
+define_attribute {AOD2} syn_loc {G8}
+define_attribute {AOD3} syn_loc {D9}
+define_attribute {AOD4} syn_loc {B8}
+define_attribute {AOD5} syn_loc {D7}
+define_attribute {AOD6} syn_loc {C7}
+define_attribute {AOD7} syn_loc {D6}
+
+define_attribute {BOD0} syn_loc {E12}
+define_attribute {BOD1} syn_loc {F13}
+define_attribute {BOD2} syn_loc {H13}
+define_attribute {BOD3} syn_loc {B14}
+define_attribute {BOD4} syn_loc {E14}
+define_attribute {BOD5} syn_loc {F14}
+define_attribute {BOD6} syn_loc {C15}
+define_attribute {BOD7} syn_loc {D15}
+
+define_attribute {COD0} syn_loc {P6}
+define_attribute {COD1} syn_loc {N6}
+define_attribute {COD2} syn_loc {M6}
+define_attribute {COD3} syn_loc {M5}
+define_attribute {COD4} syn_loc {K7}
+define_attribute {COD5} syn_loc {K6}
+define_attribute {COD6} syn_loc {J7}
+define_attribute {COD7} syn_loc {H6}
+
+define_attribute {DOD0} syn_loc {F16}
+define_attribute {DOD1} syn_loc {G16}
+define_attribute {DOD2} syn_loc {H16}
+define_attribute {DOD3} syn_loc {H19}
+define_attribute {DOD4} syn_loc {H20}
+define_attribute {DOD5} syn_loc {K16}
+define_attribute {DOD6} syn_loc {L17}
+define_attribute {DOD7} syn_loc {M16}
+
+define_io_standard {AOD0} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD1} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD2} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD3} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD4} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD5} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD6} syn_pad_type {LVCMOS_33}
+define_io_standard {AOD7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {BOD0} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD1} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD2} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD3} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD4} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD5} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD6} syn_pad_type {LVCMOS_33}
+define_io_standard {BOD7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {COD0} syn_pad_type {LVCMOS_33}
+define_io_standard {COD1} syn_pad_type {LVCMOS_33}
+define_io_standard {COD2} syn_pad_type {LVCMOS_33}
+define_io_standard {COD3} syn_pad_type {LVCMOS_33}
+define_io_standard {COD4} syn_pad_type {LVCMOS_33}
+define_io_standard {COD5} syn_pad_type {LVCMOS_33}
+define_io_standard {COD6} syn_pad_type {LVCMOS_33}
+define_io_standard {COD7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {DOD0} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD1} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD2} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD3} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD4} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD5} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD6} syn_pad_type {LVCMOS_33}
+define_io_standard {DOD7} syn_pad_type {LVCMOS_33}
+
+# channel token in
+define_attribute {AOT0} syn_loc {D10}
+define_attribute {BOT0} syn_loc {H12}
+define_attribute {COT0} syn_loc {M7}
+define_attribute {DOT0} syn_loc {L20}
+
+define_io_standard {AOT0} syn_pad_type {LVCMOS_33}
+define_io_standard {BOT0} syn_pad_type {LVCMOS_33}
+define_io_standard {COT0} syn_pad_type {LVCMOS_33}
+define_io_standard {DOT0} syn_pad_type {LVCMOS_33}
+
+# channel clock in
+define_attribute {AIC0} syn_loc {K5}
+define_attribute {BIC0} syn_loc {M3}
+define_attribute {CIC0} syn_loc {K20}
+define_attribute {DIC0} syn_loc {J20}
+
+define_io_standard {AIC0} syn_pad_type {LVCMOS_33}
+define_io_standard {BIC0} syn_pad_type {LVCMOS_33}
+define_io_standard {CIC0} syn_pad_type {LVCMOS_33}
+define_io_standard {DIC0} syn_pad_type {LVCMOS_33}
+
+# channel valid in
+define_attribute {AID8} syn_loc {C3}
+define_attribute {BID8} syn_loc {V2}
+define_attribute {CID8} syn_loc {C20}
+define_attribute {DID8} syn_loc {U20}
+
+define_io_standard {AID8} syn_pad_type {LVCMOS_33}
+define_io_standard {BID8} syn_pad_type {LVCMOS_33}
+define_io_standard {CID8} syn_pad_type {LVCMOS_33}
+define_io_standard {DID8} syn_pad_type {LVCMOS_33}
+
+# channel data in
+define_attribute {AID0} syn_loc {H2}
+define_attribute {AID1} syn_loc {G4}
+define_attribute {AID2} syn_loc {G3}
+define_attribute {AID3} syn_loc {F2}
+define_attribute {AID4} syn_loc {E3}
+define_attribute {AID5} syn_loc {D5}
+define_attribute {AID6} syn_loc {D3}
+define_attribute {AID7} syn_loc {D2}
+
+define_attribute {BID0} syn_loc {P3}
+define_attribute {BID1} syn_loc {P2}
+define_attribute {BID2} syn_loc {R4}
+define_attribute {BID3} syn_loc {R3}
+define_attribute {BID4} syn_loc {T4}
+define_attribute {BID5} syn_loc {T2}
+define_attribute {BID6} syn_loc {U4}
+define_attribute {BID7} syn_loc {U3}
+
+define_attribute {CID0} syn_loc {G19}
+define_attribute {CID1} syn_loc {G20}
+define_attribute {CID2} syn_loc {F18}
+define_attribute {CID3} syn_loc {F21}
+define_attribute {CID4} syn_loc {E20}
+define_attribute {CID5} syn_loc {D19}
+define_attribute {CID6} syn_loc {D21}
+define_attribute {CID7} syn_loc {C19}
+
+define_attribute {DID0} syn_loc {K21}
+define_attribute {DID1} syn_loc {M21}
+define_attribute {DID2} syn_loc {N20}
+define_attribute {DID3} syn_loc {P21}
+define_attribute {DID4} syn_loc {R20}
+define_attribute {DID5} syn_loc {T19}
+define_attribute {DID6} syn_loc {T21}
+define_attribute {DID7} syn_loc {U19}
+
+define_io_standard {AID0} syn_pad_type {LVCMOS_33}
+define_io_standard {AID1} syn_pad_type {LVCMOS_33}
+define_io_standard {AID2} syn_pad_type {LVCMOS_33}
+define_io_standard {AID3} syn_pad_type {LVCMOS_33}
+define_io_standard {AID4} syn_pad_type {LVCMOS_33}
+define_io_standard {AID5} syn_pad_type {LVCMOS_33}
+define_io_standard {AID6} syn_pad_type {LVCMOS_33}
+define_io_standard {AID7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {BID0} syn_pad_type {LVCMOS_33}
+define_io_standard {BID1} syn_pad_type {LVCMOS_33}
+define_io_standard {BID2} syn_pad_type {LVCMOS_33}
+define_io_standard {BID3} syn_pad_type {LVCMOS_33}
+define_io_standard {BID4} syn_pad_type {LVCMOS_33}
+define_io_standard {BID5} syn_pad_type {LVCMOS_33}
+define_io_standard {BID6} syn_pad_type {LVCMOS_33}
+define_io_standard {BID7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {CID0} syn_pad_type {LVCMOS_33}
+define_io_standard {CID1} syn_pad_type {LVCMOS_33}
+define_io_standard {CID2} syn_pad_type {LVCMOS_33}
+define_io_standard {CID3} syn_pad_type {LVCMOS_33}
+define_io_standard {CID4} syn_pad_type {LVCMOS_33}
+define_io_standard {CID5} syn_pad_type {LVCMOS_33}
+define_io_standard {CID6} syn_pad_type {LVCMOS_33}
+define_io_standard {CID7} syn_pad_type {LVCMOS_33}
+
+define_io_standard {DID0} syn_pad_type {LVCMOS_33}
+define_io_standard {DID1} syn_pad_type {LVCMOS_33}
+define_io_standard {DID2} syn_pad_type {LVCMOS_33}
+define_io_standard {DID3} syn_pad_type {LVCMOS_33}
+define_io_standard {DID4} syn_pad_type {LVCMOS_33}
+define_io_standard {DID5} syn_pad_type {LVCMOS_33}
+define_io_standard {DID6} syn_pad_type {LVCMOS_33}
+define_io_standard {DID7} syn_pad_type {LVCMOS_33}
+
+# channel token out
+define_attribute {AIT0} syn_loc {E5}
+define_attribute {BIT0} syn_loc {M2}
+define_attribute {CIT0} syn_loc {E16}
+define_attribute {DIT0} syn_loc {M19}
+
+define_io_standard {AIT0} syn_pad_type {LVCMOS_33}
+define_io_standard {BIT0} syn_pad_type {LVCMOS_33}
+define_io_standard {CIT0} syn_pad_type {LVCMOS_33}
+define_io_standard {DIT0} syn_pad_type {LVCMOS_33}
+
+# reset from gateway
+define_attribute {AID10} syn_loc {A2}
+define_io_standard {AID10} syn_pad_type {LVCMOS_33}
+
+# input delay constraint
+# Usage: These input constraints will be translated into OFFSET constraint in ucf file
+
+# Example1:
+# set_input_delay -clock clk1 -max -add_delay value1 {PORT1}
+# set_input_delay -clock clk1 -min -add_delay value2 {PORT1}
+# Then it will be translated as:
+# "PORT1" OFFSET = IN clk1_PERIOD-value1 VALID value2-value1 BEFORE "clk1" RISING
+
+# Example2:
+# set_input_delay -clock clk2 -clock_fall -max -add_delay value3 {PORT2}
+# set_input_delay -clock clk2 -clock_fall -min -add_delay value4 {PORT2}
+# Then it will be translated as:
+# "PORT2" OFFSET = IN clk2_PERIOD-value3 VALID value4-value3 BEFORE "clk2" FALLING
+
+set_input_delay -clock clk_a -max -add_delay $INPUT_SETUP {AID*}
+set_input_delay -clock clk_a -min -add_delay $INPUT_HOLD {AID*}
+set_input_delay -clock clk_a -clock_fall -max -add_delay $INPUT_SETUP {AID*}
+set_input_delay -clock clk_a -clock_fall -min -add_delay $INPUT_HOLD {AID*}
+
+set_input_delay -clock clk_b -max -add_delay $INPUT_SETUP {BID*}
+set_input_delay -clock clk_b -min -add_delay $INPUT_HOLD {BID*}
+set_input_delay -clock clk_b -clock_fall -max -add_delay $INPUT_SETUP {BID*}
+set_input_delay -clock clk_b -clock_fall -min -add_delay $INPUT_HOLD {BID*}
+
+set_input_delay -clock clk_c -max -add_delay $INPUT_SETUP {CID*}
+set_input_delay -clock clk_c -min -add_delay $INPUT_HOLD {CID*}
+set_input_delay -clock clk_c -clock_fall -max -add_delay $INPUT_SETUP {CID*}
+set_input_delay -clock clk_c -clock_fall -min -add_delay $INPUT_HOLD {CID*}
+
+set_input_delay -clock clk_d -max -add_delay $INPUT_SETUP {DID*}
+set_input_delay -clock clk_d -min -add_delay $INPUT_HOLD {DID*}
+set_input_delay -clock clk_d -clock_fall -max -add_delay $INPUT_SETUP {DID*}
+set_input_delay -clock clk_d -clock_fall -min -add_delay $INPUT_HOLD {DID*}
+
+# output delay constraint
+# Usage: These output constraints will be translated into OFFSET constraint in ucf file
+
+# Example1: set_output_delay -clock io_master_clk -add_delay value1 {PORT1}
+# Then it will be translated as:
+# "PORT1" OFFSET = OUT io_clk_PERIOD-value1 AFTER "io_clk" RISING
+
+# Example2: set_output_delay -clock io_master_clk -clock_fall -add_delay value2 {PORT2}
+# Then it will be translated as:
+# "PORT2" OFFSET = OUT io_clk_PERIOD-value2 AFTER "io_clk" FALLING
+
+set_output_delay -clock io_2x_clk -add_delay $OUTPUT_DELAY {AOD*}
+set_output_delay -clock io_2x_clk -clock_fall -add_delay $OUTPUT_DELAY {AOC0}
+
+set_output_delay -clock io_2x_clk -add_delay $OUTPUT_DELAY {BOD*}
+set_output_delay -clock io_2x_clk -clock_fall -add_delay $OUTPUT_DELAY {BOC0}
+
+set_output_delay -clock io_2x_clk -add_delay $OUTPUT_DELAY {COD*}
+set_output_delay -clock io_2x_clk -clock_fall -add_delay $OUTPUT_DELAY {COC0}
+
+set_output_delay -clock io_2x_clk -add_delay $OUTPUT_DELAY {DOD*}
+set_output_delay -clock io_2x_clk -clock_fall -add_delay $OUTPUT_DELAY {DOC0}
