@@ -1,0 +1,12 @@
+
+
+INST "link_0/downstream/iddr_data/data_p[*]" IOB=FALSE;
+INST "link_0/downstream/iddr_data/data_r[*]" IOB=FALSE;
+INST "link_0/downstream/iddr_valid/data_p[*]" IOB=FALSE;
+INST "link_0/downstream/iddr_valid/data_r[*]" IOB=FALSE;
+
+
+INST "link_0/upstream/oddr_data/data_r_o[*]" IOB=FORCE;
+INST "link_0/upstream/oddr_valid_clk/data_r_o[*]" IOB=FORCE;
+INST "link_0/upstream/oddr_valid_clk/clk_r_o" IOB=FORCE;
+
