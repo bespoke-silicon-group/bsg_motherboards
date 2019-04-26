@@ -5,6 +5,7 @@
 set io_2x_clk_period 10
 set io_clk_period [expr $io_2x_clk_period*2]
 set core_clk_period 16.667
+set mc_clk_period 13.333
 
 # Constant for offset constraint
 
@@ -17,6 +18,7 @@ set INPUT_HOLD [expr $INPUT_SETUP+1.5]
 create_clock -period $io_2x_clk_period -name {io_2x_clk} {n:io_2x_clk_lo}
 create_clock -period $io_clk_period -name {io_clk} {n:io_clk_lo}
 create_clock -period $core_clk_period -name {core_clk} {n:core_clk_lo}
+create_clock -period $mc_clk_period -name {mc_clk} {n:mc_clk_lo}
 
 create_clock -period $io_clk_period -name {clk_a} {p:AIC0}
 create_clock -period $io_clk_period -name {clk_b} {p:BIC0}
@@ -32,6 +34,7 @@ create_clock -period $io_clk_period -name {token_d} {p:DOT0}
 set_clock_groups -asynchronous \
   -group {io_2x_clk io_clk} \
   -group {core_clk} \
+  -group {mc_clk} \
   -group {clk_a} \
   -group {clk_b} \
   -group {clk_c} \
@@ -56,6 +59,10 @@ define_io_standard {MSTR_SDO_CLK} syn_pad_type {LVCMOS_33}
 # io master clk
 define_attribute {PLL_CLK_I} syn_loc {A10}
 define_io_standard {PLL_CLK_I} syn_pad_type {LVCMOS_33}
+
+# mc clk
+define_attribute {AIC1} syn_loc {K3}
+define_io_standard {AIC1} syn_pad_type {LVCMOS_33}
 
 # led
 define_attribute {ASIC_LED1} syn_loc {AA2}

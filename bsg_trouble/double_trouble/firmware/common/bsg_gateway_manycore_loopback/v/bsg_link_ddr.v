@@ -8,6 +8,7 @@ module bsg_link_ddr
   ,parameter lg_credit_to_token_decimation_p = 3)
 
   (input clk_i
+  ,input clk_1x_i
   ,input clk_2x_i
   ,input reset_i
   ,input chip_reset_i

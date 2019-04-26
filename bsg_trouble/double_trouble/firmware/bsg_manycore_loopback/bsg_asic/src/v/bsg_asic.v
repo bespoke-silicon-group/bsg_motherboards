@@ -34,6 +34,7 @@ module bsg_asic
   // clk
   (input MSTR_SDO_CLK
   ,input PLL_CLK_I
+  ,input AIC1
 
   // reset
   ,input AID10
@@ -84,13 +85,15 @@ module bsg_asic
   // clock
 
   logic core_clk_lo /* synthesis syn_keep = 1 */;
-  logic io_2x_clk_lo, io_clk_lo;
+  logic io_2x_clk_lo, io_clk_lo, mc_clk_lo;
 
   bsg_asic_clk clk
     (.core_clk_i(MSTR_SDO_CLK)
     ,.io_clk_i(PLL_CLK_I)
+    ,.mc_clk_i(AIC1)
     ,.core_clk_o(core_clk_lo)
-    ,.io_clk_o(io_2x_clk_lo));
+    ,.io_clk_o(io_2x_clk_lo)
+    ,.mc_clk_o(mc_clk_lo));
     
   always @(posedge io_2x_clk_lo) begin
     io_clk_lo <= ~io_clk_lo;
@@ -98,7 +101,8 @@ module bsg_asic
     
     
   logic mc_clk_0, mc_clk_1, mc_reset_0, mc_reset_1;
-  logic clk_0, clk_1, clk_2x_0, clk_2x_1, reset_0, reset_1;
+  logic clk_0, clk_1, reset_0, reset_1;
+  logic clk_1x_0, clk_1x_1, clk_2x_0, clk_2x_1;
   logic link_enable_0, link_enable_1;
   logic chip_reset_0, chip_reset_1;
   logic node_en_0, node_en_1, mc_en_0, mc_en_1;
@@ -139,9 +143,10 @@ module bsg_asic
   
   genvar i;
   
-  assign clk_1 = io_clk_lo;
+  assign clk_1 = core_clk_lo;
+  assign clk_1x_1 = io_clk_lo;
   assign clk_2x_1 = io_2x_clk_lo;
-  assign mc_clk_1 = core_clk_lo;
+  assign mc_clk_1 = mc_clk_lo;
     
 
   // reset
@@ -255,6 +260,7 @@ module bsg_asic
   ,.lg_credit_to_token_decimation_p(lg_credit_to_token_decimation_p))
   link_1
   (.clk_i(clk_1)
+  ,.clk_1x_i(clk_1x_1)
   ,.clk_2x_i(clk_2x_1)
   ,.reset_i(reset_1)
   ,.chip_reset_i(chip_reset_1)

@@ -24,9 +24,11 @@ module bsg_gateway_clk
   // internal clocks
   ,output int_core_clk_o
   ,output int_io_master_clk_o
+  ,output int_mc_clk_o
   // external clocks
   ,output ext_core_clk_o
   ,output ext_io_master_clk_o
+  ,output ext_mc_clk_o
   // locked
   ,output locked_o);
 
@@ -46,6 +48,7 @@ module bsg_gateway_clk
   // if pll_mult_lp=7 and pll_core_clk_divide_lp=42,
   // then (int/ext) core_clk_o are 50MHz
   localparam pll_core_clk_divide_lp = 10;
+  localparam pll_mc_clk_divide_lp = 8;
 
   // 150Mhz*(pll_mult_lp/pll_mb_clk_divide_lp)
   // if pll_mult_lp=7 and pll_mb_clk_divide_lp=42,
@@ -55,6 +58,7 @@ module bsg_gateway_clk
   wire pll_ext_core_clk_0_deg_lo;
   wire pll_ext_core_clk_180_deg_lo;
   wire pll_mb_clk_lo;
+  wire pll_mc_clk_lo;
 
 
   // For IO Clock
@@ -80,7 +84,7 @@ module bsg_gateway_clk
     ,.CLKIN1_PERIOD(6.667)
     ,.CLKIN2_PERIOD(6.667)
     // ext core clk
-    ,.CLKOUT0_DIVIDE(pll_io_master_clk_divide_lp)
+    ,.CLKOUT0_DIVIDE(pll_mc_clk_divide_lp)
     ,.CLKOUT0_DUTY_CYCLE(0.5)
     ,.CLKOUT0_PHASE(0.0)
     ,.CLKOUT1_DIVIDE(pll_io_master_clk_divide_lp)
@@ -109,7 +113,7 @@ module bsg_gateway_clk
     (.CLKFBDCM()
     ,.CLKFBOUT(pll_fb_lo)
     // io clk
-    ,.CLKOUT0()
+    ,.CLKOUT0(pll_mc_clk_lo)
     ,.CLKOUT1(pll_io_master_clk_1x_lo)
     ,.CLKOUT2(pll_io_master_clk_1x_180_lo)
     // mb clk
@@ -190,6 +194,28 @@ module bsg_gateway_clk
 
   // int core clock
   assign int_core_clk_o = bufg_ext_core_clk_0_deg_lo;
+  
+  
+  //ext mc clk
+  wire bufg_mc_clk_lo;
+
+  BUFG bufg_mc_clk
+    (.I(pll_mc_clk_lo)
+    ,.O(bufg_mc_clk_lo));
+
+  ODDR2 oddr_ext_mc_clk
+    (.D0(1'b1)
+    ,.D1(1'b0)
+    ,.C0(bufg_mc_clk_lo)
+    ,.C1(~bufg_mc_clk_lo)
+    ,.CE(1'b1)
+    ,.S(1'b0)
+    ,.R(1'b0)
+    ,.Q(ext_mc_clk_o));
+
+  // int core clock
+  assign int_mc_clk_o = bufg_mc_clk_lo;
+  
 
   // mb clock
   BUFG bufg_mb_clk

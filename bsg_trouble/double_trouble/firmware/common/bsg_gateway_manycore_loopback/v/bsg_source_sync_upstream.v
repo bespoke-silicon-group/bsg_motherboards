@@ -53,9 +53,11 @@ module bsg_source_sync_upstream
        )
 	   
    (// control signals  
-      input                         io_master_clk_i
-    , input                         reset_i
+      input                         core_clk_i
+    , input                         core_reset_i
+    , input                         io_master_clk_i
 	, input                         link_enable_i
+    , output                        io_reset_o
 	
     // Input from chip core
     , input [channel_width_p-1:0]   core_data_i
@@ -70,28 +72,45 @@ module bsg_source_sync_upstream
 
    
   // reset signal
-  logic reset_r;
+  logic core_reset_lo, io_reset_lo;
+  logic core_enable_lo, io_enable_lo;
+  assign io_reset_o = io_reset_lo;
    
-  always @(posedge io_master_clk_i) begin
-	reset_r <= reset_i;
-  end
+  bsg_launch_sync_sync
+ #(.width_p(1))
+  reset_blss
+  (.iclk_i(core_clk_i)
+  ,.iclk_reset_i(1'b0)
+  ,.oclk_i(io_master_clk_i)
+  ,.iclk_data_i(core_reset_i)
+  ,.iclk_data_o(core_reset_lo)
+  ,.oclk_data_o(io_reset_lo));
+  
+  bsg_launch_sync_sync
+ #(.width_p(1))
+  enable_blss
+  (.iclk_i(core_clk_i)
+  ,.iclk_reset_i(1'b0)
+  ,.oclk_i(io_master_clk_i)
+  ,.iclk_data_i(link_enable_i)
+  ,.iclk_data_o(core_enable_lo)
+  ,.oclk_data_o(io_enable_lo));
 
 
   // internal reset signal
-  logic link_internal_reset_lo;
-  always @(posedge io_master_clk_i)
-	link_internal_reset_lo <= ~link_enable_i | reset_r;
+  logic core_internal_reset_lo, io_internal_reset_lo;
+  assign core_internal_reset_lo = ~core_enable_lo | core_reset_lo;
+  assign io_internal_reset_lo = ~io_enable_lo | io_reset_lo;
 
 
-   wire core_fifo_valid, core_fifo_yumi;
-   wire [channel_width_p-1:0] core_fifo_data;
+  logic core_fifo_valid, core_fifo_yumi;
+  logic [channel_width_p-1:0] core_fifo_data;
 
-  bsg_fifo_1r1w_small 
- #(.width_p(channel_width_p)
-  ,.els_p  (8))
+  bsg_two_fifo
+ #(.width_p(channel_width_p))
   core_fifo
-  (.clk_i  (io_master_clk_i)
-  ,.reset_i(link_internal_reset_lo)
+  (.clk_i  (core_clk_i)
+  ,.reset_i(core_internal_reset_lo)
   
   ,.ready_o(core_ready_o)
   ,.data_i (core_data_i)
@@ -100,6 +119,31 @@ module bsg_source_sync_upstream
   ,.v_o    (core_fifo_valid)
   ,.data_o (core_fifo_data)
   ,.yumi_i (core_fifo_yumi));
+  
+  
+  logic core_fifo_full;
+  assign core_fifo_yumi = core_fifo_valid & ~core_fifo_full;
+  
+  logic io_fifo_valid, io_fifo_yumi;
+  logic [channel_width_p-1:0] io_fifo_data;
+  
+  bsg_async_fifo
+ #(.lg_size_p(3)
+  ,.width_p(channel_width_p))
+  async_fifo
+  (.w_clk_i(core_clk_i)
+  ,.w_reset_i(core_internal_reset_lo)
+
+  ,.w_enq_i(core_fifo_yumi)
+  ,.w_data_i(core_fifo_data)
+  ,.w_full_o(core_fifo_full)
+
+  ,.r_clk_i(io_master_clk_i)
+  ,.r_reset_i(io_internal_reset_lo)
+
+  ,.r_deq_i(io_fifo_yumi)
+  ,.r_data_o(io_fifo_data)
+  ,.r_valid_o(io_fifo_valid));
   
 
    // ******************************************
@@ -111,13 +155,13 @@ module bsg_source_sync_upstream
 
    always @(posedge io_master_clk_i)
      begin
-        if (link_internal_reset_lo)
+        if (io_internal_reset_lo)
           {io_valid_r_o, io_data_r_o} <= {1'b0, reset_pattern_p[0+:channel_width_p]};
         else
           begin
-             io_valid_r_o <= core_fifo_yumi;
-             if (core_fifo_yumi)
-               io_data_r_o <= core_fifo_data;
+             io_valid_r_o <= io_fifo_yumi;
+             if (io_fifo_yumi)
+               io_data_r_o <= io_fifo_data;
              else
                io_data_r_o <= inactive_pattern_p [0+:channel_width_p];
           end
@@ -132,7 +176,7 @@ module bsg_source_sync_upstream
     //    so it should be asserted well before token_clk_i is asserted
     //    and de-asserted well afterwards to avoid metastability
 	logic token_reset_lo;
-	assign token_reset_lo = ~reset_r & link_internal_reset_lo;
+	assign token_reset_lo = ~io_reset_lo & ~io_enable_lo;
 	
 
 
@@ -150,11 +194,11 @@ module bsg_source_sync_upstream
 
    always @(posedge io_master_clk_i)
      begin
-        if (link_internal_reset_lo)
+        if (io_internal_reset_lo)
           // this will start us on the posedge token
           token_alternator_r <= 0;
         else
-          if (core_fifo_yumi)
+          if (io_fifo_yumi)
             token_alternator_r <= token_alternator_r + 1;
      end
 
@@ -169,10 +213,10 @@ module bsg_source_sync_upstream
         : io_posedge_credits_avail;
 
    // we send if we have both data to send and credits to send with
-   assign core_fifo_yumi = io_credit_avail & core_fifo_valid;
+   assign io_fifo_yumi = io_credit_avail & io_fifo_valid;
 
-   wire io_negedge_credits_deque = core_fifo_yumi & on_negedge_token;
-   wire io_posedge_credits_deque = core_fifo_yumi & ~on_negedge_token;
+   wire io_negedge_credits_deque = io_fifo_yumi & on_negedge_token;
+   wire io_posedge_credits_deque = io_fifo_yumi & ~on_negedge_token;
 
    // **********************************************
    // token channel
@@ -210,9 +254,9 @@ module bsg_source_sync_upstream
 
         // the I/O clock domain is responsible for tabulating tokens
         ,.r_clk_i  (io_master_clk_i)
-        ,.r_reset_i(link_internal_reset_lo)
+        ,.r_reset_i(io_internal_reset_lo)
         ,.r_dec_credit_i      (io_posedge_credits_deque)
-        ,.r_infinite_credits_i(link_internal_reset_lo)
+        ,.r_infinite_credits_i(io_internal_reset_lo)
         ,.r_credits_avail_o   (io_posedge_credits_avail)
         );
 
@@ -233,9 +277,9 @@ module bsg_source_sync_upstream
 
         // the I/O clock domain is responsible for tabulating tokens
         ,.r_clk_i             (io_master_clk_i         )
-        ,.r_reset_i           (link_internal_reset_lo       )
+        ,.r_reset_i           (io_internal_reset_lo       )
         ,.r_dec_credit_i      (io_negedge_credits_deque)
-        ,.r_infinite_credits_i(link_internal_reset_lo)
+        ,.r_infinite_credits_i(io_internal_reset_lo)
         ,.r_credits_avail_o(io_negedge_credits_avail)
         );
 

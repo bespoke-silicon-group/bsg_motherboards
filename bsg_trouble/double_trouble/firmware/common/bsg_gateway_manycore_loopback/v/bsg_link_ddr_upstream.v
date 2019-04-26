@@ -10,6 +10,7 @@ module bsg_link_ddr_upstream
   ,localparam piso_ratio_p = width_p/ddr_width_p)
 
   (input clk_i
+  ,input clk_1x_i
   ,input clk_2x_i
   ,input reset_i
   ,input chip_reset_i
@@ -42,6 +43,7 @@ module bsg_link_ddr_upstream
   ,.yumi_i(out_ps_ready_i&out_ps_valid_o));
   
   
+  logic io_reset_lo;
   logic out_ddr_valid_o;
   logic [ddr_width_p-1:0] out_ddr_data_o;
   
@@ -51,9 +53,11 @@ module bsg_link_ddr_upstream
   ,.lg_credit_to_token_decimation_p(lg_credit_to_token_decimation_p))
   sso
   (// control signals  
-   .io_master_clk_i(clk_i)
-  ,.reset_i(reset_i)
+   .core_clk_i(clk_i)
+  ,.core_reset_i(reset_i)
+  ,.io_master_clk_i(clk_1x_i)
   ,.link_enable_i(link_enable_i)
+  ,.io_reset_o(io_reset_lo)
 	
   // Input from chip core
   ,.core_data_i(out_ps_data_o)
@@ -69,7 +73,7 @@ module bsg_link_ddr_upstream
   bsg_oddr_phy
  #(.width_p(channel_width_p))
   oddr_data
-  (.reset_i(reset_i)
+  (.reset_i(io_reset_lo)
   ,.clk_2x_i(clk_2x_i)
   ,.data_i(out_ddr_data_o)
   ,.data_r_o(io_data_r_o)
@@ -79,7 +83,7 @@ module bsg_link_ddr_upstream
   bsg_oddr_phy
  #(.width_p(1))
   oddr_valid_clk
-  (.reset_i(reset_i)
+  (.reset_i(io_reset_lo)
   ,.clk_2x_i(clk_2x_i)
   ,.data_i({2{out_ddr_valid_o}})
   ,.data_r_o(io_valid_r_o)

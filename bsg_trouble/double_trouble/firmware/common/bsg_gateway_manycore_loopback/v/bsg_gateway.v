@@ -65,6 +65,7 @@ module bsg_gateway
   // clk
   ,output MSTR_SDO_CLK
   ,output PLL_CLK_I
+  ,output AIC1
 
   // asic reset
   ,output AID10
@@ -161,6 +162,7 @@ module bsg_gateway
   // clock generation
 
   logic mb_clk_lo;
+  logic mc_clk_lo;
   logic core_clk_lo;
   logic io_2x_clk_lo;
   logic io_clk_lo;
@@ -173,9 +175,11 @@ module bsg_gateway
     // internal clocks
     ,.int_core_clk_o(core_clk_lo)
     ,.int_io_master_clk_o(io_2x_clk_lo)
+    ,.int_mc_clk_o(mc_clk_lo)
     // external clocks
     ,.ext_core_clk_o(MSTR_SDO_CLK)
     ,.ext_io_master_clk_o(PLL_CLK_I)
+    ,.ext_mc_clk_o(AIC1)
     // locked
     ,.locked_o(locked_lo));
     
@@ -234,7 +238,8 @@ module bsg_gateway
 `endif
 
   logic mc_clk_0, mc_clk_1, mc_reset_0, mc_reset_1;
-  logic clk_0, clk_1, clk_2x_0, clk_2x_1, reset_0, reset_1;
+  logic clk_0, clk_1, reset_0, reset_1;
+  logic clk_1x_0, clk_1x_1, clk_2x_0, clk_2x_1;
   logic link_enable_0, link_enable_1;
   logic chip_reset_0, chip_reset_1;
   logic node_en_0, node_en_1, mc_en_0, mc_en_1;
@@ -275,9 +280,10 @@ module bsg_gateway
   
   genvar i;
   
-  assign clk_0 = io_clk_lo;
+  assign clk_0 = core_clk_lo;
+  assign clk_1x_0 = io_clk_lo;
   assign clk_2x_0 = io_2x_clk_lo;
-  assign mc_clk_0 = core_clk_lo;
+  assign mc_clk_0 = mc_clk_lo;
   
   
   // Handling reset
@@ -526,6 +532,7 @@ module bsg_gateway
   ,.lg_credit_to_token_decimation_p(lg_credit_to_token_decimation_p))
   link_0
   (.clk_i(clk_0)
+  ,.clk_1x_i(clk_1x_0)
   ,.clk_2x_i(clk_2x_0)
   ,.reset_i(reset_0)
   ,.chip_reset_i(chip_reset_0)

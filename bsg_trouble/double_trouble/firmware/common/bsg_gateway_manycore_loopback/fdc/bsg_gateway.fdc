@@ -7,6 +7,8 @@ set sys_clk_period 6.667
 set io_2x_clk_period 10
 set io_clk_period [expr $io_2x_clk_period*2]
 set core_clk_period 16.667
+set mc_clk_period 13.333
+set mb_clk_period 20.000
 
 # Constant for offset constraint
 set OUTPUT_DELAY [expr $io_2x_clk_period-25.0]
@@ -17,6 +19,8 @@ create_clock -period $sys_clk_period -name {sys_clk} {n:clk.ibufgds_clk_150_mhz_
 create_clock -period $io_2x_clk_period -name {io_2x_clk} {n:io_2x_clk_lo}
 create_clock -period $io_clk_period -name {io_clk} {n:io_clk_lo}
 create_clock -period $core_clk_period -name {core_clk} {n:core_clk_lo}
+create_clock -period $mc_clk_period -name {mc_clk} {n:mc_clk_lo}
+create_clock -period $mb_clk_period -name {mb_clk} {n:mb_clk_lo}
 
 # create input clock from ASIC
 create_clock -period $io_clk_period -name {clk_a_fdc} {p:AOC0}
@@ -30,10 +34,11 @@ create_clock -period $io_clk_period -name {token_b_fdc} {p:BIT0}
 create_clock -period $io_clk_period -name {token_c_fdc} {p:CIT0}
 create_clock -period $io_clk_period -name {token_d_fdc} {p:DIT0}
 
-set_clock_groups -asynchronous \
-  -derive \
+set_clock_groups -asynchronous -derive \
   -group {io_clk io_2x_clk} \
   -group {core_clk} \
+  -group {mc_clk} \
+  -group {mb_clk} \
   -group {sys_clk} \
   -group {clk_a_fdc} \
   -group {clk_b_fdc} \
@@ -44,6 +49,10 @@ set_clock_groups -asynchronous \
   -group {token_c_fdc} \
   -group {token_d_fdc}
 
+set_false_path -from [get_clocks io_clk] -to [get_clocks core_clk]
+set_false_path -from [get_clocks core_clk] -to [get_clocks io_clk]
+set_false_path -from [get_clocks core_clk] -to [get_clocks mc_clk]
+set_false_path -from [get_clocks mc_clk] -to [get_clocks core_clk]
 
 # clk osc
 define_attribute {CLK_OSC_P} syn_loc {C13}
@@ -117,6 +126,11 @@ define_io_standard {MSTR_SDO_CLK} syn_pad_type {LVCMOS_33} syn_io_slew {fast} sy
 define_attribute {PLL_CLK_I} syn_loc {J7}
 
 define_io_standard {PLL_CLK_I} syn_pad_type {LVCMOS_33} syn_io_slew {fast} syn_io_drive {24}
+
+# mc clk
+define_attribute {AIC1} syn_loc {T24}
+
+define_io_standard {AIC1} syn_pad_type {LVCMOS_33} syn_io_slew {fast} syn_io_drive {24}
 
 
 # channel clock in
