@@ -8,20 +8,20 @@ include ../common/Makefile.include
 # bsg_two_loopback_new variables
 include Makefile.include
 
-bsg_ip_cores_sha = bb95374e622f3d49c4e41553eeadf5d8883634b5
+basejump_stl_sha = 00f04eae887273c9feaaba3d97755070c14ab69f
 bsg_designs_sha = 36e4ee8fb39214b6518b1106d53d5dab82ed5770
 bsg_rocket_sha = e238d9b2e3ad876947a9dddabe92d01cbc63d546
 bsg_packaging_sha = 3834d0256d857193f53a7729db55c710fadedc1d
-bsg_manycore_sha = 564e9d7f96ae2704786ed4af9b8ff2a144bd5812
+bsg_manycore_sha = 40312111afe3119e197588ea9b81f1038a47caf6
 
 default: bitstreams
 
 $(BSG_TREE_DIR):
 	mkdir -p $@
 
-$(BSG_TREE_DIR)/bsg_ip_cores: | $(BSG_TREE_DIR)
-	git clone $(BSG_IP_CORES_DIR) $@
-	cd $@ && git checkout -b fpga_$(bsg_ip_cores_sha) $(bsg_ip_cores_sha)
+$(BSG_TREE_DIR)/basejump_stl: | $(BSG_TREE_DIR)
+	git clone $(BASEJUMP_STL_DIR) $@
+	cd $@ && git checkout -b fpga_$(basejump_stl_sha) $(basejump_stl_sha)
 
 $(BSG_TREE_DIR)/bsg_designs: | $(BSG_TREE_DIR)
 	git clone $(BSG_DESIGNS_DIR) $@
@@ -39,7 +39,7 @@ $(BSG_TREE_DIR)/bsg_manycore: | $(BSG_TREE_DIR)
 	git clone $(BSG_MANYCORE_DIR) $@
 	cd $@ && git checkout -b fpga_$(bsg_manycore_sha) $(bsg_manycore_sha)
 
-setup:  $(BSG_TREE_DIR)/bsg_ip_cores \
+setup:  $(BSG_TREE_DIR)/basejump_stl \
 	$(BSG_TREE_DIR)/bsg_designs \
 	$(BSG_TREE_DIR)/bsg_rocket \
 	$(BSG_TREE_DIR)/bsg_packaging \

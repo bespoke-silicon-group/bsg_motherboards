@@ -25,6 +25,7 @@ export BSG_DESIGNWARE_DIR=$(DC_HOME)/dw/sim_ver
 export BSG_FPGA_FIRMWARE_DIR:=$(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/..
 export BSG_FPGA_IP_DIR:=$(BSG_FPGA_FIRMWARE_DIR)/../../common/ip
 export BSG_TOP_DIR:=$(BSG_FPGA_FIRMWARE_DIR)/../../../..
+export BASEJUMP_STL_DIR:=$(BSG_TOP_DIR)/basejump_stl
 export BSG_IP_CORES_DIR:=$(BSG_TOP_DIR)/bsg_ip_cores
 export BSG_ROCKET_DIR:=$(BSG_TOP_DIR)/bsg_rocket
 export BSG_RISCV_DIR:=$(BSG_TOP_DIR)/bsg_riscv

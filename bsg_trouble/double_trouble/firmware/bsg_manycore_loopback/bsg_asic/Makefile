@@ -12,7 +12,7 @@ export BSG_ISE_DIR:=$(BSG_OUT_DIR)/ise
 default: clean bitstream
 
 repos = \
-bsg_ip_cores \
+basejump_stl \
 bsg_designs \
 bsg_packaging \
 bsg_manycore
@@ -25,8 +25,8 @@ $(repos_dep):
 $(BSG_OUT_DIR):
 	mkdir -p $@
 
-$(BSG_OUT_DIR)/bsg_ip_cores: | $(BSG_TREE_DIR)/bsg_ip_cores $(BSG_OUT_DIR)
-	ln -s $(BSG_TREE_DIR)/bsg_ip_cores $@
+$(BSG_OUT_DIR)/basejump_stl: | $(BSG_TREE_DIR)/basejump_stl $(BSG_OUT_DIR)
+	ln -s $(BSG_TREE_DIR)/basejump_stl $@
 
 $(BSG_OUT_DIR)/bsg_designs: | $(BSG_TREE_DIR)/bsg_designs $(BSG_OUT_DIR)
 	ln -s $(BSG_TREE_DIR)/bsg_designs $@
