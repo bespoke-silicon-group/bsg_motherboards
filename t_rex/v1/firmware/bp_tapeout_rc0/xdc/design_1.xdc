@@ -123,8 +123,8 @@ set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]
 
 
 # ASIC config signals
-set_property PACKAGE_PIN AK10      [get_ports {GW_TAG_CLKO  }];
-set_property PACKAGE_PIN AJ11      [get_ports {GW_TAG_DATAO }];
+set_property PACKAGE_PIN AG27      [get_ports {GW_TAG_CLKO  }];
+set_property PACKAGE_PIN AH28      [get_ports {GW_TAG_DATAO }];
 set_property PACKAGE_PIN AJ28      [get_ports {GW_IC1_TAG_EN}];
 set_property PACKAGE_PIN AH11      [get_ports {GW_CLKA      }];
 set_property PACKAGE_PIN AK11      [get_ports {GW_CLKB      }];
