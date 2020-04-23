@@ -110,13 +110,44 @@ set_property PACKAGE_PIN E11 [get_ports {led[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {led[*]}]
 
 
+# CLK125 input
+set_property PACKAGE_PIN AG17     [get_ports {clk125_clk_n}]
+set_property PACKAGE_PIN AG18     [get_ports {clk125_clk_p}]
+set_property IOSTANDARD  LVDS     [get_ports {clk125_clk_p}]
+
+# UART
+set_property PACKAGE_PIN D7       [get_ports {rs232_uart_rxd}]
+set_property PACKAGE_PIN D6       [get_ports {rs232_uart_txd}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {rs232_uart_*}]
+
 # IIC
+set_property PACKAGE_PIN F17      [get_ports {iic_main_scl_io[0]}]
+set_property PACKAGE_PIN G17      [get_ports {iic_main_sda_io[0]}]
 set_property PACKAGE_PIN D17      [get_ports {TPS0_CNTL}]
-set_property IOSTANDARD  LVCMOS33 [get_ports {TPS0_*}]
+
+set_property PACKAGE_PIN E15      [get_ports {iic_main_scl_io[1]}]
+set_property PACKAGE_PIN A17      [get_ports {iic_main_sda_io[1]}]
+set_property PACKAGE_PIN B17      [get_ports {DIG_POT_PLL_ADDR1}]
+set_property PACKAGE_PIN C16      [get_ports {DIG_POT_PLL_ADDR0}]
+set_property PACKAGE_PIN D16      [get_ports {DIG_POT_PLL_INDEP}]
+set_property PACKAGE_PIN A15      [get_ports {DIG_POT_PLL_NRST}]
+
+set_property PACKAGE_PIN A3       [get_ports {iic_main_scl_io[2]}]
+set_property PACKAGE_PIN A4       [get_ports {iic_main_sda_io[2]}]
+set_property PACKAGE_PIN A2       [get_ports {DIG_POT_IO_ADDR1}]
+set_property PACKAGE_PIN B3       [get_ports {DIG_POT_IO_ADDR0}]
+set_property PACKAGE_PIN B1       [get_ports {DIG_POT_IO_INDEP}]
+set_property PACKAGE_PIN B2       [get_ports {DIG_POT_IO_NRST}]
+
+set_property IOSTANDARD  LVCMOS33 [get_ports {iic_main_* TPS0_* DIG_POT_*}]
+set_property PULLTYPE    PULLUP   [get_ports {iic_main_*}]
+
 
 
 # Timing constraint
 set_clock_groups -name async_mig_pcie -asynchronous -group [get_clocks -include_generated_clocks design_1_i/xdma_0/inst/pcie4_ip_i/inst/gt_top_i/diablo_gt.diablo_gt_phy_wrapper/gt_wizard.gtwizard_top_i/design_1_xdma_0_0_pcie4_ip_gt_i/inst/gen_gtwizard_gthe4_top.design_1_xdma_0_0_pcie4_ip_gt_gtwizard_gthe4_inst/gen_gtwizard_gthe4.gen_channel_container[*].gen_enabled_channel.gthe4_channel_wrapper_inst/channel_inst/gthe4_channel_gen.gen_gthe4_channel_inst[0].GTHE4_CHANNEL_PRIM_INST/TXOUTCLK] -group [get_clocks -include_generated_clocks mmcm_clkout1]
+
+set_clock_groups -name async_mig_tag -asynchronous -group [get_clocks -include_generated_clocks clk_out1_design_2_clk_wiz_0_0] -group [get_clocks -include_generated_clocks mmcm_clkout1]
 
 # Bitstream
 set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]

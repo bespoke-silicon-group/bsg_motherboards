@@ -26,6 +26,10 @@ module design_1_wrapper
   ,localparam axi_addr_width_p   = 30
   ,localparam axi_data_width_p   = 256
   ,localparam axi_burst_len_p    = 1
+  
+  ,parameter util_flit_width_p = 8
+  ,parameter util_len_width_p  = 4
+  ,parameter util_cord_width_p = 4
   )
 
    (ddr4_sdram_act_n,
@@ -55,8 +59,23 @@ module design_1_wrapper
     sysclk_300_clk_p,
     led
     
-   // IIC
+   // util_link
+   ,clk125_clk_n
+   ,clk125_clk_p
+   ,rs232_uart_rxd
+   ,rs232_uart_txd
+   ,iic_main_scl_io
+   ,iic_main_sda_io
+   
    ,TPS0_CNTL
+   ,DIG_POT_PLL_ADDR1
+   ,DIG_POT_PLL_ADDR0
+   ,DIG_POT_PLL_INDEP
+   ,DIG_POT_PLL_NRST
+   ,DIG_POT_IO_ADDR1
+   ,DIG_POT_IO_ADDR0
+   ,DIG_POT_IO_INDEP
+   ,DIG_POT_IO_NRST
     
     // bsg_link
    ,IC1_GW_CL_CLK, IC1_GW_CL_V
@@ -102,7 +121,22 @@ module design_1_wrapper
   input sysclk_300_clk_p;
   output [3:0] led;
   
+  input  clk125_clk_n;
+  input  clk125_clk_p;
+  input  rs232_uart_rxd;
+  output rs232_uart_txd;
+  inout  [2:0] iic_main_scl_io;
+  inout  [2:0] iic_main_sda_io;
+
   output TPS0_CNTL;
+  output DIG_POT_PLL_ADDR1;
+  output DIG_POT_PLL_ADDR0;
+  output DIG_POT_PLL_INDEP;
+  output DIG_POT_PLL_NRST;
+  output DIG_POT_IO_ADDR1;
+  output DIG_POT_IO_ADDR0;
+  output DIG_POT_IO_INDEP;
+  output DIG_POT_IO_NRST;
   
 
   wire ddr4_sdram_act_n;
@@ -164,7 +198,22 @@ module design_1_wrapper
   wire reset_gpio;
   wire [3:0] led;
   
+  wire clk125_clk_n;
+  wire clk125_clk_p;
+  wire rs232_uart_rxd;
+  wire rs232_uart_txd;
+  wire [2:0] iic_main_scl_io;
+  wire [2:0] iic_main_sda_io;
+
   wire TPS0_CNTL;
+  wire DIG_POT_PLL_ADDR1;
+  wire DIG_POT_PLL_ADDR0;
+  wire DIG_POT_PLL_INDEP;
+  wire DIG_POT_PLL_NRST;
+  wire DIG_POT_IO_ADDR1;
+  wire DIG_POT_IO_ADDR0;
+  wire DIG_POT_IO_INDEP;
+  wire DIG_POT_IO_NRST;
   
   
 
@@ -489,7 +538,7 @@ module design_1_wrapper
   assign GW_CORE_RESET = 1'b0;
   
   // Enable ASIC power output
-  assign TPS0_CNTL = 1'b1;
+  //assign TPS0_CNTL = 1'b1;
   
 
   `declare_bsg_manycore_link_sif_s(manycore_addr_width_gp, manycore_data_width_gp, manycore_x_cord_width_gp, manycore_y_cord_width_gp, manycore_load_id_width_gp);
@@ -515,11 +564,17 @@ module design_1_wrapper
   assign router_clk = mig_clk;
 
   logic tag_clk;
-  logic [1:0] tag_clk_count;
-  assign tag_clk = tag_clk_count[1];
+  //logic [1:0] tag_clk_count;
+  //assign tag_clk = tag_clk_count[1];
   assign GW_TAG_CLKO = ~tag_clk;
-  always_ff @(posedge mig_clk)
-    tag_clk_count <= tag_clk_count+1'b1;
+  //always_ff @(posedge mig_clk)
+  //  tag_clk_count <= tag_clk_count+1'b1;
+  
+  design_2 design_2_i
+ (.clk125_clk_n(clk125_clk_n)
+ ,.clk125_clk_p(clk125_clk_p)
+ ,.util_clk(tag_clk)
+ );
 
   //////////////////////////////////////////////////
   //
@@ -536,6 +591,43 @@ module design_1_wrapper
   ,.iclk_data_i  (mig_reset)
   ,.iclk_data_o  ()
   ,.oclk_data_o  (tag_reset)
+  );
+  
+  //////////////////////////////////////////////////
+  //
+  // BSG Util Link
+  //
+  
+  `declare_bsg_ready_and_link_sif_s(util_flit_width_p, bsg_util_link_sif_s);
+  bsg_util_link_sif_s tag_trace_link_li, tag_trace_link_lo;
+  
+  bsg_util_link
+ #(.util_flit_width_p(util_flit_width_p)
+  ,.util_len_width_p (util_len_width_p )
+  ,.util_cord_width_p(util_cord_width_p)
+  ,.use_legacy_router(1)
+  ) util_link
+  (.clk_i            (tag_clk)
+  ,.reset_i          (tag_reset)
+
+  ,.tag_trace_link_i (tag_trace_link_li)
+  ,.tag_trace_link_o (tag_trace_link_lo)
+
+  ,.rs232_uart_rxd   (rs232_uart_rxd)
+  ,.rs232_uart_txd   (rs232_uart_txd)
+
+  ,.iic_main_scl_io  (iic_main_scl_io)
+  ,.iic_main_sda_io  (iic_main_sda_io)
+
+  ,.TPS0_CNTL        (TPS0_CNTL        )
+  ,.DIG_POT_PLL_ADDR1(DIG_POT_PLL_ADDR1)
+  ,.DIG_POT_PLL_ADDR0(DIG_POT_PLL_ADDR0)
+  ,.DIG_POT_PLL_INDEP(DIG_POT_PLL_INDEP)
+  ,.DIG_POT_PLL_NRST (DIG_POT_PLL_NRST )
+  ,.DIG_POT_IO_ADDR1 (DIG_POT_IO_ADDR1 )
+  ,.DIG_POT_IO_ADDR0 (DIG_POT_IO_ADDR0 )
+  ,.DIG_POT_IO_INDEP (DIG_POT_IO_INDEP )
+  ,.DIG_POT_IO_NRST  (DIG_POT_IO_NRST  )
   );
   
   //////////////////////////////////////////////////
@@ -574,34 +666,41 @@ module design_1_wrapper
       );
 
   // TAG TRACE REPLAY
-  bsg_tag_trace_replay #(.rom_addr_width_p( tag_trace_rom_addr_width_lp )
-                        ,.rom_data_width_p( tag_trace_rom_data_width_lp )
-                        ,.num_masters_p( 3 )
-                        ,.num_clients_p( tag_num_clients_gp )
-                        ,.max_payload_width_p( tag_max_payload_width_gp )
-                        )
-    tag_trace_replay
+  bsg_tag_trace_replay_stream
+ #(.rom_addr_width_p( tag_trace_rom_addr_width_lp )
+  ,.rom_data_width_p( tag_trace_rom_data_width_lp )
+  ,.num_masters_p( 3 )
+  ,.num_clients_p( tag_num_clients_gp )
+  ,.max_payload_width_p( tag_max_payload_width_gp )
+  ,.link_width_p(util_flit_width_p)
+  ,.cord_width_p(util_cord_width_p)
+  ,.len_width_p (util_len_width_p)
+  ) tag_trace_replay
       (.clk_i   ( tag_clk )
-      ,.reset_i ( tag_reset    )
-      ,.en_i    ( 1'b1            )
+      ,.reset_i ( tag_reset )
+      ,.en_i    ( 1'b1 )
+      
+      ,.dest_cord_i('0)
 
       ,.rom_addr_o( rom_addr_li )
       ,.rom_data_i( rom_data_lo )
 
-      ,.valid_i ( 1'b0 )
-      ,.data_i  ( '0 )
-      ,.ready_o ()
-
-      ,.valid_o    ()
       ,.en_r_o     ( tag_trace_en_r_lo )
       ,.tag_data_o ( GW_TAG_DATAO )
-      ,.yumi_i     ( 1'b1 )
+      
+      ,.link_i ( tag_trace_link_lo )
+      ,.link_o ( tag_trace_link_li )
 
       ,.done_o  ( tag_trace_done_lo )
-      ,.error_o ()
       ) ;
 
   assign GW_IC1_TAG_EN = tag_trace_en_r_lo[1];
+  
+  design_3 design_3_i
+  (.clk(tag_clk)
+  ,.data(GW_TAG_DATAO)
+  ,.en(tag_trace_en_r_lo)
+  );
 
   //////////////////////////////////////////////////
   //
