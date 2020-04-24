@@ -6,14 +6,6 @@ import time
 # open serial port
 ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
-## test TPS0
-#cmd=bytearray([0x61, 0x21, 0x5a, 0x8c, 0x21, 0x5b, 0x02])
-#ser.write(cmd)
-#rtn = ser.read(5)
-#for i in range(5):
-#    print(hex(rtn[i]))
-
-
 def write_bsg_tag_trace(en, id, rstn, len, data):
     word = 0
     word = word | ((data & ((1<<10)-1)) << 0 )
@@ -23,7 +15,6 @@ def write_bsg_tag_trace(en, id, rstn, len, data):
     word = word | ((en   & ((1<<3 )-1)) << 21)
     cmd=bytearray([0x34, (word>>0)&0xFF, (word>>8)&0xFF, (word>>16)&0xFF])
     ser.write(cmd)
-    rtn = ser.read(2)
 
 def clk_gen_async_reset():
     write_bsg_tag_trace(6, 0, 1, 1, 0)

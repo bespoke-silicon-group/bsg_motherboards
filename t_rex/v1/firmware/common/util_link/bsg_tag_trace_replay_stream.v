@@ -50,8 +50,6 @@ module bsg_tag_trace_replay_stream
     ( input clk_i
     , input reset_i
     , input en_i
-    
-    , input  [cord_width_p-1:0]     dest_cord_i
       
     , output [rom_addr_width_p-1:0] rom_addr_o
     , input  [rom_data_width_p-1:0] rom_data_i
@@ -97,7 +95,6 @@ module bsg_tag_trace_replay_stream
     // Stream link
     `declare_bsg_ready_and_link_sif_s(link_width_p, bsg_ready_and_link_sif_s);
     bsg_ready_and_link_sif_s link_i_cast, link_o_cast;
-    logic  link_ack_ready_lo;
     assign link_i_cast = link_i;
     assign link_o      = link_o_cast;
     
@@ -114,32 +111,19 @@ module bsg_tag_trace_replay_stream
 
     ,.data_o ({link_data_lo, link_hdr_lo})
     ,.v_o    (link_valid_lo)
-    ,.yumi_i (link_valid_lo & link_ready_li & link_ack_ready_lo)
+    ,.yumi_i (link_valid_lo & link_ready_li)
     );
     
-    // link ack return
-    bsg_parallel_in_serial_out 
-   #(.width_p (link_width_p)
-    ,.els_p   (2)
-    ) link_piso
-    (.clk_i   (clk_i)
-    ,.reset_i (reset_i)
-   
-    ,.valid_i (link_valid_lo & link_ready_li)
-    ,.data_i  ({'0, 8'h66, (len_width_p)'(1), dest_cord_i})
-    ,.ready_o (link_ack_ready_lo)
-   
-    ,.valid_o (link_o_cast.v)
-    ,.data_o  (link_o_cast.data)
-    ,.yumi_i  (link_o_cast.v & link_i_cast.ready_and_rev)
-    );
-    
+    // tieoff output link
+    assign link_o_cast.v = 1'b0;
+    assign link_o_cast.data = '0;
+
     // Switch between trace rom and stream link
     always_comb
       begin
         if (done_o)
           begin
-            piso_valid_li = link_valid_lo & link_ack_ready_lo;
+            piso_valid_li = link_valid_lo;
             piso_data_li  = link_data_lo;
             link_ready_li = piso_ready_lo;
             tr_ready_li   = 1'b0;

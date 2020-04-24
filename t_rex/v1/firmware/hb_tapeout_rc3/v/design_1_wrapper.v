@@ -679,8 +679,6 @@ module design_1_wrapper
       (.clk_i   ( tag_clk )
       ,.reset_i ( tag_reset )
       ,.en_i    ( 1'b1 )
-      
-      ,.dest_cord_i('0)
 
       ,.rom_addr_o( rom_addr_li )
       ,.rom_data_i( rom_data_lo )
