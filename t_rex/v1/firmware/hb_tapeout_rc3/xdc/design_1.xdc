@@ -149,6 +149,9 @@ set_clock_groups -name async_mig_pcie -asynchronous -group [get_clocks -include_
 
 set_clock_groups -name async_mig_tag -asynchronous -group [get_clocks -include_generated_clocks clk_out1_design_2_clk_wiz_0_0] -group [get_clocks -include_generated_clocks mmcm_clkout1]
 
+set_clock_groups -name async_mig_io -asynchronous -group [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] -group [get_clocks -include_generated_clocks mmcm_clkout1]
+
+
 # Bitstream
 set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]
 
@@ -171,20 +174,23 @@ set_property SLEW        FAST      [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK*}];
 
 
 # Create prev clock
-set prev_clk_period         20
+set prev_clk_period         3.333
 create_clock -name prev_clk_in -period $prev_clk_period [get_ports {IC1_GW_CL_CLK}]
 
 # False paths
 set_false_path -from [get_clocks prev_clk_in] -to [get_clocks -include_generated_clocks mmcm_clkout1]
 set_false_path -from [get_clocks -include_generated_clocks mmcm_clkout1] -to [get_clocks prev_clk_in]
 
+set_false_path -from [get_clocks prev_clk_in] -to [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] -to [get_clocks prev_clk_in]
+
 # Input delay
 set input_clock            prev_clk_in
 set input_clock_period     $prev_clk_period
-set dv_bre                 2
-set dv_are                 2
-set dv_bfe                 2
-set dv_afe                 2
+set dv_bre                 0.8
+set dv_are                 0.8
+set dv_bfe                 0.8
+set dv_afe                 0.8
 
 set_input_delay -clock $input_clock -max [expr $input_clock_period/2 - $dv_bfe] [get_ports {IC1_GW_CL_D* IC1_GW_CL_V}]
 set_input_delay -clock $input_clock -min $dv_are [get_ports {IC1_GW_CL_D* IC1_GW_CL_V}]
@@ -192,14 +198,14 @@ set_input_delay -clock $input_clock -max [expr $input_clock_period/2 - $dv_bre] 
 set_input_delay -clock $input_clock -min $dv_afe [get_ports {IC1_GW_CL_D* IC1_GW_CL_V}] -clock_fall -add_delay
 
 # Output delay
-create_generated_clock -name prev_clk_out -source [get_pins {io_complex/prev/uplink/ch[0].oddr_phy/clk_r_o_reg/C}] -edges {1 3 5} -edge_shift {4.998 4.998 4.998} [get_ports {GW_IC1_CL_CLK}]
+create_generated_clock -name prev_clk_out -source [get_pins {io_complex/prev/uplink/ch[0].oddr_phy/ODDRE1_clk/C}] -edges {1 2 3} -edge_shift {0 0 0} [get_ports {GW_IC1_CL_CLK}]
 
 set fwclk                  prev_clk_out
 set fwclk_period           $prev_clk_period
-set bre_skew               2
-set are_skew               2
-set bfe_skew               2
-set afe_skew               2
+set bre_skew               0.8
+set are_skew               0.8
+set bfe_skew               0.8
+set afe_skew               0.8
 
 set_output_delay -clock $fwclk -max [expr $fwclk_period/2 - $afe_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
 set_output_delay -clock $fwclk -min $bre_skew [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]

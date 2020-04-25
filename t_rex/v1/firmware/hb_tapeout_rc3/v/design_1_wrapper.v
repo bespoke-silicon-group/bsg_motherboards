@@ -555,9 +555,9 @@ module design_1_wrapper
   assign GW_CLKA = manycore_clk;
   assign manycore_clk = mig_clk;
 
-  logic io_master_clk;
+  logic io_master_clk, io_master_clk90;
   assign GW_CLKB = io_master_clk;
-  assign io_master_clk = mig_clk;
+  //assign io_master_clk = mig_clk;
 
   logic router_clk;
   assign GW_CLKC = router_clk;
@@ -573,7 +573,9 @@ module design_1_wrapper
   design_2 design_2_i
  (.clk125_clk_n(clk125_clk_n)
  ,.clk125_clk_p(clk125_clk_p)
- ,.util_clk(tag_clk)
+ ,.util_clk    (tag_clk)
+ ,.io_clk      (io_master_clk)
+ ,.io_clk90    (io_master_clk90)
  );
 
   //////////////////////////////////////////////////
@@ -878,6 +880,7 @@ module design_1_wrapper
     io_complex
       (.core_clk_i ( router_clk    )
       ,.io_clk_i   ( io_master_clk )
+      ,.io_clk90_i ( io_master_clk90 )
 
       ,.prev_link_io_tag_lines_i  ( prev_link_io_tag_lines_lo   )
       ,.prev_link_core_tag_lines_i( prev_link_core_tag_lines_lo )
