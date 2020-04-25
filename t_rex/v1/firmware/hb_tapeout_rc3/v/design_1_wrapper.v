@@ -530,12 +530,12 @@ module design_1_wrapper
 */
 
   // Control clock generator output signal
-  assign GW_SEL0 = 1'b0;
-  assign GW_SEL1 = 1'b0;
-  assign GW_SEL2 = 1'b0;
-  
-  assign GW_CLK_RESET  = 1'b0;
-  assign GW_CORE_RESET = 1'b0;
+  //assign GW_SEL0 = 1'b0;
+  //assign GW_SEL1 = 1'b0;
+  //assign GW_SEL2 = 1'b0;
+
+  //assign GW_CLK_RESET  = 1'b0;
+  //assign GW_CORE_RESET = 1'b0;
   
   // Enable ASIC power output
   //assign TPS0_CNTL = 1'b1;
@@ -601,6 +601,8 @@ module design_1_wrapper
   `declare_bsg_ready_and_link_sif_s(util_flit_width_p, bsg_util_link_sif_s);
   bsg_util_link_sif_s tag_trace_link_li, tag_trace_link_lo;
   
+  logic [31:0] gpio_lo;
+  
   bsg_util_link
  #(.util_flit_width_p(util_flit_width_p)
   ,.util_len_width_p (util_len_width_p )
@@ -619,16 +621,24 @@ module design_1_wrapper
   ,.iic_main_scl_io  (iic_main_scl_io)
   ,.iic_main_sda_io  (iic_main_sda_io)
 
-  ,.TPS0_CNTL        (TPS0_CNTL        )
-  ,.DIG_POT_PLL_ADDR1(DIG_POT_PLL_ADDR1)
-  ,.DIG_POT_PLL_ADDR0(DIG_POT_PLL_ADDR0)
-  ,.DIG_POT_PLL_INDEP(DIG_POT_PLL_INDEP)
-  ,.DIG_POT_PLL_NRST (DIG_POT_PLL_NRST )
-  ,.DIG_POT_IO_ADDR1 (DIG_POT_IO_ADDR1 )
-  ,.DIG_POT_IO_ADDR0 (DIG_POT_IO_ADDR0 )
-  ,.DIG_POT_IO_INDEP (DIG_POT_IO_INDEP )
-  ,.DIG_POT_IO_NRST  (DIG_POT_IO_NRST  )
+  ,.gpio_o           (gpio_lo)
   );
+  
+  assign TPS0_CNTL         = gpio_lo[0];
+  assign DIG_POT_PLL_ADDR1 = gpio_lo[1];
+  assign DIG_POT_PLL_ADDR0 = gpio_lo[2];
+  assign DIG_POT_PLL_INDEP = gpio_lo[3];
+  assign DIG_POT_PLL_NRST  = gpio_lo[4];
+  assign DIG_POT_IO_ADDR1  = gpio_lo[5];
+  assign DIG_POT_IO_ADDR0  = gpio_lo[6];
+  assign DIG_POT_IO_INDEP  = gpio_lo[7];
+  assign DIG_POT_IO_NRST   = gpio_lo[8];
+
+  assign GW_CLK_RESET      = gpio_lo[9];
+  assign GW_CORE_RESET     = gpio_lo[10];
+  assign GW_SEL0           = gpio_lo[11];
+  assign GW_SEL1           = gpio_lo[12];
+  assign GW_SEL2           = gpio_lo[13];
   
   //////////////////////////////////////////////////
   //

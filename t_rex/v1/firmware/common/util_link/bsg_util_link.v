@@ -17,10 +17,11 @@ module bsg_util_link
   ,parameter int util_cord_markers_pos_p[util_dims_p:0] = '{util_cord_width_p, 0}
   ,parameter bit [1:0][util_dirs_p-1:0][util_dirs_p-1:0] util_routing_matrix_p = StrictX
 
-  ,parameter util_nodes_p = 5
+  ,parameter util_nodes_p = 6
   ,parameter num_iic_p    = 3
   ,parameter iic_offset_p = 1
   ,parameter tag_offset_p = 4
+  ,parameter gpio_offset_p = 5
   
   ,localparam util_link_width_lp = `bsg_ready_and_link_sif_width(util_flit_width_p)
   )
@@ -37,15 +38,7 @@ module bsg_util_link
   ,inout  [num_iic_p-1:0] iic_main_scl_io
   ,inout  [num_iic_p-1:0] iic_main_sda_io
 
-  ,output TPS0_CNTL
-  ,output DIG_POT_PLL_ADDR1
-  ,output DIG_POT_PLL_ADDR0
-  ,output DIG_POT_PLL_INDEP
-  ,output DIG_POT_PLL_NRST
-  ,output DIG_POT_IO_ADDR1
-  ,output DIG_POT_IO_ADDR0
-  ,output DIG_POT_IO_INDEP
-  ,output DIG_POT_IO_NRST
+  ,output [31:0] gpio_o
   );
 
   // uart axil slave
@@ -187,20 +180,6 @@ module bsg_util_link
         .uart_axil_s_wvalid(uart_axil_s_wvalid));
 
 
-  // TODO
-  assign TPS0_CNTL = 1'b1;
-  
-  assign DIG_POT_PLL_ADDR1 = 1'b1;
-  assign DIG_POT_PLL_ADDR0 = 1'b1;
-  assign DIG_POT_PLL_INDEP = 1'b1;
-  assign DIG_POT_PLL_NRST  = 1'b1;
-
-  assign DIG_POT_IO_ADDR1  = 1'b1;
-  assign DIG_POT_IO_ADDR0  = 1'b1;
-  assign DIG_POT_IO_INDEP  = 1'b1;
-  assign DIG_POT_IO_NRST   = 1'b1;
-
-
   for (genvar i = 0; i < num_iic_p; i++)
   begin: iic_loop
   
@@ -318,5 +297,22 @@ module bsg_util_link
   // tag trace links
   assign util_link_li[tag_offset_p][P] = tag_trace_link_i;
   assign tag_trace_link_o = util_link_lo[tag_offset_p][P];
+
+
+  // handle gpio
+  bsg_util_link_gpio
+ #(.flit_width_p (util_flit_width_p)
+  ,.num_gpio_p   (32)
+  ,.cord_width_p (util_cord_width_p)
+  ,.len_width_p  (util_len_width_p)
+  ) gpio
+  (.clk_i    (clk_i)
+  ,.reset_i  (reset_i)
+  
+  ,.gpio_o   (gpio_o)
+
+  ,.link_o   (util_link_li[gpio_offset_p][P])
+  ,.link_i   (util_link_lo[gpio_offset_p][P])
+  );
 
 endmodule
