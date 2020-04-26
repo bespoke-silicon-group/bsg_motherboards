@@ -142,47 +142,34 @@ set_property PACKAGE_PIN B2       [get_ports {DIG_POT_IO_NRST}]
 set_property IOSTANDARD  LVCMOS33 [get_ports {iic_main_* TPS0_* DIG_POT_*}]
 set_property PULLTYPE    PULLUP   [get_ports {iic_main_*}]
 
+# SMA
+set_property PACKAGE_PIN AB15     [get_ports {FPGA_SMA0}]
+set_property IOSTANDARD  SSTL18_I [get_ports {FPGA_SMA0}]
+set_property SLEW        FAST     [get_ports {FPGA_SMA0}];
 
 
-# Timing constraint
-set_clock_groups -name async_mig_pcie -asynchronous -group [get_clocks -include_generated_clocks design_1_i/xdma_0/inst/pcie4_ip_i/inst/gt_top_i/diablo_gt.diablo_gt_phy_wrapper/gt_wizard.gtwizard_top_i/design_1_xdma_0_0_pcie4_ip_gt_i/inst/gen_gtwizard_gthe4_top.design_1_xdma_0_0_pcie4_ip_gt_gtwizard_gthe4_inst/gen_gtwizard_gthe4.gen_channel_container[*].gen_enabled_channel.gthe4_channel_wrapper_inst/channel_inst/gthe4_channel_gen.gen_gthe4_channel_inst[0].GTHE4_CHANNEL_PRIM_INST/TXOUTCLK] -group [get_clocks -include_generated_clocks mmcm_clkout1]
 
-set_clock_groups -name async_mig_tag -asynchronous -group [get_clocks -include_generated_clocks clk_out1_design_2_clk_wiz_0_0] -group [get_clocks -include_generated_clocks mmcm_clkout1]
-
-set_clock_groups -name async_mig_io -asynchronous -group [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] -group [get_clocks -include_generated_clocks mmcm_clkout1]
-
-
-# Bitstream
-set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]
-
-
-# ASIC config signals
-set_property PACKAGE_PIN AG27      [get_ports {GW_TAG_CLKO  }];
-set_property PACKAGE_PIN AH28      [get_ports {GW_TAG_DATAO }];
-set_property PACKAGE_PIN AJ28      [get_ports {GW_IC1_TAG_EN}];
-set_property PACKAGE_PIN AH11      [get_ports {GW_CLKA      }];
-set_property PACKAGE_PIN AK11      [get_ports {GW_CLKB      }];
-set_property PACKAGE_PIN AK12      [get_ports {GW_CLKC      }];
-set_property PACKAGE_PIN AG13      [get_ports {GW_SEL0      }];
-set_property PACKAGE_PIN AH25      [get_ports {GW_SEL1      }];
-set_property PACKAGE_PIN AJ26      [get_ports {GW_SEL2      }];
-set_property PACKAGE_PIN AJ12      [get_ports {GW_CLK_RESET }];
-set_property PACKAGE_PIN AK26      [get_ports {GW_CORE_RESET}];
-
-set_property IOSTANDARD  SSTL18_I  [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK* GW_SEL* GW_CLK_RESET GW_CORE_RESET}];
-set_property SLEW        FAST      [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK*}];
-
-
-# Create prev clock
+# Create clock
 set prev_clk_period         3.333
 create_clock -name prev_clk_in -period $prev_clk_period [get_ports {IC1_GW_CL_CLK}]
+create_generated_clock -name prev_clk_out -source [get_pins {io_complex/prev/uplink/ch[0].oddr_phy/ODDRE1_clk/C}] -edges {1 2 3} -edge_shift {0 0 0} [get_ports {GW_IC1_CL_CLK}]
 
-# False paths
-set_false_path -from [get_clocks prev_clk_in] -to [get_clocks -include_generated_clocks mmcm_clkout1]
-set_false_path -from [get_clocks -include_generated_clocks mmcm_clkout1] -to [get_clocks prev_clk_in]
+# Timing constraint
+set_clock_groups -name async_prev_in -asynchronous \
+    -group [get_clocks prev_clk_in] \
+    -group [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] \
+    -group [get_clocks -include_generated_clocks clk_out4_design_2_clk_wiz_0_0]
 
-set_false_path -from [get_clocks prev_clk_in] -to [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0]
-set_false_path -from [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] -to [get_clocks prev_clk_in]
+set_clock_groups -name async_mig_pcie -asynchronous \
+    -group [get_clocks -include_generated_clocks design_1_i/xdma_0/inst/pcie4_ip_i/inst/gt_top_i/diablo_gt.diablo_gt_phy_wrapper/gt_wizard.gtwizard_top_i/design_1_xdma_0_0_pcie4_ip_gt_i/inst/gen_gtwizard_gthe4_top.design_1_xdma_0_0_pcie4_ip_gt_gtwizard_gthe4_inst/gen_gtwizard_gthe4.gen_channel_container[*].gen_enabled_channel.gthe4_channel_wrapper_inst/channel_inst/gthe4_channel_gen.gen_gthe4_channel_inst[0].GTHE4_CHANNEL_PRIM_INST/TXOUTCLK] \
+    -group [get_clocks -include_generated_clocks mmcm_clkout1] \
+    -group [get_clocks -include_generated_clocks clk_out1_design_2_clk_wiz_0_0] \
+    -group [get_clocks -include_generated_clocks clk_out2_design_2_clk_wiz_0_0] \
+    -group [get_clocks -include_generated_clocks clk_out4_design_2_clk_wiz_0_0]
+
+set_clock_groups -name async_ddr4_rtr -asynchronous \
+    -group [get_clocks -include_generated_clocks mmcm_clkout0] \
+    -group [get_clocks -include_generated_clocks clk_out4_design_2_clk_wiz_0_0]
 
 # Input delay
 set input_clock            prev_clk_in
@@ -198,8 +185,6 @@ set_input_delay -clock $input_clock -max [expr $input_clock_period/2 - $dv_bre] 
 set_input_delay -clock $input_clock -min $dv_afe [get_ports {IC1_GW_CL_D* IC1_GW_CL_V}] -clock_fall -add_delay
 
 # Output delay
-create_generated_clock -name prev_clk_out -source [get_pins {io_complex/prev/uplink/ch[0].oddr_phy/ODDRE1_clk/C}] -edges {1 2 3} -edge_shift {0 0 0} [get_ports {GW_IC1_CL_CLK}]
-
 set fwclk                  prev_clk_out
 set fwclk_period           $prev_clk_period
 set bre_skew               0.8
@@ -211,6 +196,7 @@ set_output_delay -clock $fwclk -max [expr $fwclk_period/2 - $afe_skew] [get_port
 set_output_delay -clock $fwclk -min $bre_skew [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
 set_output_delay -clock $fwclk -max [expr $fwclk_period/2 - $are_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
 set_output_delay -clock $fwclk -min $bfe_skew [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
+
 
 
 # Prev Output Channel
@@ -249,3 +235,26 @@ set_property PACKAGE_PIN AD19      [get_ports {IC1_GW_CL_D8 }];
 set_property IOSTANDARD  SSTL18_I  [get_ports {IC1_GW_CL_*  }];
 set_property ODT         RTT_40    [get_ports {IC1_GW_CL_CLK IC1_GW_CL_V IC1_GW_CL_D*}];
 set_property SLEW        FAST      [get_ports {IC1_GW_CL_TKN}];
+
+
+# ASIC config signals
+set_property PACKAGE_PIN AG27      [get_ports {GW_TAG_CLKO  }];
+set_property PACKAGE_PIN AH28      [get_ports {GW_TAG_DATAO }];
+set_property PACKAGE_PIN AJ28      [get_ports {GW_IC1_TAG_EN}];
+set_property PACKAGE_PIN AH11      [get_ports {GW_CLKA      }];
+set_property PACKAGE_PIN AK11      [get_ports {GW_CLKB      }];
+set_property PACKAGE_PIN AK12      [get_ports {GW_CLKC      }];
+set_property PACKAGE_PIN AG13      [get_ports {GW_SEL0      }];
+set_property PACKAGE_PIN AH25      [get_ports {GW_SEL1      }];
+set_property PACKAGE_PIN AJ26      [get_ports {GW_SEL2      }];
+set_property PACKAGE_PIN AJ12      [get_ports {GW_CLK_RESET }];
+set_property PACKAGE_PIN AK26      [get_ports {GW_CORE_RESET}];
+
+set_property IOSTANDARD  SSTL18_I  [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK* GW_SEL* GW_CLK_RESET GW_CORE_RESET}];
+set_property SLEW        FAST      [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK*}];
+
+
+
+# Bitstream
+set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]
+

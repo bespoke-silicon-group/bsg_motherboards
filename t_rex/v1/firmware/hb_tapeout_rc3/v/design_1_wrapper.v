@@ -90,7 +90,10 @@ module design_1_wrapper
    ,GW_TAG_CLKO, GW_TAG_DATAO, GW_IC1_TAG_EN
    ,GW_CLKA, GW_CLKB, GW_CLKC
    ,GW_SEL0, GW_SEL1, GW_SEL2
-   ,GW_CLK_RESET, GW_CORE_RESET);
+   ,GW_CLK_RESET, GW_CORE_RESET
+   
+   // SMA
+   ,FPGA_SMA0);
 
   output ddr4_sdram_act_n;
   output [16:0]ddr4_sdram_adr;
@@ -137,6 +140,8 @@ module design_1_wrapper
   output DIG_POT_IO_ADDR0;
   output DIG_POT_IO_INDEP;
   output DIG_POT_IO_NRST;
+  
+  output FPGA_SMA0;
   
 
   wire ddr4_sdram_act_n;
@@ -214,6 +219,8 @@ module design_1_wrapper
   wire DIG_POT_IO_ADDR0;
   wire DIG_POT_IO_INDEP;
   wire DIG_POT_IO_NRST;
+  
+  wire FPGA_SMA0;
   
   
 
@@ -561,7 +568,7 @@ module design_1_wrapper
 
   logic router_clk;
   assign GW_CLKC = router_clk;
-  assign router_clk = mig_clk;
+  //assign router_clk = mig_clk;
 
   logic tag_clk;
   //logic [1:0] tag_clk_count;
@@ -576,7 +583,11 @@ module design_1_wrapper
  ,.util_clk    (tag_clk)
  ,.io_clk      (io_master_clk)
  ,.io_clk90    (io_master_clk90)
+ ,.router_clk  (router_clk)
  );
+ 
+  // SMA clock output
+  assign FPGA_SMA0 = io_master_clk;
 
   //////////////////////////////////////////////////
   //
