@@ -256,5 +256,15 @@ set_property SLEW        FAST      [get_ports {GW_TAG_* GW_IC1_TAG_* GW_CLK*}];
 
 
 # Bitstream
+set_property CONFIG_MODE                       SPIx4 [current_design]
+set_property CONFIG_VOLTAGE                    1.8   [current_design]
+
 set_property BITSTREAM.GENERAL.COMPRESS        True  [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH     4     [current_design]
+
+# Set external clock divider when EMCCLK is used
+# set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN Div-2 [current_design]
+
+# Set config rate when internal CCLK is used
+set_property BITSTREAM.CONFIG.CONFIGRATE       51.0  [current_design]
 
