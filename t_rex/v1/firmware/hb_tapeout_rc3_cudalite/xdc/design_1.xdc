@@ -192,10 +192,10 @@ set are_skew               0.8
 set bfe_skew               0.8
 set afe_skew               0.8
 
-set_output_delay -clock $fwclk -max [expr $fwclk_period/2 - $afe_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
-set_output_delay -clock $fwclk -min $bre_skew [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
-set_output_delay -clock $fwclk -max [expr $fwclk_period/2 - $are_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
-set_output_delay -clock $fwclk -min $bfe_skew [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
+set_output_delay -clock $fwclk -max [expr $fwclk_period/4 + $fwclk_period/2 - $are_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
+set_output_delay -clock $fwclk -min [expr $fwclk_period/4 + $bre_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}]
+set_output_delay -clock $fwclk -max [expr $fwclk_period/4 + $fwclk_period/2 - $afe_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
+set_output_delay -clock $fwclk -min [expr $fwclk_period/4 + $bfe_skew] [get_ports {GW_IC1_CL_D* GW_IC1_CL_V}] -clock_fall -add_delay
 
 
 

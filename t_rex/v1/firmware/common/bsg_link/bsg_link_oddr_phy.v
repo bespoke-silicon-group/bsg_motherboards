@@ -78,13 +78,13 @@ module bsg_link_oddr_phy
     ,.SIM_DEVICE    ("ULTRASCALE_PLUS")
     ,.SRVAL         (1'b0)
     ) ODDRE1_inst 
-    (.Q             (data_r_lo[i])
+    (.Q             (data_r_o[i])
     ,.C             (clk_i)
     ,.D1            (data_i[0][i])
     ,.D2            (data_i[1][i])
     ,.SR            (reset_i)
     );
-    
+/*    
     ODELAYE3 
    #(.CASCADE         ("NONE")
     ,.DELAY_FORMAT    ("COUNT")
@@ -111,6 +111,7 @@ module bsg_link_oddr_phy
     ,.ODATAIN         (data_r_lo[i])
     ,.RST             (1'b0)
     );
+*/
   end
   
     ODDRE1 
