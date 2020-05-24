@@ -334,7 +334,7 @@ module design_1_wrapper
   );
 */
 
-
+/*
   // DEBUG
   wire [31:0]m_axi_lite_debug_araddr;
   wire [2:0]m_axi_lite_debug_arprot;
@@ -424,8 +424,7 @@ module design_1_wrapper
   ,.data_o ()
   ,.yumi_i (m_axi_lite_bvalid & m_axi_lite_bready)
   );
-  
-
+*/
   `declare_bsg_manycore_link_sif_s(manycore_addr_width_gp, manycore_data_width_gp, manycore_x_cord_width_gp, manycore_y_cord_width_gp, manycore_load_id_width_gp);
   `declare_bsg_ready_and_link_sif_s(ct_width_gp, bsg_ready_and_link_sif_s);
   `declare_bsg_cache_dma_pkt_s(cache_addr_width_p);
@@ -443,27 +442,27 @@ module design_1_wrapper
   (.clk_i         (pcie_clk)
   ,.reset_i       (~pcie_rstn)
   // read address
-  ,.axil_araddr_i (m_axi_lite_debug_araddr)
-  ,.axil_arready_o(m_axi_lite_debug_arready)
-  ,.axil_arvalid_i(m_axi_lite_debug_arvalid)
+  ,.axil_araddr_i (m_axi_lite_araddr)
+  ,.axil_arready_o(m_axi_lite_arready)
+  ,.axil_arvalid_i(m_axi_lite_arvalid)
   // read data
-  ,.axil_rdata_o  (m_axi_lite_debug_rdata)
-  ,.axil_rready_i (m_axi_lite_debug_rready)
-  ,.axil_rresp_o  (m_axi_lite_debug_rresp)
-  ,.axil_rvalid_o (m_axi_lite_debug_rvalid)
+  ,.axil_rdata_o  (m_axi_lite_rdata)
+  ,.axil_rready_i (m_axi_lite_rready)
+  ,.axil_rresp_o  (m_axi_lite_rresp)
+  ,.axil_rvalid_o (m_axi_lite_rvalid)
   // write address
-  ,.axil_awaddr_i (m_axi_lite_debug_awaddr)
-  ,.axil_awready_o(m_axi_lite_debug_awready)
-  ,.axil_awvalid_i(m_axi_lite_debug_awvalid)
+  ,.axil_awaddr_i (m_axi_lite_awaddr)
+  ,.axil_awready_o(m_axi_lite_awready)
+  ,.axil_awvalid_i(m_axi_lite_awvalid)
   // write data
-  ,.axil_wdata_i  (m_axi_lite_debug_wdata)
-  ,.axil_wready_o (m_axi_lite_debug_wready)
-  ,.axil_wstrb_i  (m_axi_lite_debug_wstrb)
-  ,.axil_wvalid_i (m_axi_lite_debug_wvalid)
+  ,.axil_wdata_i  (m_axi_lite_wdata)
+  ,.axil_wready_o (m_axi_lite_wready)
+  ,.axil_wstrb_i  (m_axi_lite_wstrb)
+  ,.axil_wvalid_i (m_axi_lite_wvalid)
   // write response
-  ,.axil_bready_i (m_axi_lite_debug_bready)
-  ,.axil_bresp_o  (m_axi_lite_debug_bresp)
-  ,.axil_bvalid_o (m_axi_lite_debug_bvalid)
+  ,.axil_bready_i (m_axi_lite_bready)
+  ,.axil_bresp_o  (m_axi_lite_bresp)
+  ,.axil_bvalid_o (m_axi_lite_bvalid)
   // manycore link signals
   ,.link_sif_i(links_sif_pcie_li)
   ,.link_sif_o(links_sif_pcie_lo)
