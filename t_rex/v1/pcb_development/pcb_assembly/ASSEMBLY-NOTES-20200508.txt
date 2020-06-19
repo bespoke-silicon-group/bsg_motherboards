@@ -1,0 +1,4 @@
+
+1. J29 (LINE Item29) [MPN: 22112032] The pin1 (Square pad) marking in the silkscreen is mismatching with actual component pin1 mark. Please place the component by matching locking slot marking with silkscreen slot marking and ignoring the squared pin1.
+
+2. U33 (LINE Item84) [MPN: Customer SUPPLY PART] The detailed part number is XCKU11P-2FFVD900E from Xilinx. Mechanical drawing available in Xilinx UG575, page 362 (FFVD900): https://www.xilinx.com/support/documentation/user_guides/ug575-ultrascale-pkg-pinout.pdf

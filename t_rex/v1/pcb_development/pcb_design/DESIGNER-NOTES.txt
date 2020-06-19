@@ -1,0 +1,5 @@
+1. In order to meet target impedance, all inner signal layers and their reference layers must have copper thickness of 0.5oz.
+
+2. For all Vias, the actual drill hole is larger than finished hole. In order to have finished size of 6mil, drill size should be 8mil. For 8mil finished hole, drill size should be 11mil. For 14-layer PCB fabrication house usually requires 8mil (actual)drill-to-copper spacing. For a 8mil via, spacing in PCB design file in indeed 9.5mil (design rule is set to 8mil, the tool actomatically converts from finished drill size to actual drill size for all holes).
+
+3. Drill tolerance in Gerber file should be at least +/-3%.

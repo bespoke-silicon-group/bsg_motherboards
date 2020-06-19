@@ -1,0 +1,11 @@
+1. Some of the silk screen text features are less than standard dimension. It is okay to proceed with them.
+
+2. There are extra mask opening in top and bottom layers (next to PCIe finger). This is intentional, according to PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 1.1 (http://read.pudn.com/downloads166/ebook/758109/PCI_Express_CEM_1.1.pdf, page 74). For this specific region no copper or solder mask is allowed.
+
+3. Under-size mask clearance (mask defined pads) present on inside of copper pour at U9, U25, U26, U27, U28, U31, U35 and U39. This is intentional. Mask defined pads are required for http://www.ti.com/lit/ds/symlink/tpsm84824.pdf and http://www.ti.com/lit/ds/symlink/tpsm846c23.pdf. 
+
+4. Please find all impedance information in IMPEDANCE.xlsx
+
+5. Stackup: 0.5oz for (L2, L3, L4, L5, L10, L11, L12, L13), 1oz for (L1, L6, L9, L14), 2oz for (L7, L8).
+
+6. Drill table may call for +/-0mil tolerance for hole. All holes are waived to +/-3mil tolerance.
