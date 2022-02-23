@@ -26,18 +26,23 @@ A3: The socket can be installed with screws and nuts, so there is no need to sol
 A4: You may either let the company add it back, or just leave it the original way.
 
 
-##### Q5: The assembly company says that some capacitors do not have name label? #####
+##### Q5: The fabrication company complains the 1.27mm hole on top-right corner is non-plated, but copper pad exists? #####
+
+A4: This hole should be plated, the table description for this 1.27mm hole is incorrect.
+
+
+##### Q6: The assembly company says that some capacitors do not have name label? #####
 
 A5: The centroid file (*.rep) indicates the exact position of all components.
 
 
-##### Q6: The assembly company asks for polarity of LEDs and tantalum capacitors? #####
+##### Q7: The assembly company asks for polarity of LEDs and tantalum capacitors? #####
 
 A6: For LEDs, the negative (-) side has thicker silkscreen outline.
     For tantalum caps, the positive (+) side has thicker silkscreen outline.
     
 
-##### Q7: The assembly company says that the power switch may have wrong ON/OFF labels? #####
+##### Q8: The assembly company says that the power switch may have wrong ON/OFF labels? #####
 
 A7: Ignore it, the PCB design is correct.
 
