@@ -2,6 +2,7 @@
 # import pySerial
 import serial
 import time
+import math
 
 # open serial port
 ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
@@ -68,6 +69,15 @@ def tps546c23_calc_voltage(raw_data):
     core_voltage = ((raw_data[1]<<8) | raw_data[0]) * 2**-9 * 1000
     return core_voltage
 
+def tps546c23_set_voltage_cmd(voltage):
+  wh_hdr = 0x51
+  iic_hdr = 0x41
+  write_addr = 0x5a
+  write_cmd = 0x21
+  voltage_count = math.ceil((float(voltage)*1000.0)/1.95)
+  write_low = voltage_count % (1<<8)
+  write_high = math.floor(voltage_count / (1<<8))
+  return bytearray([wh_hdr, iic_hdr, write_addr, write_cmd, write_low, write_high])
 
 
 
@@ -215,6 +225,9 @@ def write_gpio(gpio_id, value):
     cmd=bytearray([0x15, (data & 0xFF)])
     ser.write(cmd)
 
+
+# set voltage
+ser.write(tps546c23_set_voltage_cmd(0.8))
 
 clk_gen_init()
 
