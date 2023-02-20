@@ -218,12 +218,12 @@ def write_gpio(gpio_id, value):
 
 clk_gen_init()
 
-osc_set_raw_speed(0, 8)
-ds_set_value(0, 0)
-osc_set_raw_speed(1, 16)
-ds_set_value(1, 1)
-osc_set_raw_speed(2, 29)
-ds_set_value(2, 2)
+osc_set_raw_speed(0, 2)
+ds_set_value(0, 8)
+osc_set_raw_speed(1, 2)
+ds_set_value(1, 8)
+osc_set_raw_speed(2, 2)
+ds_set_value(2, 8)
 
 write_gpio(12, 0)
 write_gpio(11, 1)
