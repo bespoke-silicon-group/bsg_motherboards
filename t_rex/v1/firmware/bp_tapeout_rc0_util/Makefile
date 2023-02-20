@@ -29,9 +29,9 @@ bsg_designs_url := $(BITBUCKET)taylor-bsg/bsg_designs.git
 bsg_designs_commit := 13c02a2e10cfc1849137ffec3cbfda58b9a66f7e
 #bsg_designs_commit := snapshot_tapeout_2019_07_17
 
-pre_alpha_release_dir := $(THIS_DIR)/pre_alpha_release
-pre_alpha_release_url := $(GITHUB)black-poarrot/black-parrot.git
-pre_alpha_release_commit := 9f1d4b12fe4afa5dc960209c5e5bc35c1e588c11
+pre-alpha-release_dir := $(THIS_DIR)/pre-alpha-release
+pre-alpha-release_url := $(GITHUB)black-poarrot/black-parrot.git
+pre-alpha-release_commit := 9f1d4b12fe4afa5dc960209c5e5bc35c1e588c11
 
 vivado_bin := $(XILINX_VIVADO)/bin/vivado
 
@@ -46,7 +46,7 @@ update_tcl_dir := $(script_dir)/update_tcl.tcl
 
 
 all: libs
-libs: $(basejump_stl_dir) $(basejump_stl_new_dir) $(bsg_packaging_dir) $(bsg_designs_dir) $(pre_alpha_release_dir)
+libs: $(basejump_stl_dir) $(basejump_stl_new_dir) $(bsg_packaging_dir) $(bsg_designs_dir) $(pre-alpha-release_dir)
 $(basejump_stl_dir):
 	git clone -b $(basejump_stl_commit) $(basejump_stl_url) $@
 $(basejump_stl_new_dir):
@@ -55,8 +55,8 @@ $(bsg_packaging_dir):
 	git clone -b $(bsg_packaging_commit) $(bsg_packaging_url) $@
 $(bsg_designs_dir):
 	git clone -b $(bsg_designs_commit) $(bsg_designs_url) $@
-$(pre_alpha_release_dir):
-	git clone -b $(pre_alpha_release_commit) $(pre_alpha_release_url) $@
+$(pre-alpha-release_dir):
+	git clone -b $(pre-alpha-release_commit) $(pre-alpha-release_url) $@
 	cd $@ && make ucode
 
 build: $(project_dir)
@@ -76,7 +76,7 @@ update_tcl:
 	$(vivado_bin) -mode batch -source $(update_tcl_dir)
 
 clean_libs: are_you_sure
-	rm -rf $(basejump_stl_dir) $(basejump_stl_new_dir) $(bsg_packaging_dir) $(bsg_designs_dir) $(pre_alpha_release_dir)
+	rm -rf $(basejump_stl_dir) $(basejump_stl_new_dir) $(bsg_packaging_dir) $(bsg_designs_dir) $(pre-alpha-release_dir)
 
 clean_build: are_you_sure
 	rm -rf $(project_dir)
