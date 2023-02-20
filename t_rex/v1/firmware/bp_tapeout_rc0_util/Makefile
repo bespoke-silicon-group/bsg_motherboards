@@ -30,7 +30,7 @@ bsg_designs_commit := 13c02a2e10cfc1849137ffec3cbfda58b9a66f7e
 #bsg_designs_commit := snapshot_tapeout_2019_07_17
 
 pre-alpha-release_dir := $(THIS_DIR)/pre-alpha-release
-pre-alpha-release_url := $(GITHUB)black-poarrot/black-parrot.git
+pre-alpha-release_url := $(GITHUB)black-parrot/black-parrot.git
 pre-alpha-release_commit := 9f1d4b12fe4afa5dc960209c5e5bc35c1e588c11
 
 vivado_bin := $(XILINX_VIVADO)/bin/vivado
@@ -48,15 +48,20 @@ update_tcl_dir := $(script_dir)/update_tcl.tcl
 all: libs
 libs: $(basejump_stl_dir) $(basejump_stl_new_dir) $(bsg_packaging_dir) $(bsg_designs_dir) $(pre-alpha-release_dir)
 $(basejump_stl_dir):
-	git clone -b $(basejump_stl_commit) $(basejump_stl_url) $@
+	git clone $(basejump_stl_url) $@
+	cd $@ && git checkout $(basejump_stl_commit)
 $(basejump_stl_new_dir):
-	git clone -b $(basejump_stl_new_commit) $(basejump_stl_new_url) $@
+	git clone $(basejump_stl_new_url) $@
+	cd $@ && git checkout $(basejump_stl_new_commit)
 $(bsg_packaging_dir):
-	git clone -b $(bsg_packaging_commit) $(bsg_packaging_url) $@
+	git clone $(bsg_packaging_url) $@
+	cd $@ && git checkout $(bsg_packaging_commit)
 $(bsg_designs_dir):
-	git clone -b $(bsg_designs_commit) $(bsg_designs_url) $@
+	git clone $(bsg_designs_url) $@
+	cd $@ && git checkout $(bsg_designs_commit)
 $(pre-alpha-release_dir):
-	git clone -b $(pre-alpha-release_commit) $(pre-alpha-release_url) $@
+	git clone $(pre-alpha-release_url) $@
+	cd $@ && git checkout $(pre-alpha-release_commit)
 	cd $@ && make ucode
 
 build: $(project_dir)
