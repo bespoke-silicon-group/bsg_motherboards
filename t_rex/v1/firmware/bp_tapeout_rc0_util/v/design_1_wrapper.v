@@ -36,6 +36,10 @@ module design_1_wrapper
   ,localparam axi_data_width_p   = 256
   ,localparam axi_burst_len_p    = 2
   ,localparam cce_ucode_filename_lp = "bp_cce_inst_rom_mesi_lce8_wg16_assoc8.mem"
+
+  ,parameter util_flit_width_p = 8
+  ,parameter util_len_width_p  = 4
+  ,parameter util_cord_width_p = 4
   )
 
    (ddr4_sdram_act_n,
@@ -65,8 +69,23 @@ module design_1_wrapper
     sysclk_300_clk_p,
     led
     
-   // IIC
+   // util_link
+   ,clk125_clk_n
+   ,clk125_clk_p
+   ,rs232_uart_rxd
+   ,rs232_uart_txd
+   ,iic_main_scl_io
+   ,iic_main_sda_io
+   
    ,TPS0_CNTL
+   ,DIG_POT_PLL_ADDR1
+   ,DIG_POT_PLL_ADDR0
+   ,DIG_POT_PLL_INDEP
+   ,DIG_POT_PLL_NRST
+   ,DIG_POT_IO_ADDR1
+   ,DIG_POT_IO_ADDR0
+   ,DIG_POT_IO_INDEP
+   ,DIG_POT_IO_NRST
     
     // bsg_link
    ,IC1_GW_CL_CLK, IC1_GW_CL_V
@@ -81,7 +100,10 @@ module design_1_wrapper
    ,GW_TAG_CLKO, GW_TAG_DATAO, GW_IC1_TAG_EN
    ,GW_CLKA, GW_CLKB, GW_CLKC
    ,GW_SEL0, GW_SEL1, GW_SEL2
-   ,GW_CLK_RESET, GW_CORE_RESET);
+   ,GW_CLK_RESET, GW_CORE_RESET
+
+   // SMA
+   ,FPGA_SMA0);
 
   output ddr4_sdram_act_n;
   output [16:0]ddr4_sdram_adr;
@@ -112,7 +134,24 @@ module design_1_wrapper
   input sysclk_300_clk_p;
   output [3:0] led;
   
+  input  clk125_clk_n;
+  input  clk125_clk_p;
+  input  rs232_uart_rxd;
+  output rs232_uart_txd;
+  inout  [2:0] iic_main_scl_io;
+  inout  [2:0] iic_main_sda_io;
+
   output TPS0_CNTL;
+  output DIG_POT_PLL_ADDR1;
+  output DIG_POT_PLL_ADDR0;
+  output DIG_POT_PLL_INDEP;
+  output DIG_POT_PLL_NRST;
+  output DIG_POT_IO_ADDR1;
+  output DIG_POT_IO_ADDR0;
+  output DIG_POT_IO_INDEP;
+  output DIG_POT_IO_NRST;
+  
+  output FPGA_SMA0;
   
 
   wire ddr4_sdram_act_n;
@@ -174,7 +213,24 @@ module design_1_wrapper
   wire reset_gpio;
   wire [3:0] led;
   
+  wire clk125_clk_n;
+  wire clk125_clk_p;
+  wire rs232_uart_rxd;
+  wire rs232_uart_txd;
+  wire [2:0] iic_main_scl_io;
+  wire [2:0] iic_main_sda_io;
+
   wire TPS0_CNTL;
+  wire DIG_POT_PLL_ADDR1;
+  wire DIG_POT_PLL_ADDR0;
+  wire DIG_POT_PLL_INDEP;
+  wire DIG_POT_PLL_NRST;
+  wire DIG_POT_IO_ADDR1;
+  wire DIG_POT_IO_ADDR0;
+  wire DIG_POT_IO_INDEP;
+  wire DIG_POT_IO_NRST;
+  
+  wire FPGA_SMA0;
   
   
 
@@ -490,18 +546,19 @@ module design_1_wrapper
   );
 */
 
-  `declare_bsg_ready_and_link_sif_s(ct_width_gp, bsg_ready_and_link_sif_s);
-
   // Control clock generator output signal
-  assign GW_SEL0 = 1'b0;
-  assign GW_SEL1 = 1'b0;
-  assign GW_SEL2 = 1'b0;
+  //assign GW_SEL0 = 1'b0;
+  //assign GW_SEL1 = 1'b0;
+  //assign GW_SEL2 = 1'b0;
   
-  assign GW_CLK_RESET  = 1'b0;
-  assign GW_CORE_RESET = 1'b0;
+  //assign GW_CLK_RESET  = 1'b0;
+  //assign GW_CORE_RESET = 1'b0;
   
   // Enable ASIC power output
-  assign TPS0_CNTL = 1'b1;
+  //assign TPS0_CNTL = 1'b1;
+
+
+  `declare_bsg_ready_and_link_sif_s(ct_width_gp, bsg_ready_and_link_sif_s);
   
   
   //////////////////////////////////////////////////
@@ -513,20 +570,32 @@ module design_1_wrapper
   assign GW_CLKA = blackparrot_clk;
   assign blackparrot_clk = mig_clk;
 
-  logic io_master_clk;
+  logic io_master_clk, io_master_clk90;
   assign GW_CLKB = io_master_clk;
-  assign io_master_clk = mig_clk;
+  //assign io_master_clk = mig_clk;
 
   logic router_clk;
   assign GW_CLKC = router_clk;
-  assign router_clk = mig_clk;
+  //assign router_clk = mig_clk;
 
   logic tag_clk;
-  logic [1:0] tag_clk_count;
-  assign tag_clk = tag_clk_count[1];
+  //logic [1:0] tag_clk_count;
+  //assign tag_clk = tag_clk_count[1];
   assign GW_TAG_CLKO = ~tag_clk;
-  always_ff @(posedge mig_clk)
-    tag_clk_count <= tag_clk_count+1'b1;
+  //always_ff @(posedge mig_clk)
+  //  tag_clk_count <= tag_clk_count+1'b1;
+
+  design_2 design_2_i
+ (.clk125_clk_n(clk125_clk_n)
+ ,.clk125_clk_p(clk125_clk_p)
+ ,.util_clk    (tag_clk)
+ ,.io_clk      (io_master_clk)
+ ,.io_clk90    (io_master_clk90)
+ ,.router_clk  (router_clk)
+ );
+ 
+  // SMA clock output
+  assign FPGA_SMA0 = io_master_clk;
 
   //////////////////////////////////////////////////
   //
@@ -544,7 +613,54 @@ module design_1_wrapper
   ,.iclk_data_o  ()
   ,.oclk_data_o  (tag_reset)
   );
+
+  //////////////////////////////////////////////////
+  //
+  // BSG Util Link
+  //
   
+  `declare_bsg_ready_and_link_sif_s(util_flit_width_p, bsg_util_link_sif_s);
+  bsg_util_link_sif_s tag_trace_link_li, tag_trace_link_lo;
+  
+  logic [31:0] gpio_lo;
+  
+  bsg_util_link
+ #(.util_flit_width_p(util_flit_width_p)
+  ,.util_len_width_p (util_len_width_p )
+  ,.util_cord_width_p(util_cord_width_p)
+  ,.use_legacy_router(1)
+  ) util_link
+  (.clk_i            (tag_clk)
+  ,.reset_i          (tag_reset)
+
+  ,.tag_trace_link_i (tag_trace_link_li)
+  ,.tag_trace_link_o (tag_trace_link_lo)
+
+  ,.rs232_uart_rxd   (rs232_uart_rxd)
+  ,.rs232_uart_txd   (rs232_uart_txd)
+
+  ,.iic_main_scl_io  (iic_main_scl_io)
+  ,.iic_main_sda_io  (iic_main_sda_io)
+
+  ,.gpio_o           (gpio_lo)
+  );
+  
+  assign TPS0_CNTL         = gpio_lo[0];
+  assign DIG_POT_PLL_ADDR1 = gpio_lo[1];
+  assign DIG_POT_PLL_ADDR0 = gpio_lo[2];
+  assign DIG_POT_PLL_INDEP = gpio_lo[3];
+  assign DIG_POT_PLL_NRST  = gpio_lo[4];
+  assign DIG_POT_IO_ADDR1  = gpio_lo[5];
+  assign DIG_POT_IO_ADDR0  = gpio_lo[6];
+  assign DIG_POT_IO_INDEP  = gpio_lo[7];
+  assign DIG_POT_IO_NRST   = gpio_lo[8];
+
+  assign GW_CLK_RESET      = gpio_lo[9];
+  assign GW_CORE_RESET     = gpio_lo[10];
+  assign GW_SEL0           = gpio_lo[11];
+  assign GW_SEL1           = gpio_lo[12];
+  assign GW_SEL2           = gpio_lo[13];
+
   //////////////////////////////////////////////////
   //
   // BSG Tag Track Replay
@@ -559,6 +675,18 @@ module design_1_wrapper
   logic [1:0] tag_trace_en_r_lo;
   logic       tag_trace_done_lo;
 
+  logic tag_trace_done_blackparrot_lo;
+  bsg_launch_sync_sync 
+ #(.width_p(1)
+  ) blss_trace_done
+  (.iclk_i      (tag_clk)
+  ,.iclk_reset_i(1'b0)
+  ,.oclk_i      (blackparrot_clk)
+  ,.iclk_data_i  (tag_trace_done_lo)
+  ,.iclk_data_o  ()
+  ,.oclk_data_o  (tag_trace_done_blackparrot_lo)
+  );
+
   // TAG TRACE ROM
   bsg_tag_boot_rom #(.width_p( tag_trace_rom_data_width_lp )
                     ,.addr_width_p( tag_trace_rom_addr_width_lp )
@@ -569,13 +697,16 @@ module design_1_wrapper
       );
 
   // TAG TRACE REPLAY
-  bsg_tag_trace_replay #(.rom_addr_width_p( tag_trace_rom_addr_width_lp )
-                        ,.rom_data_width_p( tag_trace_rom_data_width_lp )
-                        ,.num_masters_p( 2 )
-                        ,.num_clients_p( tag_num_clients_gp )
-                        ,.max_payload_width_p( tag_max_payload_width_gp )
-                        )
-    tag_trace_replay
+  bsg_tag_trace_replay_stream 
+ #(.rom_addr_width_p( tag_trace_rom_addr_width_lp )
+  ,.rom_data_width_p( tag_trace_rom_data_width_lp )
+  ,.num_masters_p( 2 )
+  ,.num_clients_p( tag_num_clients_gp )
+  ,.max_payload_width_p( tag_max_payload_width_gp )
+  ,.link_width_p(util_flit_width_p)
+  ,.cord_width_p(util_cord_width_p)
+  ,.len_width_p (util_len_width_p)
+  ) tag_trace_replay
       (.clk_i   ( tag_clk )
       ,.reset_i ( tag_reset    )
       ,.en_i    ( 1'b1            )
@@ -583,20 +714,22 @@ module design_1_wrapper
       ,.rom_addr_o( rom_addr_li )
       ,.rom_data_i( rom_data_lo )
 
-      ,.valid_i ( 1'b0 )
-      ,.data_i  ( '0 )
-      ,.ready_o ()
-
-      ,.valid_o    ()
       ,.en_r_o     ( tag_trace_en_r_lo )
       ,.tag_data_o ( GW_TAG_DATAO )
-      ,.yumi_i     ( 1'b1 )
+
+      ,.link_i ( tag_trace_link_lo )
+      ,.link_o ( tag_trace_link_li )
 
       ,.done_o  ( tag_trace_done_lo )
-      ,.error_o ()
       ) ;
 
   assign GW_IC1_TAG_EN = tag_trace_en_r_lo[0];
+
+  design_3 design_3_i
+  (.clk(tag_clk)
+  ,.data(GW_TAG_DATAO)
+  ,.en({1'b0, tag_trace_en_r_lo})
+  );
 
   //////////////////////////////////////////////////
   //
@@ -839,7 +972,7 @@ module design_1_wrapper
      )
    master_link
     (.clk_i(blackparrot_clk)
-     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_lo )
+     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_blackparrot_lo )
 
 
      ,.mem_cmd_i('0)
@@ -886,7 +1019,7 @@ module design_1_wrapper
    #(.cfg_p(bp_cfg_gp))
    host_mmio
     (.clk_i(blackparrot_clk)
-     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_lo)
+     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_blackparrot_lo)
      
      ,.mem_data_cmd_i(host_data_cmd_li)
      ,.mem_data_cmd_v_i(host_data_cmd_v_li)
@@ -954,7 +1087,7 @@ module design_1_wrapper
      )
    mem
     (.clk_i(blackparrot_clk)
-     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_lo)
+     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_blackparrot_lo)
 
      ,.mem_cmd_i(dram_cmd_li)
      ,.mem_cmd_v_i(dram_cmd_v_li)
@@ -988,7 +1121,7 @@ module design_1_wrapper
      )
    client_link
     (.clk_i(blackparrot_clk)
-     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_lo)
+     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_blackparrot_lo)
 
      ,.mem_cmd_o(mem_cmd_lo)
      ,.mem_cmd_v_o(mem_cmd_v_lo)
@@ -1018,7 +1151,7 @@ module design_1_wrapper
    #(.width_p(1))
    req_outstanding_reg
     (.clk_i(blackparrot_clk)
-     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_lo)
+     ,.reset_i(bp_tag_data_lo.reset | ~tag_trace_done_blackparrot_lo)
      ,.en_i(mem_cmd_yumi_li | mem_data_cmd_yumi_li | (mem_resp_v_li & mem_resp_ready_lo) | (mem_data_resp_v_li & mem_data_resp_ready_lo))
   
      ,.data_i(mem_cmd_yumi_li | mem_data_cmd_yumi_li)
@@ -1163,7 +1296,7 @@ logic nbf_done_lo, cfg_done_lo, dram_sel_lo;
     logic nbf_done_r;
     always_ff @(posedge blackparrot_clk)
       begin
-        if (~tag_trace_done_lo | bp_tag_data_lo.reset)
+        if (~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset)
           begin
             counter_r <= 1;
             nbf_done_r <= 0;
@@ -1186,7 +1319,7 @@ logic nbf_done_lo, cfg_done_lo, dram_sel_lo;
    #(.cfg_p(bp_cfg_gp)
     ) nbf_adapter
     (.clk_i(blackparrot_clk)
-    ,.reset_i((~tag_trace_done_lo | bp_tag_data_lo.reset))
+    ,.reset_i((~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset))
 
     ,.io_data_cmd_i(nbf_dram_data_cmd_li)
     ,.io_data_cmd_v_i(nbf_dram_data_cmd_v_li)
@@ -1288,7 +1421,7 @@ always_comb
      )
    cfg_loader
     (.clk_i(blackparrot_clk)
-     ,.reset_i((~tag_trace_done_lo | bp_tag_data_lo.reset) | ~dram_sel_lo)
+     ,.reset_i((~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset) | ~dram_sel_lo)
 
      ,.mem_data_cmd_o(cfg_data_cmd_lo)
      ,.mem_data_cmd_v_o(cfg_data_cmd_v_lo)
@@ -1309,7 +1442,7 @@ always_comb
   ,.stream_data_width_p(32)
   ) host        
   (.clk_i          (blackparrot_clk)
-  ,.reset_i        ((~tag_trace_done_lo | bp_tag_data_lo.reset))
+  ,.reset_i        ((~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset))
   ,.prog_done_o    (nbf_done_lo)
   
   ,.io_data_cmd_i       (host_data_cmd_li)
@@ -1357,7 +1490,7 @@ always_comb
  #(.cfg_p(bp_cfg_gp)
   ) mem_to_dma
   (.clk_i           (blackparrot_clk)
-  ,.reset_i         ((~tag_trace_done_lo | bp_tag_data_lo.reset))
+  ,.reset_i         ((~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset))
                     
   ,.dma_pkt_o       (dma_pkt_lo)
   ,.dma_pkt_v_o     (dma_pkt_v_lo)
@@ -1408,7 +1541,7 @@ always_comb
   ,.axi_burst_len_p      (axi_burst_len_p)
   ) cache_to_axi 
   (.clk_i  (blackparrot_clk)
-  ,.reset_i((~tag_trace_done_lo | bp_tag_data_lo.reset))
+  ,.reset_i((~tag_trace_done_blackparrot_lo | bp_tag_data_lo.reset))
   
   ,.dma_pkt_i       (cache_dma_pkt_lo)
   ,.dma_pkt_v_i     (dma_pkt_v_lo)
