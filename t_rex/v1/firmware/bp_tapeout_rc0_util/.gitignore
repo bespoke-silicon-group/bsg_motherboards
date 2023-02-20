@@ -5,3 +5,6 @@
 /bsg_packaging*
 /ku11p_test*
 vivado*
+hs_err*
+webtalk*
+.Xil
