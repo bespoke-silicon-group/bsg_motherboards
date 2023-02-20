@@ -8,36 +8,36 @@ ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
 
 def write_bsg_tag_trace(en, id, rstn, len, data):
     word = 0
-    word = word | ((data & ((1<<10)-1)) << 0 )
-    word = word | ((len  & ((1<<4 )-1)) << 10)
-    word = word | ((rstn & ((1<<1 )-1)) << 14)
-    word = word | ((id   & ((1<<6 )-1)) << 15)
-    word = word | ((en   & ((1<<3 )-1)) << 21)
+    word = word | ((data & ((1<<9 )-1)) << 0 )
+    word = word | ((len  & ((1<<4 )-1)) << 9 )
+    word = word | ((rstn & ((1<<1 )-1)) << 13)
+    word = word | ((id   & ((1<<6 )-1)) << 14)
+    word = word | ((en   & ((1<<2 )-1)) << 20)
     cmd=bytearray([0x34, (word>>0)&0xFF, (word>>8)&0xFF, (word>>16)&0xFF])
     ser.write(cmd)
 
 def clk_gen_async_reset():
-    write_bsg_tag_trace(6, 0, 1, 1, 0)
-    write_bsg_tag_trace(6, 0, 1, 1, 1)
-    write_bsg_tag_trace(6, 0, 1, 1, 0)
+    write_bsg_tag_trace(1, 0, 1, 1, 0)
+    write_bsg_tag_trace(1, 0, 1, 1, 1)
+    write_bsg_tag_trace(1, 0, 1, 1, 0)
 
 def clk_gen_sel_output_clk(osc_id, payload):
-    write_bsg_tag_trace(6, osc_id+10, 1, 2, payload)
+    write_bsg_tag_trace(1, osc_id+10, 1, 2, payload)
 
 def osc_trigger(osc_id, payload):
-    write_bsg_tag_trace(6, osc_id+4, 1, 1, payload)
+    write_bsg_tag_trace(1, osc_id+4, 1, 1, payload)
 
 def osc_set_raw_speed(osc_id, payload):
-    write_bsg_tag_trace(6, osc_id+1, 1, 5, payload)
+    write_bsg_tag_trace(1, osc_id+1, 1, 5, payload)
     osc_trigger(osc_id, 1)
     osc_trigger(osc_id, 0)
 
 def ds_reset(osc_id, init_value):
-    write_bsg_tag_trace(6, osc_id+7, 1, 7, (init_value<<1)|(0x1))
-    write_bsg_tag_trace(6, osc_id+7, 1, 7, (init_value<<1)|(0x0))
+    write_bsg_tag_trace(1, osc_id+7, 1, 7, (init_value<<1)|(0x1))
+    write_bsg_tag_trace(1, osc_id+7, 1, 7, (init_value<<1)|(0x0))
 
 def ds_set_value(osc_id, set_value):
-    write_bsg_tag_trace(6, osc_id+7, 1, 7, (set_value<<1))
+    write_bsg_tag_trace(1, osc_id+7, 1, 7, (set_value<<1))
 
 def clk_gen_init():
     clk_gen_async_reset()
