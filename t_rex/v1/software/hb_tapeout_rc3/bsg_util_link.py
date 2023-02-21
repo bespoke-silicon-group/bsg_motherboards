@@ -53,6 +53,11 @@ def osc_sweep(osc_id):
         print("Current osc speed: %d", i, end='')
         input("")
 
+def tps546c23_calc_voltage_reversed(voltage):
+    value = int((voltage * 1000.0) / (2**-9 * 1000.0))
+    b0 = int(value % 0x100)
+    b1 = int(value / 0x100)
+    return bytearray([b0, b1])
 
 
 
@@ -278,7 +283,7 @@ def write_gpio(gpio_id, value):
 
 clk_gen_init()
 
-osc_set_raw_speed(0, 8)
+osc_set_raw_speed(0, 7)
 ds_set_value(0, 0)
 osc_set_raw_speed(1, 16)
 ds_set_value(1, 1)
@@ -291,6 +296,11 @@ write_gpio(11, 1)
 chip_reset()
 
 #osc_sweep(2)
+
+# Set voltage
+cmd = bytearray([0x51, 0x40, 0x5a, 0x21]) + tps546c23_calc_voltage_reversed(0.8)
+ser.write(cmd)
+rtn = ser.read(2)
 
 time.sleep(0.5)
 cmd=bytearray([0x61, 0x21, 0x5a, 0x8c, 0x21, 0x5b, 0x02])
