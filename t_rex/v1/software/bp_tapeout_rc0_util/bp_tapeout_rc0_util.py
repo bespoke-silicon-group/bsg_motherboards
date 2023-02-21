@@ -202,6 +202,13 @@ rtn = ser.read(2)
 
 clk_gen_init()
 
+# osc_set_raw_speed(oscillator_id, oscillator_tap)
+# oscillator_id: 0=core, 1=io, 2=router
+
+# ds_set_value(downsampler_id, downsampler_tap)
+# downsampler_id: 0=core, 1=io, 2=router
+# downsampling_ratio = (downsampler_tap+1)*2
+
 osc_set_raw_speed(0, 2)
 ds_set_value(0, 8)
 osc_set_raw_speed(1, 2)
@@ -209,18 +216,21 @@ ds_set_value(1, 8)
 osc_set_raw_speed(2, 2)
 ds_set_value(2, 8)
 
-write_gpio(12, 0)
-write_gpio(11, 1)
+# select output clock: 00=router, 01=io, 10=core, 11=1'b0
+write_gpio(12, 1)
+write_gpio(11, 0)
 
 chip_reset()
 
 #osc_sweep(2)
 
 time.sleep(0.5)
+# read core current
 cmd=bytearray([0x61, 0x21, 0x5a, 0x8c, 0x21, 0x5b, 0x02])
 ser.write(cmd)
 rtn = ser.read(5)
 print("Core current is %.4fA" % tps546c23_calc_current(bytearray([rtn[3], rtn[4]])))
+# read core voltage
 cmd=bytearray([0x61, 0x21, 0x5a, 0x8b, 0x21, 0x5b, 0x02])
 ser.write(cmd)
 rtn = ser.read(5)
