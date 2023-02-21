@@ -124,7 +124,7 @@ def chip_reset():
     
     # Reset GW Router Control and set cord to 0
     #SEND  en   id=19  d l=9   {reset, cord=0}
-    write_bsg_tag_trace(2, 19, 1, 9, 256)
+    write_bsg_tag_trace(2, 19, 1, 9, 263)
     
     # Reset GW BlackParrot CFG and set dest cord to 3 (CLINT)
     #SEND  en   id=36  d l=9   {reset, cord=9}
@@ -132,63 +132,63 @@ def chip_reset():
     
     # Reset ASIC BackParrot Control and set dest cord to 0 (DRAM)
     #SEND  en   id=37 d l=9   {reset, cord=0}
-    write_bsg_tag_trace(1, 37, 1, 9, 256)
+    write_bsg_tag_trace(1, 37, 1, 9, 263)
     
     # Reset GW BlackParrot Control and set dest cord to 0 (DRAM)
     #SEND  en   id=37 d l=9   {reset, cord=0}
-    write_bsg_tag_trace(2, 37, 1, 9, 256)
+    write_bsg_tag_trace(2, 37, 1, 9, 263)
     
     ### STEP 2: Perform async token resets
     
     # Async token reset for ASIC Prev IO Link
     #SEND  en   id=13  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(1, 13, 1, 3, 7)
-    write_bsg_tag_trace(1, 13, 1, 3, 6)
+    write_bsg_tag_trace(2, 13, 1, 3, 7)
+    write_bsg_tag_trace(2, 13, 1, 3, 6)
     
     # Assert async token reset for GW Next IO Link
     #SEND  en   id=16  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(2, 16, 1, 3, 7)
-    write_bsg_tag_trace(2, 16, 1, 3, 6)
+    write_bsg_tag_trace(1, 16, 1, 3, 7)
+    write_bsg_tag_trace(1, 16, 1, 3, 6)
     
     ### STEP 3: De-assert Upstream IO Links reset
     
     # De-assert upstream reset for ASIC Prev IO Link
     #SEND  en   id=13  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(1, 13, 1, 3, 2)
+    write_bsg_tag_trace(2, 13, 1, 3, 2)
     
     # De-assert upstream reset for GW Next IO Link
     #SEND  en   id=16  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(2, 16, 1, 3, 2)
+    write_bsg_tag_trace(1, 16, 1, 3, 2)
     
     ### STEP 4: De-assert Downstream IO Links reset
     
     # De-assert downstream reset for ASIC Prev IO Link
     #SEND  en   id=13  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(1, 13, 1, 3, 0)
+    write_bsg_tag_trace(2, 13, 1, 3, 0)
     
     # De-assert downstream reset for GW Next IO Link
     #SEND  en   id=16  d l=3   {up_link_reset, down_link_reset, async_token_reset}
-    write_bsg_tag_trace(2, 16, 1, 3, 0)
+    write_bsg_tag_trace(1, 16, 1, 3, 0)
     
     ### STEP 5/6: De-assert Upstream/Downstream CORE Links reset
     
     # De-assert upstream/downstream reset for ASIC Prev CORE Link
     #SEND  en   id=14  d l=2   {up_link_reset, down_link_reset}
-    write_bsg_tag_trace(1, 14, 1, 2, 0)
+    write_bsg_tag_trace(2, 14, 1, 2, 0)
     
     # De-assert upstream/downstream reset for GW Next CORE Link
     #SEND  en   id=17  d l=2   {up_link_reset, down_link_reset}
-    write_bsg_tag_trace(2, 17, 1, 2, 0)
+    write_bsg_tag_trace(1, 17, 1, 2, 0)
     
     ### STEP 7: De-assert CT reset and fifo reset
     
     # De-assert reset and fifo_reset for ASIC Prev CT CORE Control
     #SEND  en   id=15  d l=2   {reset, fifo_reset}
-    write_bsg_tag_trace(1, 15, 1, 2, 0)
+    write_bsg_tag_trace(2, 15, 1, 2, 0)
     
     # De-assert reset and fifo_reset for GW Next CT CORE Control
     #SEND  en   id=18  d l=2   {reset, fifo_reset}
-    write_bsg_tag_trace(2, 18, 1, 2, 0)
+    write_bsg_tag_trace(1, 18, 1, 2, 0)
     
     ### STEP 8: De-assert Router reset
     
@@ -207,7 +207,7 @@ def chip_reset():
     
     # Deassert reset GW Router Control and set cord to 0
     #SEND  en   id=19  d l=9   {reset, cord=0}
-    write_bsg_tag_trace(2, 19, 1, 9, 0)
+    write_bsg_tag_trace(2, 19, 1, 9, 7)
     
     # Deassert reset GW BlackParrot CFG and set dest cord to 3 (CLINT)
     #SEND  en   id=36  d l=9   {reset, cord=9}
@@ -215,11 +215,11 @@ def chip_reset():
     
     # Deassert reset ASIC BackParrot Control and set dest cord to 0 (DRAM)
     #SEND  en   id=37 d l=9   {reset, cord=0}
-    write_bsg_tag_trace(1, 37, 1, 9, 0)
+    write_bsg_tag_trace(1, 37, 1, 9, 7)
     
     # Deassert reset GW BlackParrot Control and set dest cord to 0 (DRAM)
     #SEND  en   id=37 d l=9   {reset, cord=0}
-    write_bsg_tag_trace(2, 37, 1, 9, 0)
+    write_bsg_tag_trace(2, 37, 1, 9, 7)
 
 
 def write_gpio(gpio_id, value):
