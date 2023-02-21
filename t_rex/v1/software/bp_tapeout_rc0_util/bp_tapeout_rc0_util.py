@@ -70,13 +70,13 @@ def tps546c23_calc_voltage(raw_data):
     return core_voltage
 
 def tps546c23_set_voltage_cmd(voltage):
-  wh_hdr = 0x51
-  iic_hdr = 0x41
+  wh_hdr     = 0x51
+  iic_hdr    = 0x40
   write_addr = 0x5a
-  write_cmd = 0x21
-  voltage_count = math.ceil((float(voltage)*1000.0)/1.95)
-  write_low = voltage_count % (1<<8)
-  write_high = math.floor(voltage_count / (1<<8))
+  write_cmd  = 0x21
+  voltage_count = math.ceil((float(voltage)*1000.0)/(2**-9 * 1000.0))
+  write_low     = int(voltage_count % 0x100)
+  write_high    = int(voltage_count / 0x100)
   return bytearray([wh_hdr, iic_hdr, write_addr, write_cmd, write_low, write_high])
 
 
@@ -230,6 +230,7 @@ def write_gpio(gpio_id, value):
 
 # set voltage
 ser.write(tps546c23_set_voltage_cmd(0.8))
+rtn = ser.read(2)
 
 clk_gen_init()
 
