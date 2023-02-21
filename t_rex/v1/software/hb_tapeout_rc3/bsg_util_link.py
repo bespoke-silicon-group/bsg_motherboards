@@ -53,11 +53,6 @@ def osc_sweep(osc_id):
         print("Current osc speed: %d", i, end='')
         input("")
 
-def tps546c23_calc_voltage_reversed(voltage):
-    value = int((voltage * 1000.0) / (2**-9 * 1000.0))
-    b0 = int(value % 0x100)
-    b1 = int(value / 0x100)
-    return bytearray([b0, b1])
 
 
 
@@ -73,6 +68,11 @@ def tps546c23_calc_voltage(raw_data):
     core_voltage = ((raw_data[1]<<8) | raw_data[0]) * 2**-9 * 1000
     return core_voltage
 
+def tps546c23_calc_voltage_reversed(voltage):
+    value = int((voltage * 1000.0) / (2**-9 * 1000.0))
+    b0 = int(value % 0x100)
+    b1 = int(value / 0x100)
+    return bytearray([b0, b1])
 
 
 
